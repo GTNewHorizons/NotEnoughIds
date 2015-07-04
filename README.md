@@ -2,6 +2,8 @@
 
 Extends hardcoded ID limits.
 
+[Download](https://github.com/fewizz/NotEnoughIDs/releases/tag/1.0.0)
+
 #Plans:
 - [ ] Increase ID limit for biomes
 - [ ] Increase ID limit for enchantments (?)
@@ -18,6 +20,6 @@ Feel free to include this mod in your private or public mudpack if you are link 
 - Incompatible with Fastcraft
 - Possibly incompatible with some other mods
 
-#Credits
 immibis for [MinecraftForkage code](https://github.com/MinecraftForkage/MinecraftForkage)
+
 VikeStep and GloomyFolken for their coremod tutorials
