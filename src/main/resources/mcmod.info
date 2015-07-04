@@ -1,0 +1,15 @@
+[
+	{
+    "modid": "notenoughIDs",
+    "name": "NotEnoughIDs",
+    "description": "Extends hardcoded block ID limit.",
+    "version": "1.0.0",
+    "mcversion": "${mcversion}",
+    "updateUrl": "",
+    "authorList": ["fewizz"],
+    "credits": "immibis for MinecraftForkage code, VikeStep and GloomyFolken for their coremod tutorials",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+	}
+]

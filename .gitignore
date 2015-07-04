@@ -1,0 +1,14 @@
+/.gradle/*
+/nujniyeclassy/*
+/other/*
+/other2/*
+/build/*
+/eclipse/*
+/run/*
+/out/*
+/asm/*
+/bin/*
+/lib/*
+/.settings/*
+*.classpath
+*.project
