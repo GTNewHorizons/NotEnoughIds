@@ -12,7 +12,7 @@ Extends hardcoded ID limits.
 - [ ] Compatibility for some incompatible mods
 
 #Modpacks
-Feel free to include this mod in your private or public mudpack if you are link back to this page.
+Feel free to include this mod in your private or public modpack. (provided you link back to this page)
 
 #Compatibility (Read with attention!)
 - Incompatible with old worlds!!! (Due to massive id range change it is impossible to make old worlds compatible with this mod)
