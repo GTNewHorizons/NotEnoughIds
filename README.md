@@ -2,7 +2,7 @@
 
 Extends hardcoded ID limits.
 
-[Download](https://github.com/fewizz/NotEnoughIDs/releases)
+[Download](http://minecraft.curseforge.com/mc-mods/235107-notenoughids)
 
 [MinecraftForum Page](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/wip-mods/2467198-notenoughids-maximum-id-range-exceeded-no-more)
 
