@@ -19,7 +19,6 @@ Feel free to include this mod in your private or public modpack if you are link 
 #Compatibility (Read with attention!)
 - Incompatible with old worlds!!! (Due to massive id range change it is impossible to make old worlds compatible with this mod)
 - Compatible with Optifine
-- Incompatible with Fastcraft
 - Possibly incompatible with some other mods
 
 #Credits
