@@ -9,6 +9,8 @@
 /asm/*
 /bin/*
 /lib/*
-/.settings/*
+otherclasses/
+.settings/
+!/eclipse/mods/
 *.classpath
 *.project

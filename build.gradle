@@ -17,9 +17,9 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.0.0"
+version = "[1.7.10]1.2.0"
 group= "com.yourname.modid" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "[1.7.10]NotEnoughIDs"
+archivesBaseName = "NotEnoughIDs"
 
 minecraft {
     version = "1.7.10-10.13.4.1481-1.7.10"
@@ -28,25 +28,30 @@ minecraft {
 
 jar {
     manifest {
-        attributes 'FMLCorePlugin': 'ru.fewizz.idextender.IEPlugin'
-		attributes 'FMLCorePluginContainsFMLMod': 'true'
+		attributes('FMLCorePlugin': 'ru.fewizz.idextender.IEPlugin')
     }
+	exclude "net/**"
+}
+
+ext.jarFile = zipTree(jar.archivePath)
+
+task tweaker(type: Jar, dependsOn: reobf) {
+    manifest {
+		attributes('TweakClass': 'ru.fewizz.idextender.Tweaker.IETweaker',
+                   'TweakOrder': 2147483647)
+    }
+	
+	from(project.ext.jarFile) {
+        include "**/IETweaker.class"
+    }
+	version = "Tweaker-" + version
+}
+
+artifacts {
+    archives tweaker
 }
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
 }
 
 processResources

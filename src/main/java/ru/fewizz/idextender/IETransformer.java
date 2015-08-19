@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -37,15 +39,49 @@ public class IETransformer implements IClassTransformer{
     ClassReader cr;
     ClassWriter writer;
     FieldVisitor fv;
-	
+    public static Logger logger = LogManager.getLogger("NEID");
+    
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
         
+		if("fastcraft.r".equals(transformedName)){
+			///////////////////////////////
+			start(basicClass, "Fastcraft");
+			
+			for(MethodNode method : cn.methods) {
+				InsnList code = method.instructions;
+				
+        		if("a".equals(method.name) && method.desc.equals("(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)V")){
+        			for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
+        				AbstractInsnNode insn = iterator.next();
+        				
+        				if(insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode)insn).name.equals("func_76660_i")){
+        					
+        					InsnList toInsert = new InsnList();
+        					
+        					toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        					toInsert.add(new FieldInsnNode(Opcodes.GETSTATIC, "fastcraft/r", "a", "[B"));
+        					toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "fastcraft", !isObf ? "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;[B)V" : "(Lapz;[B)V", false));
+        					toInsert.add(new InsnNode(Opcodes.RETURN));
+        					method.instructions.insert(insn.getPrevious().getPrevious().getPrevious().getPrevious(), toInsert);
+        					break;
+        				}
+        			}
+        		}
+        	}
+			
+			return end(basicClass, "Fastcraft");
+			////////////////////////////////////
+		}
+		
         if("net.minecraft.block.BlockFire".equals(transformedName)){
         	///////////////////////////////
         	start(basicClass, "BlockFire");
             
             for(MethodNode method : cn.methods) {
+            	if(method.name.equals("canBlockCatchFire"))
+            		isObf = false;
+            	
             	InsnList code = method.instructions;
         		
         		for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
@@ -295,6 +331,18 @@ public class IETransformer implements IClassTransformer{
         	start(basicClass, "S21PacketChunkData");
 
         	for(MethodNode method : cn.methods) {
+        		InsnList code2 = method.instructions;
+        		for(ListIterator<AbstractInsnNode> iterator = code2.iterator(); iterator.hasNext(); ){
+        			AbstractInsnNode insn = iterator.next();
+        			
+        			if(insn.getType() == insn.LDC_INSN && ((LdcInsnNode)insn).cst.equals(new Integer(196864))){
+        				InsnList toInsert = new InsnList();
+        				
+        				toInsert.set(insn, new LdcInsnNode(new Integer(new Integer(262144))));
+        				method.instructions.insert(insn, toInsert);
+        			}
+        		}
+        		
         		if("func_149269_a".equals(method.name) || ("a".equals(method.name) && "(Lapx;ZI)Lgy;".equals(method.desc))){
         			InsnList code = method.instructions;
 
@@ -329,7 +377,7 @@ public class IETransformer implements IClassTransformer{
         	
         	for(MethodNode method : cn.methods) {
         		if("get".equals(method.name)){
-        		InsnList code = method.instructions;
+        			InsnList code = method.instructions;
 
         			for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
         				AbstractInsnNode insn = iterator.next();
@@ -350,6 +398,25 @@ public class IETransformer implements IClassTransformer{
         					break;
         				}
         			}
+        		}
+        		
+        		if("fastcraftSetField".equals(method.name)){
+        			InsnList code = method.instructions;
+        			AbstractInsnNode insn = code.getFirst();
+        				
+        			InsnList toInsert = new InsnList();
+    					
+        			toInsert.add(new FieldInsnNode(Opcodes.GETSTATIC, "fastcraft/c/d", "a", "Ljava/lang/reflect/Field;"));
+        			toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        			toInsert.add(new VarInsnNode(Opcodes.ILOAD, 1));
+        			toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/reflect/Field", "setInt", "(Ljava/lang/Object;I)V", false));
+        				
+        			toInsert.add(new FieldInsnNode(Opcodes.GETSTATIC, "fastcraft/c/d", "b", "Ljava/lang/reflect/Field;"));
+        			toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        			toInsert.add(new VarInsnNode(Opcodes.ILOAD, 2));
+        			toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/reflect/Field", "setInt", "(Ljava/lang/Object;I)V", false));
+        				
+    				method.instructions.insert(insn, toInsert);
         		}
         	}
         	
@@ -503,6 +570,7 @@ public class IETransformer implements IClassTransformer{
         				if(insn.getOpcode() == Opcodes.ICONST_4){
         					InsnList toInsert = new InsnList();
         					toInsert.set(insn, new InsnNode(Opcodes.ICONST_5));
+        					method.instructions.insert(insn, toInsert);
         					
         				}
         				if(insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode)insn).name.equals(!isObf ? "getBlock" : "a") && ((MethodInsnNode)insn).desc.equals(!isObf ? "(III)Lnet/minecraft/block/Block;" : "(III)Laji;")){
@@ -577,13 +645,13 @@ public class IETransformer implements IClassTransformer{
     	cn = new ClassNode(Opcodes.ASM5);
         cr = new ClassReader(classArray);
         cr.accept(cn, 0); 
-        System.out.println("Patching: \"" + name + "\"");
+        logger.info("Patching: \"" + name + "\"");
 	}
 	
 	public byte[] end(byte[] classArray, String name){
         writer = new ClassWriter(0);//(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         cn.accept(writer);
-        System.out.println("Patching \"" + name + "\" Complete!");
+        logger.info("Patching \"" + name + "\" Complete!");
         return writer.toByteArray();
 	}
 }

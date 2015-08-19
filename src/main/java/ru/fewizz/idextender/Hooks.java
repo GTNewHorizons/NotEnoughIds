@@ -2,6 +2,7 @@ package ru.fewizz.idextender;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,8 @@ public class Hooks {
        
     private static int getNumBlockIDs() {return 32000;}
     private static int getNumItemIDs() {return 32000;}
+    
+    public static byte bite[] = new byte[4];
     
     public static final boolean USING_16BIT_BLOCK_IDS = NUM_BLOCK_IDS > 4096;
 
@@ -67,16 +70,18 @@ public class Hooks {
     
     public static void set16BitBlockArray(byte[] byteArray, ExtendedBlockStorage ebs) {
     	Hooks.ifUsingShort(false);
+    	short[] array = get(ebs);
     	for(int k = 0; k < byteArray.length; k += 2)
-    		get(ebs)[k / 2] = (short)((byteArray[k] << 8) | (byteArray[k+1] & 255));
+    		array[k / 2] = (short)((byteArray[k] << 8) | (byteArray[k+1] & 255));
     }
     
     public static byte[] get16BitBlockArray(ExtendedBlockStorage ebs) {
     	Hooks.ifUsingShort(false);
     	byte[] b = new byte[8192];
+    	short[] array = get(ebs);
     	for(int k = 0; k < 8192; k+=2) {
-    		b[k] = (byte)(get(ebs)[k/2] >> 8);
-    		b[k+1] = (byte)get(ebs)[k/2];
+    		b[k] = (byte) (array[k/2] >> 8);
+    		b[k+1] = (byte) array[k/2];
     	}
     	return b;
     }
@@ -103,5 +108,33 @@ public class Hooks {
     
     public static short[] get(ExtendedBlockStorage ebs){
     	return null;
+    }
+    
+    public static void fastcraft(ExtendedBlockStorage ebs, byte[] a){
+    	int nonAir = 0;
+        int skylight = 0;
+        int var5;
+        byte var6;
+
+        short[]bytearr = get(ebs);
+
+
+
+        for(var5 = 0; var5 < 4096; ++var5) {
+           int var9 = bytearr[var5];
+           if(var9 > 0) {
+              ++nonAir;
+              skylight += var9 - 1;
+           }
+        }
+
+
+        try {
+        	fastcraftSetField(ebs, nonAir, skylight);
+        } 
+        catch (Exception var7) {throw new RuntimeException(var7);}
+    }
+    
+    public static void fastcraftSetField(ExtendedBlockStorage ebs, int nonair, int skylight){
     }
 }
