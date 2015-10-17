@@ -3,7 +3,7 @@
     "modid": "notenoughIDs",
     "name": "NotEnoughIDs",
     "description": "Extends hardcoded block ID limit.",
-    "version": "1.2.0",
+    "version": "${version}",
     "mcversion": "${mcversion}",
     "updateUrl": "",
     "authorList": [" "],

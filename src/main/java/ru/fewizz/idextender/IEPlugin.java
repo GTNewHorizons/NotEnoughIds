@@ -9,7 +9,7 @@ public class IEPlugin implements IFMLLoadingPlugin{
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{"ru.fewizz.idextender.IETransformer"};
+		return new String[]{"ru.fewizz.idextender.Transformer.IETransformer"};
 	}
 
 	@Override
@@ -31,5 +31,4 @@ public class IEPlugin implements IFMLLoadingPlugin{
 	public String getAccessTransformerClass() {
 		return null;
 	}
-	
 }
