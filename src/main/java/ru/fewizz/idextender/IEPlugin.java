@@ -6,11 +6,11 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
+@IFMLLoadingPlugin.TransformerExclusions("ru.fewizz.idextender.asm")
 public class IEPlugin implements IFMLLoadingPlugin {
-
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[] { "ru.fewizz.idextender.Transformer.IETransformer" };
+		return new String[] { "ru.fewizz.idextender.asm.IETransformer" };
 	}
 
 	@Override
