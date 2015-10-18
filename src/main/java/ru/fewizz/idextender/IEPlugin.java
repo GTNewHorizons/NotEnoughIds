@@ -4,12 +4,13 @@ import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
+
 @IFMLLoadingPlugin.MCVersion("1.7.10")
-public class IEPlugin implements IFMLLoadingPlugin{
+public class IEPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{"ru.fewizz.idextender.Transformer.IETransformer"};
+		return new String[] { "ru.fewizz.idextender.Transformer.IETransformer" };
 	}
 
 	@Override
@@ -24,7 +25,7 @@ public class IEPlugin implements IFMLLoadingPlugin{
 
 	@Override
 	public void injectData(Map<String, Object> data) {
-		
+
 	}
 
 	@Override
