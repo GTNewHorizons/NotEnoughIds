@@ -31,6 +31,7 @@ jar {
 		attributes('FMLCorePlugin': 'ru.fewizz.idextender.IEPlugin')
     }
 	exclude "net/**"
+	exclude "exterminatorJeff/**"
 }
 
 ext.jarFile = zipTree(jar.archivePath)

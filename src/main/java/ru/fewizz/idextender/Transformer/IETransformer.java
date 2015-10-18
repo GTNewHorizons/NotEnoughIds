@@ -97,6 +97,12 @@ public class IETransformer implements IClassTransformer{
         	///////////////////////////////
         	start(basicClass, "GameData");
 
+        	for(FieldNode field : cn.fields){
+        		if(field.name.equals("MAX_BLOCK_ID")){
+               		field.value = new Integer(32768);
+            	}
+            }
+        	
         	for(MethodNode method : cn.methods) {
             	InsnList code = method.instructions;
         		
@@ -106,7 +112,7 @@ public class IETransformer implements IClassTransformer{
                     if(insn.getOpcode() == Opcodes.SIPUSH && insn.getType() == insn.INT_INSN){
                     	if(((IntInsnNode)insn).operand == 4095){
                         	InsnList toInsert = new InsnList();
-                        	toInsert.set(insn, new IntInsnNode(Opcodes.SIPUSH, 31999));
+                        	toInsert.set(insn, new LdcInsnNode(new Integer(32768)));
                         	method.instructions.insert(toInsert);
                     	}
                     }   
@@ -120,6 +126,7 @@ public class IETransformer implements IClassTransformer{
         if("net.minecraft.world.chunk.storage.AnvilChunkLoader".equals(transformedName)){
         	//////////////////////////////////////
         	start(basicClass, "AnvilChunkLoader");
+        	
         	for(MethodNode method : cn.methods) {
         		if("writeChunkToNBT".equals(method.name) || ("a".equals(method.name) && "(Lapx;Lahb;Ldh;)V".equals(method.desc))){
         			InsnList code = method.instructions;
@@ -287,7 +294,6 @@ public class IETransformer implements IClassTransformer{
         		}
         		
         		if("isEmpty".equals(method.name) || ("a".equals(method.name) && "()Z".equals(method.desc))){
-        			System.out.println("Nasel!");
         			InsnList code = method.instructions;
             		
         			for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ){
@@ -602,18 +608,14 @@ public class IETransformer implements IClassTransformer{
         	start(basicClass, "CoFHLib");
         	/////////////////////////////
         	
-        	System.out.println("hashel class");
-        	
         	for(MethodNode method : cn.methods) {
         		if("<clinit>".equals(method.name)){
-        			System.out.println("hashel metod");
         			InsnList code = method.instructions;
         		
         			for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
         				AbstractInsnNode insn = iterator.next();
         				
         				if(insn.getType() == insn.INT_INSN && insn.getOpcode() == Opcodes.SIPUSH){
-        					System.out.println("hashel peremennuyou");
         					InsnList toInsert = new InsnList();
         					
         					toInsert.set(insn, new LdcInsnNode(new Integer(32768)));
@@ -626,6 +628,116 @@ public class IETransformer implements IClassTransformer{
         	
         	return end(basicClass, "CoFHLib");
         	//////////////////////////////////
+        }
+        
+        if("exterminatorJeff.undergroundBiomes.worldGen.OreUBifier".equals(transformedName)){
+        	start(basicClass, "UBC");
+        	/////////////////////////
+        	
+        	for(MethodNode method : cn.methods) {
+        		if("renewBlockReplacers".equals(method.name)){
+        			InsnList code = method.instructions;
+        		
+        			for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
+        				AbstractInsnNode insn = iterator.next();
+        				
+        				if(insn.getOpcode() == Opcodes.SIPUSH){
+        					InsnList toInsert = new InsnList();
+        					
+        					toInsert.set(insn, new LdcInsnNode(new Integer(32768)));
+        					method.instructions.insert(toInsert);
+        					break;
+        				}
+    				}
+        		}
+        	}
+        	
+        	return end(basicClass, "UBC");
+        	//////////////////////////////
+        }
+        
+        if("exterminatorJeff.undergroundBiomes.worldGen.BiomeUndergroundDecorator".equals(transformedName)){
+        	System.out.println(transformedName);
+        	start(basicClass, "UBC");
+        	/////////////////////////
+        	
+        	for(MethodNode method : cn.methods) {
+        		if("replaceChunkOres".equals(method.name) && method.desc.equals("(IILnet/minecraft/world/World;)V")){
+        			InsnList code = method.instructions;
+        		
+        			for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
+        				AbstractInsnNode insn = iterator.next();
+        				
+        				if(insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode)insn).name.equals(!isObf ? "getBlockLSBArray" : "func_76658_g")){
+        					InsnList toInsert = new InsnList();
+        					toInsert.set(insn.getPrevious(), new VarInsnNode(Opcodes.ALOAD, 18));
+        					method.instructions.insert(toInsert);
+        					insn = insn.getNext();
+        					for(int i = 0; insn.getPrevious().getOpcode() != Opcodes.ISTORE; i++){
+        						System.out.println("Ster "+i);
+        						method.instructions.remove(insn.getPrevious());
+            					insn = insn.getNext();
+        					}
+        					
+        					method.instructions.remove(insn.getPrevious());
+        					
+        					toInsert.add(new VarInsnNode(Opcodes.ILOAD, 10));
+        					toInsert.add(new VarInsnNode(Opcodes.ILOAD, 19));
+        					toInsert.add(new VarInsnNode(Opcodes.ILOAD, 11));
+        					toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "setID", "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I", false));
+        					toInsert.add(new VarInsnNode(Opcodes.ISTORE, 20));
+        					method.instructions.insert(insn.getPrevious(), toInsert);
+        					
+        					insn = insn.getNext();
+        					for(int i = 0; insn.getNext().getOpcode() != Opcodes.GETFIELD; i++){
+        						method.instructions.remove(insn.getPrevious());
+            					insn = insn.getNext();
+        					}
+
+	                    	break;
+        				}
+    				}
+        		}
+        		
+        		if("replaceChunkOres".equals(method.name) && method.desc.equals("(Lnet/minecraft/world/chunk/IChunkProvider;II)V")){
+        			InsnList code = method.instructions;
+        		
+        			for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
+        				AbstractInsnNode insn = iterator.next();
+        				
+        				if(insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode)insn).name.equals(!isObf ? "getBlockLSBArray" : "func_76658_g")){
+        					InsnList toInsert = new InsnList();
+        					toInsert.set(insn.getPrevious(), new VarInsnNode(Opcodes.ALOAD, 17));
+        					method.instructions.insert(toInsert);
+        					insn = insn.getNext();
+        					for(int i = 0; insn.getPrevious().getOpcode() != Opcodes.ISTORE; i++){
+        						System.out.println("Ster "+i);
+        						method.instructions.remove(insn.getPrevious());
+            					insn = insn.getNext();
+        					}
+        					
+        					method.instructions.remove(insn.getPrevious());
+        					
+        					toInsert.add(new VarInsnNode(Opcodes.ILOAD, 9));
+        					toInsert.add(new VarInsnNode(Opcodes.ILOAD, 18));
+        					toInsert.add(new VarInsnNode(Opcodes.ILOAD, 10));
+        					toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "setID", "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I", false));
+        					toInsert.add(new VarInsnNode(Opcodes.ISTORE, 19));
+        					method.instructions.insert(insn.getPrevious(), toInsert);
+
+        					insn = insn.getNext();
+        					for(int i = 0; insn.getNext().getOpcode() != Opcodes.GETFIELD; i++){
+        						method.instructions.remove(insn.getPrevious());
+            					insn = insn.getNext();
+        					}
+	                    	break;
+        				}
+    				}
+        		}
+        	}
+        	
+        	return end(basicClass, "UBC");
+        	//////////////////////////////
         }
         
         return basicClass;

@@ -1,27 +1,15 @@
 package ru.fewizz.idextender;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.server.S21PacketChunkData;
-import net.minecraft.network.play.server.S21PacketChunkData.Extracted;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 public class Hooks {	
     public static final int NUM_BLOCK_IDS = getNumBlockIDs();
     public static final int NUM_ITEM_IDS = getNumItemIDs();
-    private static int getNumBlockIDs() {return 32000;}
-    private static int getNumItemIDs() {return 32000;}
+    private static int getNumBlockIDs() {return 32768;}
+    private static int getNumItemIDs() {return 32768;}
     public static byte[] rotateType = new byte[32768];
     public static byte bite[] = new byte[4];
     public static final boolean USING_16BIT_BLOCK_IDS = NUM_BLOCK_IDS > 4096;
@@ -107,5 +95,9 @@ public class Hooks {
     
     public static short[] get(ExtendedBlockStorage ebs){
     	return null;
+    }
+    
+    public static int setID(ExtendedBlockStorage ebs, int x, int y, int z){
+		return get(ebs)[y << 8 | z << 4 | x];
     }
 }
