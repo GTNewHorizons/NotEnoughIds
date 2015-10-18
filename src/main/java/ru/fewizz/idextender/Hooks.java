@@ -85,9 +85,9 @@ public class Hooks {
 		return Block.getBlockById(get(ebs)[i2 << 8 | i3 << 4 | i1] & 65535);
 	}
 
-	public static void hook1(int i1, int int1, int int2, int int3, ExtendedBlockStorage ebs) {
+	public static void setBlock(int id, int x, int y, int z, ExtendedBlockStorage ebs) {
 		if (USING_16BIT_BLOCK_IDS) {
-			get(ebs)[int2 << 8 | int3 << 4 | int1] = (short) i1;
+			get(ebs)[y << 8 | z << 4 | x] = (short) id;
 			return;
 		}
 	}

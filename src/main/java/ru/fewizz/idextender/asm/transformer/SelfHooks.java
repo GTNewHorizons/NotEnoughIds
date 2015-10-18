@@ -17,14 +17,15 @@ public class SelfHooks implements IClassNodeTransformer {
 		MethodNode method = AsmUtil.findMethod(cn, "get");
 		if (method == null) return false;
 
-		InsnList code = method.instructions;
-
 		// replace with "return ebs.block16BArray;"
+		InsnList code = method.instructions;
 
 		code.clear();
 		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		code.add(new FieldInsnNode(Opcodes.GETFIELD, Type.getArgumentTypes(method.desc)[0].getInternalName(), "block16BArray", "[S"));
 		code.add(new InsnNode(Opcodes.ARETURN));
+
+		method.localVariables = null;
 
 		return true;
 	}

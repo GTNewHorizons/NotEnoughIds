@@ -94,6 +94,8 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 						break;
 					}
 				}
+
+				method.localVariables = null;
 				break;
 			}
 		}

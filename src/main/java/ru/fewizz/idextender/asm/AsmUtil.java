@@ -21,13 +21,19 @@ public class AsmUtil {
 	}
 
 	public static MethodNode findMethod2(ClassNode cn, String name, String altName, String desc, String altDesc) {
+		if (altDesc == null) altDesc = desc; // require desc for both if no new desc is supplied for altDesc
+
 		for (MethodNode ret : cn.methods) {
-			if ((ret.name.equals(name) || ret.name.equals(altName)) &&
-					(desc == null || ret.desc.equals(desc) || ret.desc.equals(altDesc))) { // desc == null -> no desc check
-				return ret;
-			}
+			// check name+desc
+			if (ret.name.equals(name) && (desc == null || ret.desc.equals(desc))) return ret;
+			// check altName+altDesc
+			if (ret.name.equals(altName) && (altDesc == null || ret.desc.equals(altDesc))) return ret;
 		}
 
 		return null;
+	}
+
+	public static MethodNode findMethod(ClassNode cn, Name name) {
+		return findMethod2(cn, name.deobf, name.obf, name.desc, name.obfDesc);
 	}
 }
