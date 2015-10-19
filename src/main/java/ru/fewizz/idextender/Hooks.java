@@ -104,6 +104,38 @@ public class Hooks {
 	}
 
 	private static short[] get(ExtendedBlockStorage ebs) {
-		return null;
+		return null; // populated via asm (SelfHooks)
+	}
+
+	public static void setTickRefCount(ExtendedBlockStorage ebs, int value){
+		// populated via asm (SelfHooks)
+	}
+
+	public static void setBlockRefCount(ExtendedBlockStorage ebs, int value){
+		// populated via asm (SelfHooks)
+	}
+
+	public static void removeInvalidBlocksHook(ExtendedBlockStorage ebs){
+		short[] blkIds = get(ebs);
+		int cntNonEmpty = 0;
+		int cntTicking = 0;
+
+		for (int off = 0; off < blkIds.length; off++){
+			int id = blkIds[off] & 0xffff;
+
+			if (id > 0) {
+				if (Block.getBlockById(id) == null) {
+					blkIds[off] = 0;
+				} else{
+					++cntNonEmpty;
+					if (Block.getBlockById(id).getTickRandomly()){
+						++cntTicking;
+					}
+				}
+			}
+		}
+
+		setBlockRefCount(ebs, cntNonEmpty);
+		setTickRefCount(ebs, cntTicking);
 	}
 }

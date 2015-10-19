@@ -25,6 +25,7 @@ public enum Name {
 	ebs_getBlockMSBArray("getBlockMSBArray", "func_76660_i", "()Lnet/minecraft/world/chunk/NibbleArray;"),
 	ebs_setBlockMSBArray("setBlockMSBArray", "func_76673_a", "(Lnet/minecraft/world/chunk/NibbleArray;)V"),
 	ebs_isEmpty("isEmpty", "func_76663_a", "()Z"),
+	ebs_removeInvalidBlocks("removeInvalidBlocks", "func_76672_e", "()V"),
 
 	acl_writeChunkToNBT("writeChunkToNBT", "func_75820_a", "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V"), // AnvilChunkLoader
 	acl_readChunkFromNBT("readChunkFromNBT", "func_75823_a", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;"),

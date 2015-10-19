@@ -21,6 +21,12 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 	public boolean transform(ClassNode cn, boolean obfuscated) {
 		cn.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "block16BArray", "[S", null, null));
 
+		for(FieldNode field : cn.fields){
+			if(field.name.equals("tickRefCount") || field.name.equals("blockRefCount") || field.name.equals("b") || field.name.equals("c")){
+				field.access = Opcodes.ACC_PUBLIC;
+			}
+		}
+
 		MethodNode method = AsmUtil.findMethod(cn, "<init>");
 		if (method == null || !transformConstructor(cn, method)) return false;
 
@@ -33,8 +39,8 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		method = AsmUtil.findMethod(cn, Name.ebs_getBlockMSBArray);
 		if (method == null || !transformGetBlockMSBArray(cn, method)) return false;
 
-		method = AsmUtil.findMethod(cn, Name.ebs_isEmpty);
-		if (method == null || !transformIsEmpty(cn, method)) return false;
+		method = AsmUtil.findMethod(cn, Name.ebs_removeInvalidBlocks);
+		if (method == null || !transformRemoveInvalidBlocks(cn, method)) return false;
 
 		return true;
 	}
@@ -152,17 +158,16 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		return true;
 	}
 
-	private boolean transformIsEmpty(ClassNode cn, MethodNode method) {
-		// always return false
+	private boolean transformRemoveInvalidBlocks(ClassNode cn, MethodNode method){
 		InsnList code = method.instructions;
 
 		code.clear();
-		code.add(new InsnNode(Opcodes.ICONST_0));
-		code.add(new InsnNode(Opcodes.IRETURN));
+		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "removeInvalidBlocksHook", "(L"+cn.name+";)V", false));
+		code.add(new InsnNode(Opcodes.RETURN));
 
 		method.localVariables = null;
 		method.maxStack = 1;
-
 		return true;
 	}
 }
