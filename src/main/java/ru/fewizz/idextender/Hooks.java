@@ -115,11 +115,9 @@ public class Hooks {
 	}
 	
     public static void setTickRefCount(ExtendedBlockStorage ebs, int value){
-    	ebs.tickRefCount = value;
     }
     
     public static void setBlockRefCount(ExtendedBlockStorage ebs, int value){
-    	ebs.blockRefCount = value;
     }
 	
 	public static void removeInvalidBlocksHook(ExtendedBlockStorage ebs){
