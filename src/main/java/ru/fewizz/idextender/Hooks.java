@@ -1,6 +1,8 @@
 package ru.fewizz.idextender;
 
+import ru.fewizz.idextender.asm.transformer.SelfHooks;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -82,7 +84,7 @@ public class Hooks {
 	}
 
 	public static Block getBlockById(int i1, int i2, int i3, ExtendedBlockStorage ebs) {
-		return Block.getBlockById(get(ebs)[i2 << 8 | i3 << 4 | i1] & 65535);
+		return Block.getBlockById(get(ebs)[i2 << 8 | i3 << 4 | i1] & 0xffff);
 	}
 
 	public static void setBlock(int id, int x, int y, int z, ExtendedBlockStorage ebs) {
@@ -109,6 +111,39 @@ public class Hooks {
 	}
 
 	public static int setID(ExtendedBlockStorage ebs, int x, int y, int z) {
-		return get(ebs)[y << 8 | z << 4 | x];
+		return get(ebs)[y << 8 | z << 4 | x] & 0xffff;
+	}
+	
+    public static void setTickRefCount(ExtendedBlockStorage ebs, int value){
+    	ebs.tickRefCount = value;
+    }
+    
+    public static void setBlockRefCount(ExtendedBlockStorage ebs, int value){
+    	ebs.blockRefCount = value;
+    }
+	
+	public static void removeInvalidBlocksHook(ExtendedBlockStorage ebs){
+		short[] blkIds = get(ebs);
+		int cntNonEmpty = 0;
+		int cntTicking = 0;
+
+		for (int off = 0; off < blkIds.length; off++){
+			int id = blkIds[off] & 0xffff;
+		
+		    if (id > 0){
+		        if (Block.getBlockById(id) == null){
+		        	blkIds[off] = 0;
+		        }
+		        else{
+		        	++cntNonEmpty;
+		        	if (Block.getBlockById(id).getTickRandomly()){
+		        		++cntTicking;
+		            }	                
+		        }
+		    }
+		}
+		
+		setBlockRefCount(ebs, cntNonEmpty);
+		setTickRefCount(ebs, cntTicking);
 	}
 }

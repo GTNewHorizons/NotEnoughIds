@@ -20,6 +20,12 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 	@Override
 	public boolean transform(ClassNode cn, boolean obfuscated) {
 		cn.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "block16BArray", "[S", null, null));
+		
+		for(FieldNode field : cn.fields){
+    		if(field.name.equals("tickRefCount") || field.name.equals("blockRefCount") || field.name.equals("b") || field.name.equals("c")){
+           		field.access = Opcodes.ACC_PUBLIC;
+        	}
+        }
 
 		MethodNode method = AsmUtil.findMethod(cn, "<init>");
 		if (method == null || !transformConstructor(cn, method)) return false;
@@ -32,9 +38,9 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 
 		method = AsmUtil.findMethod(cn, Name.ebs_getBlockMSBArray);
 		if (method == null || !transformGetBlockMSBArray(cn, method)) return false;
-
-		method = AsmUtil.findMethod(cn, Name.ebs_isEmpty);
-		if (method == null || !transformIsEmpty(cn, method)) return false;
+		
+		method = AsmUtil.findMethod(cn, Name.ebs_removeInvalidBlocks);
+		if (method == null || !transformRemoveInvalidBlocks(cn, method)) return false;
 
 		return true;
 	}
@@ -73,8 +79,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		code.add(new VarInsnNode(Opcodes.ILOAD, 2));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 3));
 		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "getBlockById",
-				"(IIIL"+cn.name+";)L" + Name.block.get(obfuscated) + ";", false));
+		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "getBlockById", "(IIIL"+cn.name+";)L" + Name.block.get(obfuscated) + ";", false));
 		code.add(new InsnNode(Opcodes.ARETURN));
 
 		method.localVariables = null;
@@ -94,16 +99,15 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 			if (part == 0) { // remove everything up to the first Block.getBlockById call (inclusive)
 				iterator.remove();
 
-				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
-					part++;
+			if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
+				part++;
 
-					iterator.add(new VarInsnNode(Opcodes.ALOAD, 0));
-					iterator.add(new VarInsnNode(Opcodes.ILOAD, 1));
-					iterator.add(new VarInsnNode(Opcodes.ILOAD, 2));
-					iterator.add(new VarInsnNode(Opcodes.ILOAD, 3));
-					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, cn.name, Name.ebs_getBlock.get(obfuscated),
-							"(III)L" + Name.block.get(obfuscated) + ";", false));
-				}
+				iterator.add(new VarInsnNode(Opcodes.ALOAD, 0));
+				iterator.add(new VarInsnNode(Opcodes.ILOAD, 1));
+				iterator.add(new VarInsnNode(Opcodes.ILOAD, 2));
+				iterator.add(new VarInsnNode(Opcodes.ILOAD, 3));
+				iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, cn.name, Name.ebs_getBlock.get(obfuscated), "(III)L" + Name.block.get(obfuscated) + ";", false));
+			}
 			} else if (part == 1) { // seek to the next Block.getIdFromBlock call
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
 					part++;
@@ -143,18 +147,17 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 
 		return true;
 	}
-
-	private boolean transformIsEmpty(ClassNode cn, MethodNode method) {
-		// always return false
+	
+	private boolean transformRemoveInvalidBlocks(ClassNode cn, MethodNode method){
 		InsnList code = method.instructions;
 
 		code.clear();
-		code.add(new InsnNode(Opcodes.ICONST_0));
-		code.add(new InsnNode(Opcodes.IRETURN));
-
+		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "removeInvalidBlocksHook", "(L"+cn.name+";)V", false));
+		code.add(new InsnNode(Opcodes.RETURN));
+		
 		method.localVariables = null;
 		method.maxStack = 1;
-
 		return true;
 	}
 }

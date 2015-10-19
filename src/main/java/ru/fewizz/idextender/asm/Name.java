@@ -3,11 +3,13 @@ package ru.fewizz.idextender.asm;
 public enum Name {
 	block("net/minecraft/block/Block", "aji"),
 	nibbleArray("net/minecraft/world/chunk/NibbleArray", "apv"),
+	extendedBlockStorage("net/minecraft/world/chunk/storage/ExtendedBlockStorage", "apz"),
 
 	ebs_getBlock("getBlockByExtId", "a", "(III)Lnet/minecraft/block/Block;"), // ExtendedBlockStorage
 	ebs_setBlock("func_150818_a", "a", "(IIILnet/minecraft/block/Block;)V"),
 	ebs_getBlockMSBArray("getBlockMSBArray", "i", "()Lnet/minecraft/world/chunk/NibbleArray;"),
-	ebs_isEmpty("isEmpty", "a", "()Z");
+	ebs_isEmpty("isEmpty", "a", "()Z"),
+	ebs_removeInvalidBlocks("removeInvalidBlocks", "e", "()V");
 
 	private Name(String deobf, String obf) {
 		this.deobf = deobf;

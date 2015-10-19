@@ -21,14 +21,12 @@ public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTra
 				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
 					AbstractInsnNode insn = iterator.next();
 
-					if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL
-							&& ((MethodInsnNode) insn).name.equals(!obfuscated ? "getBlockLSBArray" : "func_76658_g")) {
+					if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) insn).name.equals(!obfuscated ? "getBlockLSBArray" : "func_76658_g")) {
 						InsnList toInsert = new InsnList();
 						toInsert.set(insn.getPrevious(), new VarInsnNode(Opcodes.ALOAD, 18));
 						method.instructions.insert(toInsert);
 						insn = insn.getNext();
 						for (int i = 0; insn.getPrevious().getOpcode() != Opcodes.ISTORE; i++) {
-							System.out.println("Ster " + i);
 							method.instructions.remove(insn.getPrevious());
 							insn = insn.getNext();
 						}
@@ -38,8 +36,7 @@ public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTra
 						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 10));
 						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 19));
 						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 11));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "setID",
-								"(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I", false));
+						toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "setID", "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I", false));
 						toInsert.add(new VarInsnNode(Opcodes.ISTORE, 20));
 						method.instructions.insert(insn.getPrevious(), toInsert);
 
@@ -55,21 +52,18 @@ public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTra
 				}
 			}
 
-			if ("replaceChunkOres".equals(method.name)
-					&& method.desc.equals("(Lnet/minecraft/world/chunk/IChunkProvider;II)V")) {
+			if ("replaceChunkOres".equals(method.name) && method.desc.equals("(Lnet/minecraft/world/chunk/IChunkProvider;II)V")) {
 				InsnList code = method.instructions;
 
 				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
 					AbstractInsnNode insn = iterator.next();
 
-					if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL
-							&& ((MethodInsnNode) insn).name.equals(!obfuscated ? "getBlockLSBArray" : "func_76658_g")) {
+					if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) insn).name.equals(!obfuscated ? "getBlockLSBArray" : "func_76658_g")) {
 						InsnList toInsert = new InsnList();
 						toInsert.set(insn.getPrevious(), new VarInsnNode(Opcodes.ALOAD, 17));
 						method.instructions.insert(toInsert);
 						insn = insn.getNext();
 						for (int i = 0; insn.getPrevious().getOpcode() != Opcodes.ISTORE; i++) {
-							System.out.println("Ster " + i);
 							method.instructions.remove(insn.getPrevious());
 							insn = insn.getNext();
 						}
@@ -79,8 +73,7 @@ public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTra
 						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 9));
 						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 18));
 						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 10));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "setID",
-								"(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I", false));
+						toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "setID", "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I", false));
 						toInsert.add(new VarInsnNode(Opcodes.ISTORE, 19));
 						method.instructions.insert(insn.getPrevious(), toInsert);
 
