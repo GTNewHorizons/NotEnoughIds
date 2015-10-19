@@ -8,29 +8,27 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import ru.fewizz.idextender.asm.AsmUtil;
+import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
 
 public class UndergroundBiomesOreUBifier implements IClassNodeTransformer {
 	@Override
 	public boolean transform(ClassNode cn, boolean obfuscated) {
-		for (MethodNode method : cn.methods) {
-			if ("renewBlockReplacers".equals(method.name)) {
-				InsnList code = method.instructions;
+		MethodNode method = AsmUtil.findMethod(cn, "renewBlockReplacers");
+		if (method == null) return false;
 
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
+		InsnList code = method.instructions;
 
-					if (insn.getOpcode() == Opcodes.SIPUSH) {
-						InsnList toInsert = new InsnList();
+		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
+			AbstractInsnNode insn = iterator.next();
 
-						toInsert.set(insn, new LdcInsnNode(new Integer(32768)));
-						method.instructions.insert(toInsert);
-						break;
-					}
-				}
+			if (insn.getOpcode() == Opcodes.SIPUSH) {
+				iterator.set(new LdcInsnNode(Constants.maxBlockId + 1));
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	}
 }

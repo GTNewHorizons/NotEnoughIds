@@ -6,59 +6,53 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import ru.fewizz.idextender.asm.AsmUtil;
+import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.Name;
 
 public class VanillaS21PacketChunkData implements IClassNodeTransformer {
 	@Override
 	public boolean transform(ClassNode cn, boolean obfuscated) {
-		for (MethodNode method : cn.methods) {
-			InsnList code2 = method.instructions;
-			for (ListIterator<AbstractInsnNode> iterator = code2.iterator(); iterator.hasNext();) {
-				AbstractInsnNode insn = iterator.next();
+		MethodNode method = AsmUtil.findMethod(cn, "<clinit>");
+		if (method == null || !AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaSize, Constants.newSize)) return false;
 
-				if (insn.getType() == AbstractInsnNode.LDC_INSN && ((LdcInsnNode) insn).cst.equals(new Integer(196864))) {
-					InsnList toInsert = new InsnList();
+		method = AsmUtil.findMethod(cn, "func_149275_c");
+		if (method == null || !AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaSize, Constants.newSize)) return false;
 
-					toInsert.set(insn, new LdcInsnNode(new Integer(new Integer(262144))));
-					method.instructions.insert(insn, toInsert);
-				}
-			}
+		method = AsmUtil.findMethod(cn, Name.packet_readPacketData);
+		if (method == null || !AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaEbsSize, Constants.newEbsSize)) return false;
 
-			if ("func_149269_a".equals(method.name)
-					|| ("a".equals(method.name) && "(Lapx;ZI)Lgy;".equals(method.desc))) {
-				InsnList code = method.instructions;
+		method = AsmUtil.findMethod(cn, "func_149269_a");
+		if (method == null || !transformCreateData(cn, method, obfuscated)) return false;
 
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
+		return true;
+	}
 
-					if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL
-							&& ((MethodInsnNode) insn).name.equals(!obfuscated ? "getBlockLSBArray" : "g")) {
-						InsnList toInsert = new InsnList();
+	private boolean transformCreateData(ClassNode cn, MethodNode method, boolean obfuscated) {
+		InsnList code = method.instructions;
 
-						toInsert.set(insn,
-								new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks",
-										"get16BitBlockArray",
-										!obfuscated ? "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)[B"
-												: "(Lapz;)[B",
-												false));
-						toInsert.insert(toInsert);
-					}
+		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
+			AbstractInsnNode insn = iterator.next();
 
-					if (insn.getOpcode() == Opcodes.ILOAD && insn.getNext().getOpcode() == Opcodes.IFLE) {
+			if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+				MethodInsnNode node = (MethodInsnNode) insn;
 
-						InsnList toInsert = new InsnList();
-						toInsert.set(insn, new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks",
-								"zero", "()I", false));
-						method.instructions.insert(toInsert);
+				if (node.owner.equals(Name.extendedBlockStorage.get(obfuscated)) &&
+						node.name.equals(Name.ebs_getBlockLSBArray.get(obfuscated)) &&
+						node.desc.equals(Name.ebs_getBlockLSBArray.getDesc(obfuscated))) {
+					iterator.set(new MethodInsnNode(Opcodes.INVOKESTATIC,
+							Name.hooks.get(obfuscated),
+							Name.hooks_getBlockData.get(obfuscated),
+							Name.hooks_getBlockData.getDesc(obfuscated), false));
 
-					}
+					return true;
 				}
 			}
 		}
 
-		return true;
+		return false;
 	}
 }

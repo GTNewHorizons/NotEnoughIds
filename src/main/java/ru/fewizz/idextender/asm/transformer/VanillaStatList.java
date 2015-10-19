@@ -1,41 +1,16 @@
 package ru.fewizz.idextender.asm.transformer;
 
-import java.util.ListIterator;
-
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import ru.fewizz.idextender.asm.AsmUtil;
+import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
 
 public class VanillaStatList implements IClassNodeTransformer {
 	@Override
 	public boolean transform(ClassNode cn, boolean obfuscated) {
-		for (MethodNode method : cn.methods) {
-			InsnList code = method.instructions;
-
-			for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-				AbstractInsnNode insn = iterator.next();
-
-				if (insn.getOpcode() == Opcodes.SIPUSH && insn.getType() == AbstractInsnNode.INT_INSN) {
-					if (((IntInsnNode) insn).operand == 4096) {
-						InsnList toInsert = new InsnList();
-						toInsert.set(insn, new FieldInsnNode(Opcodes.GETSTATIC, "ru/fewizz/idextender/Hooks",
-								"NUM_BLOCK_IDS", "I"));
-						method.instructions.insert(toInsert);
-					}
-					if (((IntInsnNode) insn).operand == 32000) {
-						InsnList toInsert = new InsnList();
-						toInsert.set(insn, new FieldInsnNode(Opcodes.GETSTATIC, "ru/fewizz/idextender/Hooks",
-								"NUM_ITEM_IDS", "I"));
-						method.instructions.insert(toInsert);
-					}
-				}
-			}
-		}
+		MethodNode method = AsmUtil.findMethod(cn, "<clinit>");
+		if (method == null || !AsmUtil.transformInlinedSizeMethod(cn, method, 4096, Constants.maxBlockId + 1)) return false;
 
 		return true;
 	}

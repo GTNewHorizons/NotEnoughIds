@@ -10,96 +10,83 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.Name;
 
 public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 	@Override
 	public boolean transform(ClassNode cn, boolean obfuscated) {
-		for (MethodNode method : cn.methods) {
-			if ("writeChunkToNBT".equals(method.name)
-					|| ("a".equals(method.name) && "(Lapx;Lahb;Ldh;)V".equals(method.desc))) {
-				InsnList code = method.instructions;
+		MethodNode method = AsmUtil.findMethod(cn, Name.acl_writeChunkToNBT);
+		if (method == null || !transformWriteChunkToNBT(cn, method, obfuscated)) return false;
 
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
+		method = AsmUtil.findMethod(cn, Name.acl_readChunkFromNBT);
+		if (method == null || !transformReadChunkFromNBT(cn, method, obfuscated)) return false;
 
-					if (insn.getType() == AbstractInsnNode.LDC_INSN && ((LdcInsnNode) insn).cst.equals("Y")) {
-						insn = insn.getNext().getNext().getNext().getNext().getNext().getNext().getNext().getNext()
-								.getNext().getNext().getNext();
-						while (true) {
-							if (insn.getNext().getOpcode() == Opcodes.INVOKEVIRTUAL
-									&& ((MethodInsnNode) insn.getNext()).name.equals(!obfuscated ? "setByteArray" : "a")
-									&& ((MethodInsnNode) insn.getNext()).desc.equals("(Ljava/lang/String;[B)V")) {
-								// && (insn.getOpcode() == Opcodes.GETFIELD && insn.getOpcode() == Opcodes.INVOKEVIRTUAL)){
-								insn = insn.getNext();
-								method.instructions.remove(insn.getPrevious());
-								insn = insn.getNext();
-								method.instructions.remove(insn.getPrevious());
-								break;
-							}
-							insn = insn.getNext();
-							method.instructions.remove(insn.getPrevious());
-						}
+		return true;
+	}
 
-						InsnList toInsert = new InsnList();
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 11));
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 9));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks",
-								"writeChunkToNbt",
-								!obfuscated ? "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;Lnet/minecraft/nbt/NBTTagCompound;)V"
-										: "(Lapz;Ldh;)V",
-										false));
-						method.instructions.insert(insn.getNext(), toInsert);
-						break;
-					}
-				}
-			}
+	private boolean transformWriteChunkToNBT(ClassNode cn, MethodNode method, boolean obfuscated) {
+		InsnList code = method.instructions;
 
-			if ("readChunkFromNBT".equals(method.name)
-					|| ("a".equals(method.name) && "(Lahb;Ldh;)Lapx;".equals(method.desc))) {
-				InsnList code = method.instructions;
+		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
+			AbstractInsnNode insn = iterator.next();
 
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
+			if (insn.getOpcode() == Opcodes.LDC && ((LdcInsnNode) insn).cst.equals("Blocks")) {
+				// NBTTagCompound is on the stack
+				iterator.set(new VarInsnNode(Opcodes.ALOAD, 11)); // replace with ExtendedBlockStorage load
+				iterator.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+						Name.hooks.get(obfuscated),
+						Name.hooks_writeChunkToNbt.get(obfuscated),
+						Name.hooks_writeChunkToNbt.getDesc(obfuscated), false));
 
-					if (insn.getOpcode() == Opcodes.ILOAD && ((VarInsnNode) insn).var == 9
-							&& insn.getNext().getOpcode() == Opcodes.INVOKESPECIAL) {
+				iterator.next(); iterator.remove(); // remove ALOAD 11
+				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL ExtendedBlockStorage.getBlockLSBArray
+				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL NBTTagCompound.setByteArray
 
-						insn = insn.getNext().getNext().getNext();
-						while (true) {
-							if (insn.getNext().getOpcode() == Opcodes.INVOKEVIRTUAL
-									&& ((MethodInsnNode) insn.getNext()).name
-									.equals(!obfuscated ? "setBlockMSBArray" : "a")
-									&& ((MethodInsnNode) insn.getNext()).desc.equals(
-											!obfuscated ? "(Lnet/minecraft/world/chunk/NibbleArray;)V" : "(Lapv;)V")) {// (Lnet/minecraft/world/chunk/NibbleArray;)V
-								insn = insn.getNext();
-								method.instructions.remove(insn.getPrevious());
-								insn = insn.getNext();
-								method.instructions.remove(insn.getPrevious());
-								break;
-							}
-							insn = insn.getNext();
-							method.instructions.remove(insn.getPrevious());
-						}
-
-						InsnList toInsert = new InsnList();
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 13));
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 11));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks",
-								"readChunkFromNbt",
-								!obfuscated ? "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;Lnet/minecraft/nbt/NBTTagCompound;)V"
-										: "(Lapz;Ldh;)V",
-										false));
-						method.instructions.insert(insn.getNext(), toInsert);
-						break;
-					}
-				}
-
-				method.localVariables = null;
-				break;
+				return true;
 			}
 		}
 
-		return true;
+		return false;
+	}
+
+	private boolean transformReadChunkFromNBT(ClassNode cn, MethodNode method, boolean obfuscated) {
+		InsnList code = method.instructions;
+		int part = 0;
+
+		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
+			AbstractInsnNode insn = iterator.next();
+
+			if (part == 0) {
+				if (insn.getOpcode() == Opcodes.LDC && ((LdcInsnNode) insn).cst.equals("Blocks")) {
+					// ExtendedBlockStorage, NBTTagCompound are on the stack
+					iterator.set(new MethodInsnNode(Opcodes.INVOKESTATIC,
+							Name.hooks.get(obfuscated),
+							Name.hooks_readChunkFromNbt.get(obfuscated),
+							Name.hooks_readChunkFromNbt.getDesc(obfuscated), false));
+					part++;
+				}
+			} else if (part == 1) {
+				iterator.remove();
+
+				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+					MethodInsnNode node = (MethodInsnNode) insn;
+
+					if (node.owner.equals(Name.extendedBlockStorage.get(obfuscated)) &&
+							node.name.equals(Name.ebs_setBlockMSBArray.get(obfuscated)) &&
+							node.desc.equals(Name.ebs_setBlockMSBArray.getDesc(obfuscated))) {
+						part++;
+					}
+				}
+			} else {
+				if (insn.getType() == AbstractInsnNode.FRAME) {
+					iterator.remove();
+					break;
+				}
+			}
+		}
+
+		return part == 2;
 	}
 }

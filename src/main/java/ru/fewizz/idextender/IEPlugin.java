@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
 @IFMLLoadingPlugin.TransformerExclusions("ru.fewizz.idextender.asm")
+@IFMLLoadingPlugin.SortingIndex(value = 1001) // to run after the srg mapper
 public class IEPlugin implements IFMLLoadingPlugin {
 	@Override
 	public String[] getASMTransformerClass() {

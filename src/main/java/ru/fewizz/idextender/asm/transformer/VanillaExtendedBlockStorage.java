@@ -69,12 +69,14 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		InsnList code = method.instructions;
 
 		code.clear();
+		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 2));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 3));
-		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "getBlockById",
-				"(IIIL"+cn.name+";)L" + Name.block.get(obfuscated) + ";", false));
+		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+				Name.hooks.get(obfuscated),
+				Name.hooks_getBlockById.get(obfuscated),
+				Name.hooks_getBlockById.getDesc(obfuscated), false));
 		code.add(new InsnNode(Opcodes.ARETURN));
 
 		method.localVariables = null;
@@ -91,7 +93,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
 			AbstractInsnNode insn = iterator.next();
 
-			if (part == 0) { // remove everything up to the first Block.getBlockById call (inclusive)
+			if (part == 0) { // remove everything up to the Block.getBlockById call (inclusive)
 				iterator.remove();
 
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
@@ -102,9 +104,9 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 2));
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 3));
 					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, cn.name, Name.ebs_getBlock.get(obfuscated),
-							"(III)L" + Name.block.get(obfuscated) + ";", false));
+							Name.ebs_getBlock.getDesc(obfuscated), false));
 				}
-			} else if (part == 1) { // seek to the next Block.getIdFromBlock call
+			} else if (part == 1) { // seek to the Block.getIdFromBlock call
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
 					part++;
 				}
@@ -115,16 +117,22 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 
 		if (part != 2) return false;
 
-		// the block is is on the stack from the previous INVOKESTATIC
-		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
-		code.add(new VarInsnNode(Opcodes.ILOAD, 2));
-		code.add(new VarInsnNode(Opcodes.ILOAD, 3));
-		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "setBlock", "(IIIIL"+cn.name+";)V", false));
+		// the block id is still on the stack from the previous INVOKESTATIC (Block.getIdFromBlock)
+		code.add(new VarInsnNode(Opcodes.ISTORE, 5));
+
+		code.add(new VarInsnNode(Opcodes.ALOAD, 0)); // ebs
+		code.add(new VarInsnNode(Opcodes.ILOAD, 1)); // x
+		code.add(new VarInsnNode(Opcodes.ILOAD, 2)); // y
+		code.add(new VarInsnNode(Opcodes.ILOAD, 3)); // z
+		code.add(new VarInsnNode(Opcodes.ILOAD, 5)); // block id
+		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+				Name.hooks.get(obfuscated),
+				Name.hooks_setBlockId.get(obfuscated),
+				Name.hooks_setBlockId.getDesc(obfuscated), false));
 		code.add(new InsnNode(Opcodes.RETURN));
 
 		method.localVariables = null;
-		method.maxLocals--; // prev. storage for the new block id
+		method.maxLocals--; // var 7 is now unused
 		method.maxStack = Math.max(method.maxStack, 5);
 
 		return true;

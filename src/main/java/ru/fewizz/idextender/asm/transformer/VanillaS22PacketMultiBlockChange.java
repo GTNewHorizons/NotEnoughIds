@@ -10,69 +10,60 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.Name;
 
 public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
 	@Override
 	public boolean transform(ClassNode cn, boolean obfuscated) {
-		for (MethodNode method : cn.methods) {
-			if ("<init>".equals(method.name) || "S22PacketMultiBlockChange".equals(method.name)
-					|| "(I[SLapx;)V".equals(method.desc)) {
-				InsnList code = method.instructions;
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
+		MethodNode method = AsmUtil.findMethod(cn, Name.s22_init_server);
+		if (method == null) return false;
 
-					if (insn.getOpcode() == Opcodes.ICONST_4) {
-						InsnList toInsert = new InsnList();
-						toInsert.set(insn, new InsnNode(Opcodes.ICONST_5));
-						method.instructions.insert(insn, toInsert);
+		InsnList code = method.instructions;
+		int part = 0;
 
+		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
+			AbstractInsnNode insn = iterator.next();
+
+			if (part == 0) { // replace 4 * by 5 *
+				if (insn.getOpcode() == Opcodes.ICONST_4) {
+					iterator.set(new InsnNode(Opcodes.ICONST_5));
+					part++;
+				}
+			} else if (part == 1) { // search Block.getIdFromBlock call, write result to the stream directly
+				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
+					MethodInsnNode node = (MethodInsnNode) insn;
+
+					if (node.owner.equals(Name.block.get(obfuscated)) &&
+							node.name.equals(Name.block_getIdFromBlock.get(obfuscated)) &&
+							node.desc.equals(Name.block_getIdFromBlock.getDesc(obfuscated))) {
+						iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataOutputStream", "writeShort", "(I)V", false));
+						part++;
 					}
-					if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL
-							&& ((MethodInsnNode) insn).name.equals(!obfuscated ? "getBlock" : "a")
-							&& ((MethodInsnNode) insn).desc
-							.equals(!obfuscated ? "(III)Lnet/minecraft/block/Block;" : "(III)Laji;")) {
-						InsnList toInsert = new InsnList();
+				}
+			} else if (part == 2) { // remove everything up to ALOAD (exclusive)
+				if (insn.getOpcode() == Opcodes.ALOAD) {
+					part++;
+				} else {
+					iterator.remove();
+				}
+			} else if (part == 3) { // seek to the next INVOKEVIRTUAL (Chunk.getBlockMetadata), add stream byte write afterwards
+				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+					iterator.add(new VarInsnNode(Opcodes.ALOAD, 6)); // DataOutputStream
+					iterator.add(new InsnNode(Opcodes.SWAP));
+					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataOutputStream", "writeByte", "(I)V", false));
+					part++;
+				}
+			} else { // remove everything up to INVOKEVIRTUAL (inclusive, DataOutputStream.writeShort)
+				iterator.remove();
 
-						insn = insn.getPrevious().getPrevious().getPrevious().getPrevious();
-
-						for (int i = 0; i < 20; i++) {
-							method.instructions.remove(insn.getPrevious());
-							insn = insn.getNext();
-						}
-						method.instructions.remove(insn.getPrevious());
-
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 6));
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 3));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 8));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 10));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 9));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
-								!obfuscated ? "net/minecraft/world/chunk/Chunk" : "apx", !obfuscated ? "getBlock" : "a",
-										!obfuscated ? "(III)Lnet/minecraft/block/Block;" : "(III)Laji;", false));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-								!obfuscated ? "net/minecraft/block/Block" : "aji", !obfuscated ? "getIdFromBlock" : "b",
-										!obfuscated ? "(Lnet/minecraft/block/Block;)I" : "(Laji;)I", false));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataOutputStream",
-								"writeShort", "(I)V", false));
-
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 6));
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 3));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 8));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 10));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 9));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
-								!obfuscated ? "net/minecraft/world/chunk/Chunk" : "apx",
-										!obfuscated ? "getBlockMetadata" : "c", "(III)I", false));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataOutputStream",
-								"writeByte", "(I)V", false));
-
-						method.instructions.insert(insn.getPrevious(), toInsert);
-					}
+				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+					return true;
 				}
 			}
 		}
 
-		return true;
+		return false;
 	}
 }

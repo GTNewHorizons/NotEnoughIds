@@ -9,93 +9,53 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.Name;
 
 public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTransformer {
 	@Override
 	public boolean transform(ClassNode cn, boolean obfuscated) {
-		for (MethodNode method : cn.methods) {
-			if ("replaceChunkOres".equals(method.name) && method.desc.equals("(IILnet/minecraft/world/World;)V")) {
-				InsnList code = method.instructions;
+		MethodNode method = AsmUtil.findMethod(cn, Name.ub_bud_replaceChunkOres_world);
+		if (method == null || !transformReplaceChunkOres(cn, method, obfuscated, 1)) return false;
 
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
+		method = AsmUtil.findMethod(cn, Name.ub_bud_replaceChunkOres_iChunkProvider);
+		if (method == null || !transformReplaceChunkOres(cn, method, obfuscated, 0)) return false;
 
-					if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL
-							&& ((MethodInsnNode) insn).name.equals(!obfuscated ? "getBlockLSBArray" : "func_76658_g")) {
-						InsnList toInsert = new InsnList();
-						toInsert.set(insn.getPrevious(), new VarInsnNode(Opcodes.ALOAD, 18));
-						method.instructions.insert(toInsert);
-						insn = insn.getNext();
-						for (int i = 0; insn.getPrevious().getOpcode() != Opcodes.ISTORE; i++) {
-							System.out.println("Ster " + i);
-							method.instructions.remove(insn.getPrevious());
-							insn = insn.getNext();
-						}
+		return true;
+	}
 
-						method.instructions.remove(insn.getPrevious());
+	private boolean transformReplaceChunkOres(ClassNode cn, MethodNode method, boolean obfuscated, int varOffset) {
+		InsnList code = method.instructions;
+		int part = 0;
 
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 10));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 19));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 11));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "setID",
-								"(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I", false));
-						toInsert.add(new VarInsnNode(Opcodes.ISTORE, 20));
-						method.instructions.insert(insn.getPrevious(), toInsert);
+		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
+			AbstractInsnNode insn = iterator.next();
 
-						insn = insn.getNext();
-
-						while (insn.getNext().getOpcode() != Opcodes.GETFIELD) {
-							method.instructions.remove(insn.getPrevious());
-							insn = insn.getNext();
-						}
-
-						break;
-					}
+			if (part == 0) { // find ExtendedBlockStorage.getBlockLSBArray, replace with Hooks.getBlockId
+				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL &&
+						((MethodInsnNode) insn).name.equals(Name.ebs_getBlockLSBArray.get(obfuscated))) {
+					iterator.remove();
+					// ExtendedBlockStorage is on the stack
+					iterator.add(new VarInsnNode(Opcodes.ILOAD, 9 + varOffset)); // x
+					iterator.add(new VarInsnNode(Opcodes.ILOAD, 18 + varOffset)); // y
+					iterator.add(new VarInsnNode(Opcodes.ILOAD, 10 + varOffset)); // z
+					iterator.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+							Name.hooks.get(obfuscated),
+							Name.hooks_getBlockId.get(obfuscated),
+							Name.hooks_getBlockId.getDesc(obfuscated), false));
+					part++;
 				}
-			}
-
-			if ("replaceChunkOres".equals(method.name)
-					&& method.desc.equals("(Lnet/minecraft/world/chunk/IChunkProvider;II)V")) {
-				InsnList code = method.instructions;
-
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
-
-					if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL
-							&& ((MethodInsnNode) insn).name.equals(!obfuscated ? "getBlockLSBArray" : "func_76658_g")) {
-						InsnList toInsert = new InsnList();
-						toInsert.set(insn.getPrevious(), new VarInsnNode(Opcodes.ALOAD, 17));
-						method.instructions.insert(toInsert);
-						insn = insn.getNext();
-						for (int i = 0; insn.getPrevious().getOpcode() != Opcodes.ISTORE; i++) {
-							System.out.println("Ster " + i);
-							method.instructions.remove(insn.getPrevious());
-							insn = insn.getNext();
-						}
-
-						method.instructions.remove(insn.getPrevious());
-
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 9));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 18));
-						toInsert.add(new VarInsnNode(Opcodes.ILOAD, 10));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "setID",
-								"(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I", false));
-						toInsert.add(new VarInsnNode(Opcodes.ISTORE, 19));
-						method.instructions.insert(insn.getPrevious(), toInsert);
-
-						insn = insn.getNext();
-
-						while (insn.getNext().getOpcode() != Opcodes.GETFIELD) {
-							method.instructions.remove(insn.getPrevious());
-							insn = insn.getNext();
-						}
-						break;
-					}
+			} else if (part == 1) { // remove everything up to ISTORE (exclusive), which stores the block id in a local var
+				if (insn.getOpcode() == Opcodes.ISTORE) {
+					part++;
+					break; // nothing else to do, the msb id query returns always null
+				} else {
+					iterator.remove();
 				}
 			}
 		}
 
-		return true;
+		return part == 2;
 	}
 }

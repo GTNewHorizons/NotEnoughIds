@@ -5,99 +5,89 @@ import java.util.ListIterator;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import ru.fewizz.idextender.asm.AsmUtil;
+import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.Name;
 
 public class VanillaChunk implements IClassNodeTransformer {
 	@Override
 	public boolean transform(ClassNode cn, boolean obfuscated) {
-		for (MethodNode method : cn.methods) {
-			if ("fillChunk".equals(method.name) || ("a".equals(method.name) && "([BIIZ)V".equals(method.desc))) {
-				InsnList code = method.instructions;
+		MethodNode method = AsmUtil.findMethod(cn, Name.chunk_fillChunk);
+		if (method == null) return false;
 
-				int i = 0;
+		method.localVariables = null;
 
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
+		int part = 0;
+		LabelNode endLabel = null;
 
-					if (insn.getOpcode() == Opcodes.ALOAD && insn.getNext().getOpcode() == Opcodes.GETFIELD
-							&& insn.getNext().getNext().getOpcode() == Opcodes.ILOAD
-							&& insn.getNext().getNext().getNext().getOpcode() == Opcodes.AALOAD) {
-						if (i != 1) {
-							i++;
-						} else {
-							InsnList toInsert = new InsnList();
+		for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
+			AbstractInsnNode insn = it.next();
 
-							insn = insn.getNext();
-							method.instructions.remove(insn.getPrevious());
-							insn = insn.getNext();
-							method.instructions.remove(insn.getPrevious());
-							insn = insn.getNext();
-							method.instructions.remove(insn.getPrevious());
-							insn = insn.getNext();
-							method.instructions.remove(insn.getPrevious());
-							insn = insn.getNext();
-							method.instructions.remove(insn.getPrevious());
+			if (part == 0) { // find getBlockLSBArray() call, replace with setting the data
+				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+					MethodInsnNode node = (MethodInsnNode) insn;
 
-							toInsert.add(new IntInsnNode(Opcodes.SIPUSH, 8192));
-							toInsert.add(new IntInsnNode(Opcodes.NEWARRAY, Opcodes.T_BYTE));
-							method.instructions.insert(insn.getPrevious(), toInsert);
+					if (node.owner.equals(Name.extendedBlockStorage.get(obfuscated)) &&
+							node.name.equals(Name.ebs_getBlockLSBArray.get(obfuscated)) &&
+							node.desc.equals(Name.ebs_getBlockLSBArray.getDesc(obfuscated))) {
+						// ExtendedBlockStorage is on the stack
+						it.set(new VarInsnNode(Opcodes.ALOAD, 1)); // replace with data (byte[]) load
+						it.add(new VarInsnNode(Opcodes.ILOAD, 6)); // offset (k)
+						it.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+								Name.hooks.get(obfuscated),
+								Name.hooks_setBlockData.get(obfuscated),
+								Name.hooks_setBlockData.getDesc(obfuscated), false));
+						part++;
+					}
+				}
+			} else if (part == 1) { // remove everything up to IADD (exclusive), insert add operands (k, Constants.ebsIdArraySize)
+				if (insn.getOpcode() == Opcodes.IADD) {
+					it.set(new VarInsnNode(Opcodes.ILOAD, 6));
+					it.add(new LdcInsnNode(Constants.ebsIdArraySize));
+					it.add(new InsnNode(Opcodes.IADD));
+					part++;
+				} else {
+					it.remove();
+				}
+			} else if (part == 2) { // seek to ExtendedBlockStorage.getBlockMSBArray, then back to ICONST_0 or the preceding label
+				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+					MethodInsnNode node = (MethodInsnNode) insn;
 
-							toInsert.add(new VarInsnNode(Opcodes.ALOAD, 9));
-							toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
-							toInsert.add(new FieldInsnNode(Opcodes.GETFIELD,
-									!obfuscated ? "net/minecraft/world/chunk/Chunk" : "apx",
-											!obfuscated ? "storageArrays" : "u",
-													!obfuscated ? "[Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;"
-															: "[Lapz;"));
-							toInsert.add(new VarInsnNode(Opcodes.ILOAD, 8));
-							toInsert.add(new InsnNode(Opcodes.AALOAD));
-							toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks",
-									"set16BitBlockArray",
-									!obfuscated ? "([BLnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)V"
-											: "([BLapz;)V",
-											false));
-							method.instructions.insert(insn.getNext().getNext().getNext().getNext().getNext()
-									.getNext().getNext().getNext().getNext().getNext().getNext().getNext().getNext()
-									.getNext().getNext().getNext(), toInsert);
-							break;
-						}
+					if (node.owner.equals(Name.extendedBlockStorage.get(obfuscated)) &&
+							node.name.equals(Name.ebs_getBlockMSBArray.get(obfuscated)) &&
+							node.desc.equals(Name.ebs_getBlockMSBArray.getDesc(obfuscated))) {
+						while (it.previous().getOpcode() != Opcodes.ICONST_0);
+						while (it.previous().getType() != AbstractInsnNode.LABEL);
+
+						it.next(); // reverse the iterator, returns the label again
+						part++;
+					}
+				}
+			} else { // remove everything up to the end label (exclusive), detect the end label from the 1st IF_ICMPGE insn (main loop condition)
+				if (endLabel == null) {
+					if (insn.getOpcode() == Opcodes.IF_ICMPGE) {
+						endLabel = ((JumpInsnNode) insn).label;
+					}
+
+					it.remove();
+				} else {
+					if (insn == endLabel) {
+						return true;
+					} else {
+						it.remove();
 					}
 				}
 			}
 		}
 
-		for (MethodNode method : cn.methods) {
-			if ("fillChunk".equals(method.name) || ("a".equals(method.name) && "([BIIZ)V".equals(method.desc))) {
-				InsnList code = method.instructions;
-
-				int i1 = 0;
-
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
-
-					if (insn.getOpcode() == Opcodes.ICONST_0) {
-						if (i1 != 10) {
-							i1++;
-						} else {
-							InsnList toInsert = new InsnList();
-
-							toInsert.set(insn, new LdcInsnNode(new Integer(1000000)));
-							method.instructions.insert(toInsert);
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		return true;
+		return false;
 	}
 }

@@ -6,68 +6,50 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import ru.fewizz.idextender.asm.AsmUtil;
+import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.Name;
 
 public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
 	@Override
 	public boolean transform(ClassNode cn, boolean obfuscated) {
-		for (MethodNode method : cn.methods) {
-			if ("handleMultiBlockChange".equals(method.name)
-					|| ("a".equals(method.name) && "(Lgk;)V".equals(method.desc))) {
-				InsnList code = method.instructions;
-				for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-					AbstractInsnNode insn = iterator.next();
+		MethodNode method = AsmUtil.findMethod(cn, Name.nhpc_handleMultiBlockChange);
+		if (method == null) return false;
 
-					if (insn.getOpcode() == Opcodes.SIPUSH && ((IntInsnNode) insn).operand == 4095) {
-						InsnList toInsert = new InsnList();
+		InsnList code = method.instructions;
+		int part = 0;
 
-						method.instructions.remove(insn.getPrevious().getPrevious().getPrevious().getPrevious()
-								.getPrevious().getPrevious().getPrevious().getPrevious());
-						method.instructions.remove(insn.getPrevious().getPrevious().getPrevious().getPrevious()
-								.getPrevious().getPrevious().getPrevious());
-						method.instructions.remove(insn.getPrevious().getPrevious().getPrevious().getPrevious()
-								.getPrevious().getPrevious());
+		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
+			AbstractInsnNode insn = iterator.next();
 
-						insn = insn.getPrevious().getPrevious();
-						method.instructions.remove(insn.getPrevious());
-						insn = insn.getNext();
-						method.instructions.remove(insn.getPrevious());
-						insn = insn.getNext();
-						method.instructions.remove(insn.getPrevious());
-						insn = insn.getNext();
-						method.instructions.remove(insn.getPrevious());
-
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 4));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream",
-								"readShort", "()S", false));
-						toInsert.add(new LdcInsnNode(new Integer(65535)));
-						method.instructions.insert(insn.getPrevious(), toInsert);
-
-						toInsert.set(insn.getNext(), new VarInsnNode(Opcodes.ISTORE, 8));
-						method.instructions.insert(toInsert);
-
-						insn = insn.getNext().getNext().getNext().getNext();
-
-						insn = insn.getNext();
-						method.instructions.remove(insn.getPrevious());
-						insn = insn.getNext();
-						method.instructions.remove(insn.getPrevious());
-
-						toInsert.add(new VarInsnNode(Opcodes.ALOAD, 4));
-						toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream",
-								"readByte", "()B", false));
-						toInsert.add(new IntInsnNode(Opcodes.SIPUSH, 255));
-						method.instructions.insert(insn.getPrevious(), toInsert);
-					}
+			if (part == 0) { // seek to ISTORE 7, prefix with masking
+				if (insn.getOpcode() == Opcodes.ISTORE && ((VarInsnNode) insn).var == 7) {
+					iterator.set(new LdcInsnNode(Constants.blockIdMask));
+					iterator.add(new InsnNode(Opcodes.IAND));
+					iterator.add(new VarInsnNode(Opcodes.ISTORE, 7));
+					part++;
+				}
+			} else if (part == 1) { // seek to ILOAD 7, replace with DataInputStream.read()
+				if (insn.getOpcode() == Opcodes.ILOAD && ((VarInsnNode) insn).var == 7) {
+					iterator.set(new VarInsnNode(Opcodes.ALOAD, 4)); // DataInputStream
+					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream", "read", "()I", false));
+					part++;
+				}
+			} else { // remove everything up to ISTORE (exclusive)
+				if (insn.getOpcode() == Opcodes.ISTORE) {
+					return true;
+				} else {
+					iterator.remove();
 				}
 			}
 		}
 
-		return true;
+		return false;
 	}
 }

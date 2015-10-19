@@ -1,23 +1,55 @@
 package ru.fewizz.idextender.asm;
 
 public enum Name {
-	block("net/minecraft/block/Block", "aji"),
-	nibbleArray("net/minecraft/world/chunk/NibbleArray", "apv"),
+	// self
+	hooks("ru/fewizz/idextender/Hooks"),
 
-	ebs_getBlock("getBlockByExtId", "a", "(III)Lnet/minecraft/block/Block;"), // ExtendedBlockStorage
-	ebs_setBlock("func_150818_a", "a", "(IIILnet/minecraft/block/Block;)V"),
-	ebs_getBlockMSBArray("getBlockMSBArray", "i", "()Lnet/minecraft/world/chunk/NibbleArray;"),
-	ebs_isEmpty("isEmpty", "a", "()Z");
+	hooks_getBlockData("getBlockData", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)[B"),
+	hooks_setBlockData("setBlockData", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;[BI)V"),
+	hooks_writeChunkToNbt("writeChunkToNbt", null, "(Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)V"),
+	hooks_readChunkFromNbt("readChunkFromNbt", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;Lnet/minecraft/nbt/NBTTagCompound;)V"),
+	hooks_getBlockId("getBlockId", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I"),
+	hooks_getBlockById("getBlock", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)Lnet/minecraft/block/Block;"),
+	hooks_setBlockId("setBlockId", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;IIII)V"),
 
-	private Name(String deobf, String obf) {
+	// vanilla
+	block("net/minecraft/block/Block"),
+	extendedBlockStorage("net/minecraft/world/chunk/storage/ExtendedBlockStorage"),
+	iChunkProvider("net/minecraft/world/chunk/IChunkProvider"),
+	nibbleArray("net/minecraft/world/chunk/NibbleArray"),
+	world("net/minecraft/world/World"),
+
+	ebs_getBlock("getBlockByExtId", "func_150819_a", "(III)Lnet/minecraft/block/Block;"), // ExtendedBlockStorage
+	ebs_setBlock("func_150818_a", null, "(IIILnet/minecraft/block/Block;)V"),
+	ebs_getBlockLSBArray("getBlockLSBArray", "func_76658_g", "()[B"),
+	ebs_getBlockMSBArray("getBlockMSBArray", "func_76660_i", "()Lnet/minecraft/world/chunk/NibbleArray;"),
+	ebs_setBlockMSBArray("setBlockMSBArray", "func_76673_a", "(Lnet/minecraft/world/chunk/NibbleArray;)V"),
+	ebs_isEmpty("isEmpty", "func_76663_a", "()Z"),
+
+	acl_writeChunkToNBT("writeChunkToNBT", "func_75820_a", "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V"), // AnvilChunkLoader
+	acl_readChunkFromNBT("readChunkFromNBT", "func_75823_a", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;"),
+
+	block_getIdFromBlock("getIdFromBlock", "func_149682_b", "(Lnet/minecraft/block/Block;)I"),
+	chunk_fillChunk("fillChunk", "func_76607_a", "([BIIZ)V"),
+
+	packet_readPacketData("readPacketData", "func_148837_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
+	nhpc_handleMultiBlockChange("handleMultiBlockChange", "func_147287_a", "(Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;)V"), // NetHandlerPlayClient
+	s22_init_server("<init>", null, "(I[SLnet/minecraft/world/chunk/Chunk;)V"), // S22PacketMultiBlockChange
+
+	// underground biomes
+
+	ub_bud_replaceChunkOres_world("replaceChunkOres", null, "(IILnet/minecraft/world/World;)V"),
+	ub_bud_replaceChunkOres_iChunkProvider("replaceChunkOres", null, "(Lnet/minecraft/world/chunk/IChunkProvider;II)V"); // BiomeUndergroundDecorator
+
+	private Name(String deobf) {
 		this.deobf = deobf;
-		this.obf = obf;
+		this.obf = deobf;
 		this.desc = null;
 	}
 
 	private Name(String deobf, String obf, String desc) {
 		this.deobf = deobf;
-		this.obf = obf;
+		this.obf = obf != null ? obf : deobf;
 		this.desc = desc;
 	}
 
@@ -25,6 +57,11 @@ public enum Name {
 		return obfuscated ? obf : deobf;
 	}
 
+	public String getDesc(boolean obfuscated) {
+		return obfuscated ? obfDesc : desc;
+	}
+
+	@SuppressWarnings("unused")
 	private static void translateDescs() {
 		StringBuilder sb = new StringBuilder();
 
@@ -69,6 +106,6 @@ public enum Name {
 	public String obfDesc;
 
 	static {
-		translateDescs();
+		//translateDescs(); - not needed for srg env/names
 	}
 }
