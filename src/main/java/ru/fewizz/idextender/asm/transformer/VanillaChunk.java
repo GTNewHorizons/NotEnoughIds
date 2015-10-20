@@ -12,16 +12,18 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import ru.fewizz.idextender.asm.AsmTransformException;
 import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.IETransformer;
 import ru.fewizz.idextender.asm.Name;
 
 public class VanillaChunk implements IClassNodeTransformer {
 	@Override
-	public boolean transform(ClassNode cn, boolean obfuscated) {
-		MethodNode method = AsmUtil.findMethod(cn, Name.chunk_fillChunk);
-		if (method == null) return false;
+	public void transform(ClassNode cn, boolean obfuscated) {
+		MethodNode method = AsmUtil.findMethod(cn, Name.chunk_fillChunk, !IETransformer.isClient());
+		if (method == null) return; // the method doesn't exist on the server side
 
 		method.localVariables = null;
 
@@ -35,16 +37,11 @@ public class VanillaChunk implements IClassNodeTransformer {
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
 					MethodInsnNode node = (MethodInsnNode) insn;
 
-					if (node.owner.equals(Name.extendedBlockStorage.get(obfuscated)) &&
-							node.name.equals(Name.ebs_getBlockLSBArray.get(obfuscated)) &&
-							node.desc.equals(Name.ebs_getBlockLSBArray.getDesc(obfuscated))) {
+					if (Name.ebs_getBlockLSBArray.matches(node, obfuscated)) {
 						// ExtendedBlockStorage is on the stack
 						it.set(new VarInsnNode(Opcodes.ALOAD, 1)); // replace with data (byte[]) load
 						it.add(new VarInsnNode(Opcodes.ILOAD, 6)); // offset (k)
-						it.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-								Name.hooks.get(obfuscated),
-								Name.hooks_setBlockData.get(obfuscated),
-								Name.hooks_setBlockData.getDesc(obfuscated), false));
+						it.add(Name.hooks_setBlockData.staticInvocation(obfuscated));
 						part++;
 					}
 				}
@@ -61,9 +58,7 @@ public class VanillaChunk implements IClassNodeTransformer {
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
 					MethodInsnNode node = (MethodInsnNode) insn;
 
-					if (node.owner.equals(Name.extendedBlockStorage.get(obfuscated)) &&
-							node.name.equals(Name.ebs_getBlockMSBArray.get(obfuscated)) &&
-							node.desc.equals(Name.ebs_getBlockMSBArray.getDesc(obfuscated))) {
+					if (Name.ebs_getBlockMSBArray.matches(node, obfuscated)) {
 						while (it.previous().getOpcode() != Opcodes.ICONST_0);
 						while (it.previous().getType() != AbstractInsnNode.LABEL);
 
@@ -80,7 +75,7 @@ public class VanillaChunk implements IClassNodeTransformer {
 					it.remove();
 				} else {
 					if (insn == endLabel) {
-						return true;
+						return;
 					} else {
 						it.remove();
 					}
@@ -88,6 +83,6 @@ public class VanillaChunk implements IClassNodeTransformer {
 			}
 		}
 
-		return false;
+		throw new AsmTransformException("no match for part "+part);
 	}
 }

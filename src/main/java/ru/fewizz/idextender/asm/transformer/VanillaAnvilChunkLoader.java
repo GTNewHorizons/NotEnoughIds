@@ -9,24 +9,22 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import ru.fewizz.idextender.asm.AsmTransformException;
 import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
 import ru.fewizz.idextender.asm.Name;
 
 public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 	@Override
-	public boolean transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn, boolean obfuscated) {
 		MethodNode method = AsmUtil.findMethod(cn, Name.acl_writeChunkToNBT);
-		if (method == null || !transformWriteChunkToNBT(cn, method, obfuscated)) return false;
+		transformWriteChunkToNBT(cn, method, obfuscated);
 
 		method = AsmUtil.findMethod(cn, Name.acl_readChunkFromNBT);
-		if (method == null || !transformReadChunkFromNBT(cn, method, obfuscated)) return false;
-
-		return true;
+		transformReadChunkFromNBT(cn, method, obfuscated);
 	}
 
-	private boolean transformWriteChunkToNBT(ClassNode cn, MethodNode method, boolean obfuscated) {
+	private void transformWriteChunkToNBT(ClassNode cn, MethodNode method, boolean obfuscated) {
 		InsnList code = method.instructions;
 
 		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
@@ -34,23 +32,19 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 
 			if (insn.getOpcode() == Opcodes.LDC && ((LdcInsnNode) insn).cst.equals("Blocks")) {
 				iterator.remove();
-				iterator.next(); 
+				iterator.next();
 				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL ExtendedBlockStorage.getBlockLSBArray
 				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL NBTTagCompound.setByteArray
-				
-				iterator.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-						Name.hooks.get(obfuscated),
-						Name.hooks_writeChunkToNbt.get(obfuscated),
-						Name.hooks_writeChunkToNbt.getDesc(obfuscated), false));
 
-				return true;
+				iterator.add(Name.hooks_writeChunkToNbt.staticInvocation(obfuscated));
+				return;
 			}
 		}
 
-		return false;
+		throw new AsmTransformException("can't find Blocks LDC");
 	}
 
-	private boolean transformReadChunkFromNBT(ClassNode cn, MethodNode method, boolean obfuscated) {
+	private void transformReadChunkFromNBT(ClassNode cn, MethodNode method, boolean obfuscated) {
 		InsnList code = method.instructions;
 		int part = 0;
 
@@ -60,10 +54,7 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 			if (part == 0) {
 				if (insn.getOpcode() == Opcodes.LDC && ((LdcInsnNode) insn).cst.equals("Blocks")) {
 					// ExtendedBlockStorage, NBTTagCompound are on the stack
-					iterator.set(new MethodInsnNode(Opcodes.INVOKESTATIC,
-							Name.hooks.get(obfuscated),
-							Name.hooks_readChunkFromNbt.get(obfuscated),
-							Name.hooks_readChunkFromNbt.getDesc(obfuscated), false));
+					iterator.set(Name.hooks_readChunkFromNbt.staticInvocation(obfuscated));
 					part++;
 				}
 			} else if (part == 1) {
@@ -72,20 +63,19 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
 					MethodInsnNode node = (MethodInsnNode) insn;
 
-					if (node.owner.equals(Name.extendedBlockStorage.get(obfuscated)) &&
-							node.name.equals(Name.ebs_setBlockMSBArray.get(obfuscated)) &&
-							node.desc.equals(Name.ebs_setBlockMSBArray.getDesc(obfuscated))) {
+					if (Name.ebs_setBlockMSBArray.matches(node, obfuscated)) {
 						part++;
 					}
 				}
 			} else {
 				if (insn.getType() == AbstractInsnNode.FRAME) {
 					iterator.remove();
+					part++;
 					break;
 				}
 			}
 		}
 
-		return part == 2;
+		if (part != 3) throw new AsmTransformException("no match for part "+part);
 	}
 }

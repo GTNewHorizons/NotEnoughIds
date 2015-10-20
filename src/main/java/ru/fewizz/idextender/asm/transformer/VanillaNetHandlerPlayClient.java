@@ -11,6 +11,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import ru.fewizz.idextender.asm.AsmTransformException;
 import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
@@ -18,9 +19,8 @@ import ru.fewizz.idextender.asm.Name;
 
 public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
 	@Override
-	public boolean transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn, boolean obfuscated) {
 		MethodNode method = AsmUtil.findMethod(cn, Name.nhpc_handleMultiBlockChange);
-		if (method == null) return false;
 
 		InsnList code = method.instructions;
 		int part = 0;
@@ -43,13 +43,13 @@ public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
 				}
 			} else { // remove everything up to ISTORE (exclusive)
 				if (insn.getOpcode() == Opcodes.ISTORE) {
-					return true;
+					return;
 				} else {
 					iterator.remove();
 				}
 			}
 		}
 
-		return false;
+		throw new AsmTransformException("no match for part "+part);
 	}
 }

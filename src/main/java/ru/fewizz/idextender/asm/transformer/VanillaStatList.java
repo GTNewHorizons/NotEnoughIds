@@ -8,10 +8,8 @@ import ru.fewizz.idextender.asm.IClassNodeTransformer;
 
 public class VanillaStatList implements IClassNodeTransformer {
 	@Override
-	public boolean transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn, boolean obfuscated) {
 		MethodNode method = AsmUtil.findMethod(cn, "<clinit>");
-		if (method == null || !AsmUtil.transformInlinedSizeMethod(cn, method, 4096, Constants.maxBlockId + 1)) return false;
-
-		return true;
+		AsmUtil.transformInlinedSizeMethod(cn, method, 4096, Constants.maxBlockId + 1, false);
 	}
 }

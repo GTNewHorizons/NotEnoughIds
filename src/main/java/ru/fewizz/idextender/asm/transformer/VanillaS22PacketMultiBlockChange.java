@@ -10,15 +10,15 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import ru.fewizz.idextender.asm.AsmTransformException;
 import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
 import ru.fewizz.idextender.asm.Name;
 
 public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
 	@Override
-	public boolean transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn, boolean obfuscated) {
 		MethodNode method = AsmUtil.findMethod(cn, Name.s22_init_server);
-		if (method == null) return false;
 
 		InsnList code = method.instructions;
 		int part = 0;
@@ -35,9 +35,7 @@ public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
 					MethodInsnNode node = (MethodInsnNode) insn;
 
-					if (node.owner.equals(Name.block.get(obfuscated)) &&
-							node.name.equals(Name.block_getIdFromBlock.get(obfuscated)) &&
-							node.desc.equals(Name.block_getIdFromBlock.getDesc(obfuscated))) {
+					if (Name.block_getIdFromBlock.matches(node, obfuscated)) {
 						iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataOutputStream", "writeShort", "(I)V", false));
 						part++;
 					}
@@ -59,11 +57,11 @@ public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
 				iterator.remove();
 
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-					return true;
+					return;
 				}
 			}
 		}
 
-		return false;
+		throw new AsmTransformException("no match for part "+part);
 	}
 }

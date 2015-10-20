@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import ru.fewizz.idextender.asm.AsmTransformException;
 import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
@@ -15,23 +16,21 @@ import ru.fewizz.idextender.asm.Name;
 
 public class VanillaS21PacketChunkData implements IClassNodeTransformer {
 	@Override
-	public boolean transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn, boolean obfuscated) {
 		MethodNode method = AsmUtil.findMethod(cn, "<clinit>");
-		if (method == null || !AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaSize, Constants.newSize)) return false;
+		AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaSize, Constants.newSize, false);
 
 		method = AsmUtil.findMethod(cn, "func_149275_c");
-		if (method == null || !AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaSize, Constants.newSize)) return false;
+		AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaSize, Constants.newSize, false);
 
 		method = AsmUtil.findMethod(cn, Name.packet_readPacketData);
-		if (method == null || !AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaEbsSize, Constants.newEbsSize)) return false;
+		AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaEbsSize, Constants.newEbsSize, false);
 
 		method = AsmUtil.findMethod(cn, "func_149269_a");
-		if (method == null || !transformCreateData(cn, method, obfuscated)) return false;
-
-		return true;
+		transformCreateData(cn, method, obfuscated);
 	}
 
-	private boolean transformCreateData(ClassNode cn, MethodNode method, boolean obfuscated) {
+	private void transformCreateData(ClassNode cn, MethodNode method, boolean obfuscated) {
 		InsnList code = method.instructions;
 
 		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
@@ -40,19 +39,13 @@ public class VanillaS21PacketChunkData implements IClassNodeTransformer {
 			if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
 				MethodInsnNode node = (MethodInsnNode) insn;
 
-				if (node.owner.equals(Name.extendedBlockStorage.get(obfuscated)) &&
-						node.name.equals(Name.ebs_getBlockLSBArray.get(obfuscated)) &&
-						node.desc.equals(Name.ebs_getBlockLSBArray.getDesc(obfuscated))) {
-					iterator.set(new MethodInsnNode(Opcodes.INVOKESTATIC,
-							Name.hooks.get(obfuscated),
-							Name.hooks_getBlockData.get(obfuscated),
-							Name.hooks_getBlockData.getDesc(obfuscated), false));
-
-					return true;
+				if (Name.ebs_getBlockLSBArray.matches(node, obfuscated)) {
+					iterator.set(Name.hooks_getBlockData.staticInvocation(obfuscated));
+					return;
 				}
 			}
 		}
 
-		return false;
+		throw new AsmTransformException("can't find getBlockLSBArray INVOKEVIRTUAL");
 	}
 }

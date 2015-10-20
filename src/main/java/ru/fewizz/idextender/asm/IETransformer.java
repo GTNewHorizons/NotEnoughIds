@@ -15,10 +15,12 @@ import org.objectweb.asm.util.CheckClassAdapter;
 public class IETransformer implements IClassTransformer {
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
+		if (bytes == null) return bytes; // we don't create classes
+
 		ClassEdit edit = ClassEdit.get(transformedName);
 		if (edit == null) return bytes;
 
-		logger.debug("Patching {}...", edit.getName());
+		logger.debug("Patching {} with {}...", transformedName, edit.getName());
 
 		// read
 		ClassNode cn = new ClassNode(Opcodes.ASM5);
@@ -39,13 +41,14 @@ public class IETransformer implements IClassTransformer {
 		}
 
 		// patch
-		boolean result;
 
 		try {
-			result = edit.getTransformer().transform(cn, isObfuscated());
+			edit.getTransformer().transform(cn, isObfuscated());
+		} catch (AsmTransformException t) {
+			logger.error("Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
+			throw t;
 		} catch (Throwable t) {
 			logger.error("Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
-
 			throw new RuntimeException(t);
 		}
 
@@ -65,13 +68,17 @@ public class IETransformer implements IClassTransformer {
 			cn.accept(writer);
 		}
 
-		if (result) {
-			logger.debug("Patched {} successfully.", edit.getName());
-		} else {
-			logger.warn("Patching {} failed.", edit.getName());
-		}
+		logger.debug("Patched {} successfully.", edit.getName());
 
 		return writer.toByteArray();
+	}
+
+	public static boolean isClient() {
+		if (isClient == null) {
+			isClient = IETransformer.class.getResource("/net/minecraft/client/main/Main.class") != null;
+		}
+
+		return isClient;
 	}
 
 	private static boolean isObfuscated() {
@@ -87,4 +94,5 @@ public class IETransformer implements IClassTransformer {
 
 	public static Logger logger = LogManager.getLogger("NEID");
 	private static Boolean isObfuscated = null;
+	private static Boolean isClient = null;
 }

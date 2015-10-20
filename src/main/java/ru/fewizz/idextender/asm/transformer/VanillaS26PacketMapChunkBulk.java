@@ -8,10 +8,8 @@ import ru.fewizz.idextender.asm.Name;
 
 public class VanillaS26PacketMapChunkBulk implements IClassNodeTransformer {
 	@Override
-	public boolean transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn, boolean obfuscated) {
 		MethodNode method = AsmUtil.findMethod(cn, Name.packet_readPacketData);
-		if (method == null || !AsmUtil.transformInlinedSizeMethod(cn, method, 8192, 12288)) return false;
-
-		return true;
+		AsmUtil.transformInlinedSizeMethod(cn, method, 8192, 12288, false);
 	}
 }

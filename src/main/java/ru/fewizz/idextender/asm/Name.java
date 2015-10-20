@@ -1,68 +1,188 @@
 package ru.fewizz.idextender.asm;
 
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+
 public enum Name {
 	// self
 	hooks("ru/fewizz/idextender/Hooks"),
 
-	hooks_getBlockData("getBlockData", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)[B"),
-	hooks_setBlockData("setBlockData", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;[BI)V"),
-	hooks_writeChunkToNbt("writeChunkToNbt", null, "(Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)V"),
-	hooks_readChunkFromNbt("readChunkFromNbt", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;Lnet/minecraft/nbt/NBTTagCompound;)V"),
-	hooks_getBlockId("getBlockId", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I"),
-	hooks_getBlockById("getBlock", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)Lnet/minecraft/block/Block;"),
-	hooks_setBlockId("setBlockId", null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;IIII)V"),
+	hooks_create16BArray(hooks, "create16BArray", null, null, "()[S"),
+	hooks_getBlockData(hooks, "getBlockData", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)[B"),
+	hooks_setBlockData(hooks, "setBlockData", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;[BI)V"),
+	hooks_writeChunkToNbt(hooks, "writeChunkToNbt", null, null, "(Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)V"),
+	hooks_readChunkFromNbt(hooks, "readChunkFromNbt", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;Lnet/minecraft/nbt/NBTTagCompound;)V"),
+	hooks_getBlockId(hooks, "getBlockId", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I"),
+	hooks_getBlockById(hooks, "getBlock", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)Lnet/minecraft/block/Block;"),
+	hooks_setBlockId(hooks, "setBlockId", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;IIII)V"),
 
 	// vanilla
-	block("net/minecraft/block/Block"),
-	extendedBlockStorage("net/minecraft/world/chunk/storage/ExtendedBlockStorage"),
-	iChunkProvider("net/minecraft/world/chunk/IChunkProvider"),
-	nibbleArray("net/minecraft/world/chunk/NibbleArray"),
-	world("net/minecraft/world/World"),
+	acl("net/minecraft/world/chunk/storage/AnvilChunkLoader", "aqk"),
+	block("net/minecraft/block/Block", "aji"),
+	chunk("net/minecraft/world/chunk/Chunk", "apx"),
+	extendedBlockStorage("net/minecraft/world/chunk/storage/ExtendedBlockStorage", "apz"),
+	iChunkProvider("net/minecraft/world/chunk/IChunkProvider", "apu"),
+	nbtTagCompound("net/minecraft/nbt/NBTTagCompound", "dh"),
+	nhpc("net/minecraft/client/network/NetHandlerPlayClient", "bjb"),
+	nibbleArray("net/minecraft/world/chunk/NibbleArray", "apv"),
+	packet("net/minecraft/network/Packet", "ft"),
+	packetBuffer("net/minecraft/network/PacketBuffer", "et"),
+	s22("net/minecraft/network/play/server/S22PacketMultiBlockChange", "gk"),
+	world("net/minecraft/world/World", "ahb"),
 
-	ebs_getBlock("getBlockByExtId", "func_150819_a", "(III)Lnet/minecraft/block/Block;"), // ExtendedBlockStorage
-	ebs_setBlock("func_150818_a", null, "(IIILnet/minecraft/block/Block;)V"),
-	ebs_getBlockLSBArray("getBlockLSBArray", "func_76658_g", "()[B"),
-	ebs_getBlockMSBArray("getBlockMSBArray", "func_76660_i", "()Lnet/minecraft/world/chunk/NibbleArray;"),
-	ebs_setBlockMSBArray("setBlockMSBArray", "func_76673_a", "(Lnet/minecraft/world/chunk/NibbleArray;)V"),
-	ebs_isEmpty("isEmpty", "func_76663_a", "()Z"),
-	ebs_removeInvalidBlocks("removeInvalidBlocks", "func_76672_e", "()V"),
+	ebs_getBlock(extendedBlockStorage, "getBlockByExtId", "a", "func_150819_a", "(III)Lnet/minecraft/block/Block;"), // ExtendedBlockStorage
+	ebs_setBlock(extendedBlockStorage, "func_150818_a", "a", null, "(IIILnet/minecraft/block/Block;)V"),
+	ebs_getBlockLSBArray(extendedBlockStorage, "getBlockLSBArray", "g", "func_76658_g", "()[B"),
+	ebs_getBlockMSBArray(extendedBlockStorage, "getBlockMSBArray", "i", "func_76660_i", "()Lnet/minecraft/world/chunk/NibbleArray;"),
+	ebs_setBlockMSBArray(extendedBlockStorage, "setBlockMSBArray", "a", "func_76673_a", "(Lnet/minecraft/world/chunk/NibbleArray;)V"),
+	ebs_isEmpty(extendedBlockStorage, "isEmpty", "a", "func_76663_a", "()Z"),
+	ebs_removeInvalidBlocks(extendedBlockStorage, "removeInvalidBlocks", "e", "func_76672_e", "()V"),
 
-	acl_writeChunkToNBT("writeChunkToNBT", "func_75820_a", "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V"), // AnvilChunkLoader
-	acl_readChunkFromNBT("readChunkFromNBT", "func_75823_a", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;"),
+	ebs_blockRefCount(extendedBlockStorage, "blockRefCount", "b", "field_76682_b", "I"),
+	ebs_tickRefCount(extendedBlockStorage, "tickRefCount", "c", "field_76683_c", "I"),
 
-	block_getIdFromBlock("getIdFromBlock", "func_149682_b", "(Lnet/minecraft/block/Block;)I"),
-	chunk_fillChunk("fillChunk", "func_76607_a", "([BIIZ)V"),
+	acl_writeChunkToNBT(acl, "writeChunkToNBT", "a", "func_75820_a", "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V"), // AnvilChunkLoader
+	acl_readChunkFromNBT(acl, "readChunkFromNBT", "a", "func_75823_a", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;"),
 
-	packet_readPacketData("readPacketData", "func_148837_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
-	nhpc_handleMultiBlockChange("handleMultiBlockChange", "func_147287_a", "(Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;)V"), // NetHandlerPlayClient
-	s22_init_server("<init>", null, "(I[SLnet/minecraft/world/chunk/Chunk;)V"), // S22PacketMultiBlockChange
+	block_getIdFromBlock(block, "getIdFromBlock", "b", "func_149682_b", "(Lnet/minecraft/block/Block;)I"),
+	chunk_fillChunk(chunk, "fillChunk", "a", "func_76607_a", "([BIIZ)V"),
+
+	packet_readPacketData(packet, "readPacketData", "a", "func_148837_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
+	nhpc_handleMultiBlockChange(nhpc, "handleMultiBlockChange", "a", "func_147287_a", "(Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;)V"), // NetHandlerPlayClient
+	s22_init_server(s22, "<init>", null, null, "(I[SLnet/minecraft/world/chunk/Chunk;)V"), // S22PacketMultiBlockChange
 
 	// underground biomes
 
-	ub_bud_replaceChunkOres_world("replaceChunkOres", null, "(IILnet/minecraft/world/World;)V"),
-	ub_bud_replaceChunkOres_iChunkProvider("replaceChunkOres", null, "(Lnet/minecraft/world/chunk/IChunkProvider;II)V"); // BiomeUndergroundDecorator
+	ub_bud("exterminatorJeff/undergroundBiomes/worldGen/BiomeUndergroundDecorator"),
 
+	ub_bud_replaceChunkOres_world(ub_bud, "replaceChunkOres", null, null, "(IILnet/minecraft/world/World;)V"),
+	ub_bud_replaceChunkOres_iChunkProvider(ub_bud, "replaceChunkOres", null, null, "(Lnet/minecraft/world/chunk/IChunkProvider;II)V"); // BiomeUndergroundDecorator
+
+	// for non-mc classes
 	private Name(String deobf) {
+		this(deobf, deobf);
+	}
+
+	// for mc classes
+	private Name(String deobf, String obf) {
+		this.clazz = null;
 		this.deobf = deobf;
-		this.obf = deobf;
+		this.obf = obf;
+		this.srg = deobf;
 		this.desc = null;
 	}
 
-	private Name(String deobf, String obf, String desc) {
+	// for fields and methods
+	private Name(Name clazz, String deobf, String obf, String srg, String desc) {
+		this.clazz = clazz;
 		this.deobf = deobf;
 		this.obf = obf != null ? obf : deobf;
+		this.srg = srg != null ? srg : deobf;
 		this.desc = desc;
 	}
 
-	public String get(boolean obfuscated) {
-		return obfuscated ? obf : deobf;
+	public boolean matches(MethodNode x) {
+		assert desc.startsWith("(");
+
+		return obf.equals(x.name) && obfDesc.equals(x.desc) ||
+				srg.equals(x.name) && desc.equals(x.desc) ||
+				deobf.equals(x.name) && desc.equals(x.desc);
 	}
 
-	public String getDesc(boolean obfuscated) {
-		return desc;
+	public boolean matches(FieldNode x) {
+		assert !desc.startsWith("(");
+
+		return obf.equals(x.name) && obfDesc.equals(x.desc) ||
+				srg.equals(x.name) && desc.equals(x.desc) ||
+				deobf.equals(x.name) && desc.equals(x.desc);
 	}
 
-	@SuppressWarnings("unused")
+	public boolean matches(MethodInsnNode x, boolean obfuscated) {
+		assert desc.startsWith("(");
+
+		if (obfuscated) {
+			return clazz.obf.equals(x.owner) && obf.equals(x.name) && obfDesc.equals(x.desc) ||
+					clazz.srg.equals(x.owner) && srg.equals(x.name) && desc.equals(x.desc);
+		} else {
+			return clazz.deobf.equals(x.owner) && deobf.equals(x.name) && desc.equals(x.desc);
+		}
+	}
+
+	public boolean matches(FieldInsnNode x, boolean obfuscated) {
+		assert !desc.startsWith("(");
+
+		if (obfuscated) {
+			return clazz.obf.equals(x.owner) && obf.equals(x.name) && obfDesc.equals(x.desc) ||
+					clazz.srg.equals(x.owner) && srg.equals(x.name) && desc.equals(x.desc);
+		} else {
+			return clazz.deobf.equals(x.owner) && deobf.equals(x.name) && desc.equals(x.desc);
+		}
+	}
+
+	public MethodInsnNode staticInvocation(boolean obfuscated) {
+		// static interface methods aren't supported by this, they'd need itf=true
+		assert desc.startsWith("(");
+
+		if (obfuscated) { // srg invocation
+			return new MethodInsnNode(Opcodes.INVOKESTATIC, clazz.srg, srg, desc, false);
+		} else {
+			return new MethodInsnNode(Opcodes.INVOKESTATIC, clazz.deobf, deobf, desc, false);
+		}
+	}
+
+	public MethodInsnNode virtualInvocation(boolean obfuscated) {
+		assert desc.startsWith("(");
+
+		if (obfuscated) { // srg invocation
+			return new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz.srg, srg, desc, false);
+		} else {
+			return new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz.deobf, deobf, desc, false);
+		}
+	}
+
+	public FieldInsnNode staticGet(boolean obfuscated) {
+		assert !desc.startsWith("(");
+
+		if (obfuscated) { // srg access
+			return new FieldInsnNode(Opcodes.GETSTATIC, clazz.srg, srg, desc);
+		} else {
+			return new FieldInsnNode(Opcodes.GETSTATIC, clazz.deobf, deobf, desc);
+		}
+	}
+
+	public FieldInsnNode virtualGet(boolean obfuscated) {
+		assert !desc.startsWith("(");
+
+		if (obfuscated) { // srg access
+			return new FieldInsnNode(Opcodes.GETFIELD, clazz.srg, srg, desc);
+		} else {
+			return new FieldInsnNode(Opcodes.GETFIELD, clazz.deobf, deobf, desc);
+		}
+	}
+
+	public FieldInsnNode staticSet(boolean obfuscated) {
+		assert !desc.startsWith("(");
+
+		if (obfuscated) { // srg access
+			return new FieldInsnNode(Opcodes.PUTSTATIC, clazz.srg, srg, desc);
+		} else {
+			return new FieldInsnNode(Opcodes.PUTSTATIC, clazz.deobf, deobf, desc);
+		}
+	}
+
+	public FieldInsnNode virtualSet(boolean obfuscated) {
+		assert !desc.startsWith("(");
+
+		if (obfuscated) { // srg access
+			return new FieldInsnNode(Opcodes.PUTFIELD, clazz.srg, srg, desc);
+		} else {
+			return new FieldInsnNode(Opcodes.PUTFIELD, clazz.deobf, deobf, desc);
+		}
+	}
+
 	private static void translateDescs() {
 		StringBuilder sb = new StringBuilder();
 
@@ -101,12 +221,14 @@ public enum Name {
 		}
 	}
 
+	public final Name clazz;
 	public final String deobf;
 	public final String obf;
+	public final String srg;
 	public final String desc;
 	public String obfDesc;
 
 	static {
-		//translateDescs(); - not needed for srg env/names
+		translateDescs();
 	}
 }

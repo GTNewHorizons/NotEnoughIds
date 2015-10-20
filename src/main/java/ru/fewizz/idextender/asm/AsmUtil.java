@@ -6,6 +6,7 @@ import java.util.ListIterator;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -15,40 +16,79 @@ import org.objectweb.asm.util.TraceMethodVisitor;
 
 public class AsmUtil {
 	public static MethodNode findMethod(ClassNode cn, String name) {
-		return findMethod2(cn, name, null, null, null);
+		return findMethod(cn, name, false);
 	}
 
-	public static MethodNode findMethod(ClassNode cn, String name, String desc) {
-		return findMethod2(cn, name, null, desc, null);
-	}
-
-	public static MethodNode findMethod2(ClassNode cn, String name, String altName) {
-		return findMethod2(cn, name, altName, null, null);
-	}
-
-	public static MethodNode findMethod2(ClassNode cn, String name, String altName, String desc) {
-		return findMethod2(cn, name, altName, desc, null);
-	}
-
-	public static MethodNode findMethod2(ClassNode cn, String name, String altName, String desc, String altDesc) {
-		if (altDesc == null) altDesc = desc; // require desc for both if no new desc is supplied for altDesc
-
+	public static MethodNode findMethod(ClassNode cn, String name, boolean optional) {
 		for (MethodNode ret : cn.methods) {
-			// check name+desc
-			if (ret.name.equals(name) && (desc == null || ret.desc.equals(desc))) return ret;
-			// check altName+altDesc
-			if (ret.name.equals(altName) && (altDesc == null || ret.desc.equals(altDesc))) return ret;
+			if (ret.name.equals(name)) return ret;
 		}
 
-		return null;
+		if (optional) {
+			return null;
+		} else {
+			throw new MethodNotFoundException(name);
+		}
 	}
 
 	public static MethodNode findMethod(ClassNode cn, Name name) {
-		return findMethod2(cn, name.deobf, name.obf, name.desc, name.obfDesc);
+		return findMethod(cn, name, false);
 	}
 
-	public static boolean transformInlinedSizeMethod(ClassNode cn, MethodNode method, int oldValue, int newValue) {
-		boolean ret = false;
+	public static MethodNode findMethod(ClassNode cn, Name name, boolean optional) {
+		for (MethodNode ret : cn.methods) {
+			if (name.matches(ret)) return ret;
+		}
+
+		if (optional) {
+			return null;
+		} else {
+			throw new MethodNotFoundException(name.deobf);
+		}
+	}
+
+	public static FieldNode findField(ClassNode cn, String name) {
+		return findField(cn, name, false);
+	}
+
+	public static FieldNode findField(ClassNode cn, String name, boolean optional) {
+		for (FieldNode ret : cn.fields) {
+			if (name.equals(ret.name)) return ret;
+		}
+
+		if (optional) {
+			return null;
+		} else {
+			throw new MethodNotFoundException(name);
+		}
+	}
+
+	public static FieldNode findField(ClassNode cn, Name name) {
+		return findField(cn, name, false);
+	}
+
+	public static FieldNode findField(ClassNode cn, Name name, boolean optional) {
+		for (FieldNode ret : cn.fields) {
+			if (name.matches(ret)) return ret;
+		}
+
+		if (optional) {
+			return null;
+		} else {
+			throw new MethodNotFoundException(name.deobf);
+		}
+	}
+
+	public static void makePublic(MethodNode x) {
+		x.access = (x.access & ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) | Opcodes.ACC_PUBLIC;
+	}
+
+	public static void makePublic(FieldNode x) {
+		x.access = (x.access & ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) | Opcodes.ACC_PUBLIC;
+	}
+
+	public static boolean transformInlinedSizeMethod(ClassNode cn, MethodNode method, int oldValue, int newValue, boolean optional) {
+		boolean found = false;
 
 		for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
 			AbstractInsnNode insn = it.next();
@@ -59,7 +99,7 @@ public class AsmUtil {
 				if (node.cst instanceof Integer &&
 						(Integer) node.cst == oldValue) {
 					node.cst = newValue;
-					ret = true;
+					found = true;
 				}
 			} else if (insn.getOpcode() == Opcodes.SIPUSH || insn.getOpcode() == Opcodes.BIPUSH) {
 				IntInsnNode node = (IntInsnNode) insn;
@@ -72,12 +112,14 @@ public class AsmUtil {
 						it.set(new LdcInsnNode(newValue));
 					}
 
-					ret = true;
+					found = true;
 				}
 			}
 		}
 
-		return ret;
+		if (!found && !optional) throw new AsmTransformException("can't find constant value "+oldValue+" in method "+method.name);
+
+		return found;
 	}
 
 	public static void dump(InsnList list) {
