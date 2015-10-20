@@ -34,8 +34,7 @@ public enum ClassEdit {
 	VanillaS26PacketMapChunkBulk(new VanillaS26PacketMapChunkBulk(), "net.minecraft.network.play.server.S26PacketMapChunkBulk"),
 
 	FmlRegistry(new FmlRegistry(), "cpw.mods.fml.common.registry.GameData",
-			"cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry",
-			"cpw.mods.fml.common.registry.GameRegistry"),
+			"cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry"),
 
 	CofhBlockHelper(new CofhBlockHelper(), "cofh.lib.util.helpers.BlockHelper"),
 
