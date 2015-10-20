@@ -56,7 +56,7 @@ public class SelfHooks implements IClassNodeTransformer {
 			
 			toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
 			toInsert.add(new VarInsnNode(Opcodes.ILOAD, 1));
-			toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, Name.extendedBlockStorage.get(isObf), !isObf ? "blockRefCount" : "b", "I"));
+			toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, Name.extendedBlockStorage.get(isObf), !isObf ? "blockRefCount" : "field_76682_b", "I"));
 			method.instructions.insert(insn, toInsert);
 			
 			method.maxStack = 3;
@@ -76,7 +76,7 @@ public class SelfHooks implements IClassNodeTransformer {
 			
 			toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
 			toInsert.add(new VarInsnNode(Opcodes.ILOAD, 1));
-			toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, Name.extendedBlockStorage.get(isObf), !isObf ? "tickRefCount" : "c", "I"));
+			toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, Name.extendedBlockStorage.get(isObf), !isObf ? "tickRefCount" : "field_76683_c", "I"));
 			method.instructions.insert(insn, toInsert);
 			
 			method.maxStack = 3;

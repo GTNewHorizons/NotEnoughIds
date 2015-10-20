@@ -59,7 +59,7 @@ public enum Name {
 	}
 
 	public String getDesc(boolean obfuscated) {
-		return obfuscated ? obfDesc : desc;
+		return desc;
 	}
 
 	@SuppressWarnings("unused")

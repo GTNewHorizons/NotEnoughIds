@@ -32,17 +32,25 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
 			AbstractInsnNode insn = iterator.next();
 
-			if (insn.getOpcode() == Opcodes.LDC && ((LdcInsnNode) insn).cst.equals("Blocks")) {
-				// NBTTagCompound is on the stack
-				iterator.set(new VarInsnNode(Opcodes.ALOAD, 11)); // replace with ExtendedBlockStorage load
+			if (insn != null && insn.getNext().getOpcode() == Opcodes.LDC && ((LdcInsnNode) insn.getNext()).cst.equals("Blocks")) {
+				iterator.remove();
+				iterator.next(); iterator.remove();
+				iterator.next(); iterator.remove(); // remove ALOAD 11
+				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL ExtendedBlockStorage.getBlockLSBArray
+				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL NBTTagCompound.setByteArray
+				
+				if(obfuscated){
+					iterator.add(new VarInsnNode(Opcodes.ALOAD, 11));
+					iterator.add(new VarInsnNode(Opcodes.ALOAD, 10));
+				}
+				else{
+					iterator.add(new VarInsnNode(Opcodes.ALOAD, 9));
+					iterator.add(new VarInsnNode(Opcodes.ALOAD, 11));
+				}
 				iterator.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
 						Name.hooks.get(obfuscated),
 						Name.hooks_writeChunkToNbt.get(obfuscated),
 						Name.hooks_writeChunkToNbt.getDesc(obfuscated), false));
-
-				iterator.next(); iterator.remove(); // remove ALOAD 11
-				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL ExtendedBlockStorage.getBlockLSBArray
-				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL NBTTagCompound.setByteArray
 
 				return true;
 			}

@@ -22,7 +22,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		cn.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "block16BArray", "[S", null, null));
 
 		for(FieldNode field : cn.fields){
-			if(field.name.equals("tickRefCount") || field.name.equals("blockRefCount") || field.name.equals("b") || field.name.equals("c")){
+			if(field.name.equals("tickRefCount") || field.name.equals("blockRefCount") || field.name.equals("field_76682_b") || field.name.equals("field_76683_c")){
 				field.access = Opcodes.ACC_PUBLIC;
 			}
 		}
