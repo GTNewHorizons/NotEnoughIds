@@ -59,7 +59,7 @@ public class AsmUtil {
 		if (optional) {
 			return null;
 		} else {
-			throw new MethodNotFoundException(name);
+			throw new FieldNotFoundException(name);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class AsmUtil {
 		if (optional) {
 			return null;
 		} else {
-			throw new MethodNotFoundException(name.deobf);
+			throw new FieldNotFoundException(name.deobf);
 		}
 	}
 

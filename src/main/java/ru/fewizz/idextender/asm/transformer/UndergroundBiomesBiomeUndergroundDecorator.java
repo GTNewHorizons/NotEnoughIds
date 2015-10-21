@@ -38,18 +38,10 @@ public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTra
 				iterator.add(new VarInsnNode(Opcodes.ILOAD, 18 + varOffset)); // y
 				iterator.add(new VarInsnNode(Opcodes.ILOAD, 10 + varOffset)); // z
 				iterator.add(Name.hooks_getBlockId.staticInvocation(obfuscated));
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
-				iterator.next();iterator.remove();
+				while(iterator.next().getOpcode() != Opcodes.ISTORE){
+					//System.out.println(iterator);
+					iterator.remove();
+				}
 				break;
 			}		
 		}
