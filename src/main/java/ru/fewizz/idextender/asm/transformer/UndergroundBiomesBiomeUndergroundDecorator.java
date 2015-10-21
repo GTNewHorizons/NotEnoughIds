@@ -26,32 +26,32 @@ public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTra
 
 	private void transformReplaceChunkOres(ClassNode cn, MethodNode method, boolean obfuscated, int varOffset) {
 		InsnList code = method.instructions;
-		int part = 0;
+
 
 		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
 			AbstractInsnNode insn = iterator.next();
 
-			if (part == 0) { // find ExtendedBlockStorage.getBlockLSBArray, replace with Hooks.getBlockId
-				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL &&
-						Name.ebs_getBlockLSBArray.matches((MethodInsnNode) insn, obfuscated)) {
-					iterator.remove();
-					// ExtendedBlockStorage is on the stack
-					iterator.add(new VarInsnNode(Opcodes.ILOAD, 9 + varOffset)); // x
-					iterator.add(new VarInsnNode(Opcodes.ILOAD, 18 + varOffset)); // y
-					iterator.add(new VarInsnNode(Opcodes.ILOAD, 10 + varOffset)); // z
-					iterator.add(Name.hooks_getBlockId.staticInvocation(obfuscated));
-					part++;
-				}
-			} else if (part == 1) { // remove everything up to ISTORE (exclusive), which stores the block id in a local var
-				if (insn.getOpcode() == Opcodes.ISTORE) {
-					part++;
-					break; // nothing else to do, the msb id query returns always null
-				} else {
-					iterator.remove();
-				}
-			}
+			if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && Name.ebs_getBlockLSBArray.matches((MethodInsnNode) insn, obfuscated)) { //replacing: int blockID = extendedblockstorage.getBlockLSBArray()[(inLevelY << 8 | chunkz << 4 | chunkx)] & 0xFF;
+				iterator.remove();
+				// ExtendedBlockStorage is on the stack
+				iterator.add(new VarInsnNode(Opcodes.ILOAD, 9 + varOffset)); // x
+				iterator.add(new VarInsnNode(Opcodes.ILOAD, 18 + varOffset)); // y
+				iterator.add(new VarInsnNode(Opcodes.ILOAD, 10 + varOffset)); // z
+				iterator.add(Name.hooks_getBlockId.staticInvocation(obfuscated));
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				iterator.next();iterator.remove();
+				break;
+			}		
 		}
-
-		if (part == 2) throw new AsmTransformException("no match for part "+part);
 	}
 }
