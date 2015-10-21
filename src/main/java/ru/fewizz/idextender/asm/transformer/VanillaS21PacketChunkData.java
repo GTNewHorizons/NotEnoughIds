@@ -20,13 +20,13 @@ public class VanillaS21PacketChunkData implements IClassNodeTransformer {
 		MethodNode method = AsmUtil.findMethod(cn, "<clinit>");
 		AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaSize, Constants.newSize, false);
 
-		method = AsmUtil.findMethod(cn, "func_149275_c");
+		method = AsmUtil.findMethod(cn, Name.s21_undefined1);
 		AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaSize, Constants.newSize, false);
 
 		method = AsmUtil.findMethod(cn, Name.packet_readPacketData);
 		AsmUtil.transformInlinedSizeMethod(cn, method, Constants.vanillaEbsSize, Constants.newEbsSize, false);
 
-		method = AsmUtil.findMethod(cn, "func_149269_a");
+		method = AsmUtil.findMethod(cn, Name.s21_undefined2);
 		transformCreateData(cn, method, obfuscated);
 	}
 

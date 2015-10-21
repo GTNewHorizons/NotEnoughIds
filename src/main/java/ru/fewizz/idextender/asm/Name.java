@@ -31,6 +31,8 @@ public enum Name {
 	packet("net/minecraft/network/Packet", "ft"),
 	packetBuffer("net/minecraft/network/PacketBuffer", "et"),
 	s22("net/minecraft/network/play/server/S22PacketMultiBlockChange", "gk"),
+	s21("net/minecraft/network/play/server/S21PacketChunkData", "gx"),
+	s21_extracted("net/minecraft/network/play/server/S21PacketChunkData$Extracted", "gy"),
 	world("net/minecraft/world/World", "ahb"),
 
 	ebs_getBlock(extendedBlockStorage, "getBlockByExtId", "a", "func_150819_a", "(III)Lnet/minecraft/block/Block;"), // ExtendedBlockStorage
@@ -53,6 +55,8 @@ public enum Name {
 	packet_readPacketData(packet, "readPacketData", "a", "func_148837_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
 	nhpc_handleMultiBlockChange(nhpc, "handleMultiBlockChange", "a", "func_147287_a", "(Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;)V"), // NetHandlerPlayClient
 	s22_init_server(s22, "<init>", null, null, "(I[SLnet/minecraft/world/chunk/Chunk;)V"), // S22PacketMultiBlockChange
+	s21_undefined1(s21, "func_149275_c", "c", null, "()I"),
+	s21_undefined2(s21, "func_149269_a", "a", null, "(Lnet/minecraft/world/chunk/Chunk;ZI)Lnet/minecraft/network/play/server/S21PacketChunkData$Extracted;"),
 
 	// underground biomes
 
