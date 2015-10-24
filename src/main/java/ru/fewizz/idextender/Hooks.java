@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
@@ -120,15 +121,18 @@ public class Hooks {
 		int cntNonEmpty = 0;
 		int cntTicking = 0;
 
-		for (int off = 0; off < blkIds.length; off++){
+		for (int off = 0; off < blkIds.length; off++) {
 			int id = blkIds[off] & 0xffff;
 
 			if (id > 0) {
-				if (Block.getBlockById(id) == null) {
-					blkIds[off] = 0;
+				Block block = Block.getBlockById(id);
+
+				if (block == null || block == Blocks.air) {
+					blkIds[off] = 0; // NOTE: setting the block to 0 is not vanilla behavior
 				} else{
 					++cntNonEmpty;
-					if (Block.getBlockById(id).getTickRandomly()){
+
+					if (block.getTickRandomly()) {
 						++cntTicking;
 					}
 				}
