@@ -12,6 +12,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
 import ru.fewizz.idextender.asm.AsmTransformException;
 import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.Constants;
@@ -28,16 +29,13 @@ public class VanillaChunk implements IClassNodeTransformer {
 		method.localVariables = null;
 
 		int part = 0;
-		LabelNode endLabel = null;
 
 		for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
 			AbstractInsnNode insn = it.next();
 
 			if (part == 0) { // find getBlockLSBArray() call, replace with setting the data
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-					MethodInsnNode node = (MethodInsnNode) insn;
-
-					if (Name.ebs_getBlockLSBArray.matches(node, obfuscated)) {
+					if (Name.ebs_getBlockLSBArray.matches((MethodInsnNode)insn, obfuscated)) {
 						// ExtendedBlockStorage is on the stack
 						it.set(new VarInsnNode(Opcodes.ALOAD, 1)); // replace with data (byte[]) load
 						it.add(new VarInsnNode(Opcodes.ILOAD, 6)); // offset (k)
@@ -51,9 +49,10 @@ public class VanillaChunk implements IClassNodeTransformer {
 					it.add(new LdcInsnNode(Constants.ebsIdArraySize));
 					it.add(new InsnNode(Opcodes.IADD));
 					part++;
-				} else {
+				} 
+				else 
 					it.remove();
-				}
+				
 			} else if (part == 2) { // seek to ExtendedBlockStorage.getBlockMSBArray, then back to ICONST_0 or the preceding label
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
 					MethodInsnNode node = (MethodInsnNode) insn;
@@ -63,21 +62,7 @@ public class VanillaChunk implements IClassNodeTransformer {
 						while (it.previous().getType() != AbstractInsnNode.LABEL);
 
 						it.next(); // reverse the iterator, returns the label again
-						part++;
-					}
-				}
-			} else { // remove everything up to the end label (exclusive), detect the end label from the 1st IF_ICMPGE insn (main loop condition)
-				if (endLabel == null) {
-					if (insn.getOpcode() == Opcodes.IF_ICMPGE) {
-						endLabel = ((JumpInsnNode) insn).label;
-					}
-
-					it.remove();
-				} else {
-					if (insn == endLabel) {
 						return;
-					} else {
-						it.remove();
 					}
 				}
 			}

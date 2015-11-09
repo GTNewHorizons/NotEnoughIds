@@ -7,10 +7,12 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
 import ru.fewizz.idextender.asm.AsmTransformException;
 import ru.fewizz.idextender.asm.AsmUtil;
 import ru.fewizz.idextender.asm.Constants;
@@ -27,21 +29,43 @@ public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
 
 		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
 			AbstractInsnNode insn = iterator.next();
-
-			if (part == 0) { // seek to ISTORE 7, prefix with masking
-				if (insn.getOpcode() == Opcodes.ISTORE && ((VarInsnNode) insn).var == 7) {
-					iterator.set(new LdcInsnNode(Constants.blockIdMask));
+			
+			if (part == 0) { // short short1
+				if (insn.getOpcode() == Opcodes.ALOAD && ((VarInsnNode) insn).var == 4)
+					part++;
+			}
+			else if (part == 1) { // short short2
+				if (insn.getOpcode() == Opcodes.ALOAD && ((VarInsnNode) insn).var == 4) {
+					iterator.remove();
+					insn = iterator.next();
+					iterator.set(new InsnNode(Opcodes.ICONST_0));
+					part++;
+				}
+			}
+			else if (part == 2){ // int l
+				if (insn.getOpcode() == Opcodes.ILOAD && ((VarInsnNode) insn).var == 7){
+					iterator.set(new VarInsnNode(Opcodes.ALOAD, 4));
+					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream", "readShort", "()S", false));
+					part++;
+				}
+			}
+			else if (part == 3){ // remove everything up to ISTORE (exclusive)
+				if (insn.getOpcode() == Opcodes.ISTORE) {
+					part++;
+				} else {
+					iterator.remove();
+				}
+			}
+			else if (part == 4){ // int i1
+				if (insn.getOpcode() == Opcodes.ILOAD && ((VarInsnNode) insn).var == 7){
+					iterator.set(new VarInsnNode(Opcodes.ALOAD, 4));
+					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream", "readByte", "()B", false));
+					iterator.add(new IntInsnNode(Opcodes.BIPUSH, 15));
 					iterator.add(new InsnNode(Opcodes.IAND));
-					iterator.add(new VarInsnNode(Opcodes.ISTORE, 7));
 					part++;
 				}
-			} else if (part == 1) { // seek to ILOAD 7, replace with DataInputStream.read()
-				if (insn.getOpcode() == Opcodes.ILOAD && ((VarInsnNode) insn).var == 7) {
-					iterator.set(new VarInsnNode(Opcodes.ALOAD, 4)); // DataInputStream
-					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream", "read", "()I", false));
-					part++;
-				}
-			} else { // remove everything up to ISTORE (exclusive)
+			}
+			else if (part == 5){ // remove everything up to ISTORE (exclusive)
 				if (insn.getOpcode() == Opcodes.ISTORE) {
 					return;
 				} else {

@@ -5,6 +5,7 @@
 /build/*
 /eclipse/*
 /run/*
+/src/main/java/net/*
 /out/*
 /asm/*
 /bin/*
