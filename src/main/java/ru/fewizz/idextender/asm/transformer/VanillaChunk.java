@@ -23,7 +23,8 @@ import ru.fewizz.idextender.asm.Name;
 public class VanillaChunk implements IClassNodeTransformer {
 	@Override
 	public void transform(ClassNode cn, boolean obfuscated) {
-		MethodNode method = AsmUtil.findMethod(cn, Name.chunk_fillChunk, !IETransformer.isClient());
+		MethodNode method = AsmUtil.findMethod(cn, Name.chunk_fillChunk, true);
+		
 		if (method == null) return; // the method doesn't exist on the server side
 
 		method.localVariables = null;
@@ -50,18 +51,21 @@ public class VanillaChunk implements IClassNodeTransformer {
 					it.add(new InsnNode(Opcodes.IADD));
 					part++;
 				} 
-				else 
+				else {
 					it.remove();
-				
+				}
 			} else if (part == 2) { // seek to ExtendedBlockStorage.getBlockMSBArray, then back to ICONST_0 or the preceding label
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-					MethodInsnNode node = (MethodInsnNode) insn;
-
-					if (Name.ebs_getBlockMSBArray.matches(node, obfuscated)) {
+					if (Name.ebs_getBlockMSBArray.matches((MethodInsnNode) insn, obfuscated)) {
 						while (it.previous().getOpcode() != Opcodes.ICONST_0);
 						while (it.previous().getType() != AbstractInsnNode.LABEL);
-
-						it.next(); // reverse the iterator, returns the label again
+						while (true){
+							insn = it.next();
+							if(insn.getOpcode() == Opcodes.IF_ICMPLT || insn.getOpcode() == Opcodes.IF_ICMPGE){
+								break;
+							}
+						}
+						it.set(new JumpInsnNode(insn.getOpcode() == Opcodes.IF_ICMPLT ? Opcodes.IF_ICMPGT : Opcodes.IF_ICMPLT,((JumpInsnNode)insn).label));
 						return;
 					}
 				}

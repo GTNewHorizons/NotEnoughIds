@@ -95,8 +95,6 @@ public class Hooks {
 	}
 
 	public static void setBlockId(ExtendedBlockStorage ebs, int x, int y, int z, int id) {
-		if (id < 0 || id > Constants.maxBlockId) throw new IllegalArgumentException("id out of range: "+id);
-
 		get(ebs)[y << 8 | z << 4 | x] = (short) id;
 	}
 
@@ -141,5 +139,16 @@ public class Hooks {
 
 		setBlockRefCount(ebs, cntNonEmpty);
 		setTickRefCount(ebs, cntTicking);
+	}
+	
+	public static int getIdFromBlockWithCheck(Block block) {
+		int id = Block.getIdFromBlock(block);
+		
+		if(id == -1) {
+			throw new IllegalArgumentException("Block " + block + " is not registered.");
+		}
+		if (id < 0 || id > Constants.maxBlockId) throw new IllegalArgumentException("id out of range: "+id);
+		
+		return id;
 	}
 }

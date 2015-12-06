@@ -18,6 +18,7 @@ public enum Name {
 	hooks_getBlockId(hooks, "getBlockId", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I"),
 	hooks_getBlockById(hooks, "getBlock", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)Lnet/minecraft/block/Block;"),
 	hooks_setBlockId(hooks, "setBlockId", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;IIII)V"),
+	hooks_getIdFromBlockWithCheck(hooks, "getIdFromBlockWithCheck", null, null, "(Lnet/minecraft/block/Block;)I"),
 
 	// vanilla
 	acl("net/minecraft/world/chunk/storage/AnvilChunkLoader", "aqk"),
