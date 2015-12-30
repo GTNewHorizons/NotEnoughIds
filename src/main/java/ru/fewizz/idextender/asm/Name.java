@@ -35,6 +35,7 @@ public enum Name {
 	s21("net/minecraft/network/play/server/S21PacketChunkData", "gx"),
 	s21_extracted("net/minecraft/network/play/server/S21PacketChunkData$Extracted", "gy"),
 	world("net/minecraft/world/World", "ahb"),
+	dataWatcher("net/minecraft/entity/DataWatcher", "te"),
 
 	ebs_getBlock(extendedBlockStorage, "getBlockByExtId", "a", "func_150819_a", "(III)Lnet/minecraft/block/Block;"), // ExtendedBlockStorage
 	ebs_setBlock(extendedBlockStorage, "func_150818_a", "a", null, "(IIILnet/minecraft/block/Block;)V"),
@@ -43,6 +44,8 @@ public enum Name {
 	ebs_setBlockMSBArray(extendedBlockStorage, "setBlockMSBArray", "a", "func_76673_a", "(Lnet/minecraft/world/chunk/NibbleArray;)V"),
 	ebs_isEmpty(extendedBlockStorage, "isEmpty", "a", "func_76663_a", "()Z"),
 	ebs_removeInvalidBlocks(extendedBlockStorage, "removeInvalidBlocks", "e", "func_76672_e", "()V"),
+	
+	dataWatcher_addObject(dataWatcher, "addObject", "a", "func_75682_a", "(ILjava/lang/Object;)V"),
 
 	ebs_blockRefCount(extendedBlockStorage, "blockRefCount", "b", "field_76682_b", "I"),
 	ebs_tickRefCount(extendedBlockStorage, "tickRefCount", "c", "field_76683_c", "I"),

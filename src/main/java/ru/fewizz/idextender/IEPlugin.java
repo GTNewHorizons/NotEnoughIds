@@ -1,5 +1,6 @@
 package ru.fewizz.idextender;
 
+import java.io.File;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
@@ -25,7 +26,7 @@ public class IEPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public void injectData(Map<String, Object> data) {
-
+		IEConfig.init((File) data.get("coremodLocation"));
 	}
 
 	@Override

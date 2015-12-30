@@ -3,20 +3,7 @@ package ru.fewizz.idextender.asm;
 import java.util.HashMap;
 import java.util.Map;
 
-import ru.fewizz.idextender.asm.transformer.CofhBlockHelper;
-import ru.fewizz.idextender.asm.transformer.FmlRegistry;
-import ru.fewizz.idextender.asm.transformer.SelfHooks;
-import ru.fewizz.idextender.asm.transformer.UndergroundBiomesBiomeUndergroundDecorator;
-import ru.fewizz.idextender.asm.transformer.UndergroundBiomesOreUBifier;
-import ru.fewizz.idextender.asm.transformer.VanillaAnvilChunkLoader;
-import ru.fewizz.idextender.asm.transformer.VanillaBlockFire;
-import ru.fewizz.idextender.asm.transformer.VanillaChunk;
-import ru.fewizz.idextender.asm.transformer.VanillaExtendedBlockStorage;
-import ru.fewizz.idextender.asm.transformer.VanillaNetHandlerPlayClient;
-import ru.fewizz.idextender.asm.transformer.VanillaS21PacketChunkData;
-import ru.fewizz.idextender.asm.transformer.VanillaS22PacketMultiBlockChange;
-import ru.fewizz.idextender.asm.transformer.VanillaS26PacketMapChunkBulk;
-import ru.fewizz.idextender.asm.transformer.VanillaStatList;
+import ru.fewizz.idextender.asm.transformer.*;
 
 public enum ClassEdit {
 	SelfHooks(new SelfHooks(), "ru.fewizz.idextender.Hooks"),
@@ -27,6 +14,7 @@ public enum ClassEdit {
 	VanillaAnvilChunkLoader(new VanillaAnvilChunkLoader(), "net.minecraft.world.chunk.storage.AnvilChunkLoader"),
 	VanillaChunk(new VanillaChunk(), "net.minecraft.world.chunk.Chunk"),
 	VanillaExtendedBlockStorage(new VanillaExtendedBlockStorage(), "net.minecraft.world.chunk.storage.ExtendedBlockStorage"),
+	VanillaDataWatcher(new VanillaDataWatcher(), "net.minecraft.entity.DataWatcher"),
 
 	VanillaNetHandlerPlayClient(new VanillaNetHandlerPlayClient(), "net.minecraft.client.network.NetHandlerPlayClient"),
 	VanillaS21PacketChunkData(new VanillaS21PacketChunkData(), "net.minecraft.network.play.server.S21PacketChunkData"),

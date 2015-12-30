@@ -28,35 +28,37 @@ public class Hooks {
 	public static void writeChunkToNbt(NBTTagCompound nbt, ExtendedBlockStorage ebs) {
 		nbt.setByteArray("Blocks16", getBlockData(ebs));
 
-		// save id in legacy format to leave worlds as intact as possible after removing NEIDs
-		short[] data = get(ebs);
-		byte[] lsbData = new byte[data.length];
-		byte[] msbData = null;
+		// save id in legacy format to leave worlds as intact as possible after removing NEIDs (only if this option is enabled in config file.)
+		if(IEConfig.oldWorldsSupport){
+			short[] data = get(ebs);
+			byte[] lsbData = new byte[data.length];
+			byte[] msbData = null;
 
-		for (int i = 0; i < data.length; i++) {
-			int id = data[i] & 0xffff;
+			for (int i = 0; i < data.length; i++) {
+				int id = data[i] & 0xffff;
 
-			if (id <= 0xff) {
-				lsbData[i] = (byte) id;
-			} else if (id <= 0xfff) {
-				if (msbData == null) msbData = new byte[data.length / 2];
+				if (id <= 0xff) {
+					lsbData[i] = (byte) id;
+				} else if (id <= 0xfff) {
+					if (msbData == null) msbData = new byte[data.length / 2];
 
-				lsbData[i] = (byte) id;
+					lsbData[i] = (byte) id;
 
-				if (i % 2 == 0) {
-					msbData[i / 2] |= (id >>> 8) & 0x0f;
+					if (i % 2 == 0) {
+						msbData[i / 2] |= (id >>> 8) & 0x0f;
+					} else {
+						msbData[i / 2] |= (id >>> 4) & 0xf0;
+					}
 				} else {
-					msbData[i / 2] |= (id >>> 4) & 0xf0;
+					// ignore id, treat as 0 (air)
 				}
-			} else {
-				// ignore id, treat as 0 (air)
 			}
-		}
 
-		nbt.setByteArray("Blocks", lsbData);
+			nbt.setByteArray("Blocks", lsbData);
 
-		if (msbData != null) {
-			nbt.setByteArray("Add", msbData);
+			if (msbData != null) {
+				nbt.setByteArray("Add", msbData);
+			}
 		}
 	}
 
@@ -145,8 +147,14 @@ public class Hooks {
 		int id = Block.getIdFromBlock(block);
 		
 		if(id == -1) {
-			throw new IllegalArgumentException("Block " + block + " is not registered.");
+			if(IEConfig.removeInvalidBlocks) {
+				id = Block.getIdFromBlock(Blocks.air); // default 0
+			}
+			else {
+				throw new IllegalArgumentException("Block " + block + " is not registered.");
+			}
 		}
+		
 		if (id < 0 || id > Constants.maxBlockId) throw new IllegalArgumentException("id out of range: "+id);
 		
 		return id;
