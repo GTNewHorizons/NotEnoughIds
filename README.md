@@ -9,10 +9,10 @@ Extends hardcoded ID limits.
 [MinecraftForum Page](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/wip-mods/2467198-notenoughids-maximum-id-range-exceeded-no-more)
 
 #TODO
-- [x] Increase ID limit for biomes
+- [x] Increase ID limit for biomes (Experimental)
 - [ ] Increase ID limit for enchantments (?)
 - [ ] Increase ID limit for potions (?)
-- [ ] Increase DataWatcher ID limit (?)
+- [x] Increase DataWatcher ID limit
 
 #Modpacks
 Feel free to include this mod in your private or public modpack if you are link back to [this page](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/wip-mods/2467198-notenoughids-maximum-id-range-exceeded-no-more).
