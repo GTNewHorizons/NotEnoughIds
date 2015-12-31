@@ -7,7 +7,7 @@ import net.minecraftforge.common.config.Configuration;
 public class IEConfig {
 	static Configuration config;
 	public static boolean removeInvalidBlocks = false;
-	public static boolean oldWorldsSupport = true;
+	public static boolean postNeidWorldsSupport = true;
 	public static boolean extendDataWatcher = false;
 	
 	public static void init(File file){
@@ -19,7 +19,7 @@ public class IEConfig {
 		config = new Configuration(newFile);
 		
 		removeInvalidBlocks = config.getBoolean("RemoveInvalidBlocks", "NEID", false, "Remove invalid (corrupted) blocks from the game.");
-		oldWorldsSupport = config.getBoolean("OldWorldsSupport", "NEID", true, "Enable support for pre-NEID worlds (worlds which were created without NEID).");
+		postNeidWorldsSupport = config.getBoolean("PostNeidWorldsSupport", "NEID", true, "If true only blocks with IDs > 4095 will disappear after removing NEID.");
 		extendDataWatcher = config.getBoolean("ExtendDataWatcher", "NEID", false, "Extend DataWatcher IDs. Vanilla limit is 31, new limit is 63.");
 		
 		config.save();

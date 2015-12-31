@@ -29,7 +29,7 @@ public class Hooks {
 		nbt.setByteArray("Blocks16", getBlockData(ebs));
 
 		// save id in legacy format to leave worlds as intact as possible after removing NEIDs (only if this option is enabled in config file.)
-		if(IEConfig.oldWorldsSupport){
+		if(IEConfig.postNeidWorldsSupport){
 			short[] data = get(ebs);
 			byte[] lsbData = new byte[data.length];
 			byte[] msbData = null;
