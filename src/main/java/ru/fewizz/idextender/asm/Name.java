@@ -49,6 +49,8 @@ public enum Name {
 	dataWatcher_addObject(dataWatcher, "addObject", "a", "func_75682_a", "(ILjava/lang/Object;)V"),
 	dataWatcher_writeWatchableObjectToPacketBuffer(dataWatcher, "writeWatchableObjectToPacketBuffer", "a", "func_151510_a", "(Lnet/minecraft/network/PacketBuffer;Lnet/minecraft/entity/DataWatcher$WatchableObject;)V"),
 	dataWatcher_readWatchedListFromPacketBuffer(dataWatcher, "readWatchedListFromPacketBuffer", "b", "func_151508_b", "(Lnet/minecraft/network/PacketBuffer;)Ljava/util/List;"),
+	dataWatcher_writeWatchedListToPacketBuffer(dataWatcher, "writeWatchedListToPacketBuffer", "a", "func_151507_a", "(Ljava/util/List;Lnet/minecraft/network/PacketBuffer;)V"),
+	dataWatcher_func_151509_a(dataWatcher, "func_151509_a", "a", "func_151509_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
 
 	ebs_blockRefCount(extendedBlockStorage, "blockRefCount", "b", "field_76682_b", "I"),
 	ebs_tickRefCount(extendedBlockStorage, "tickRefCount", "c", "field_76683_c", "I"),

@@ -6,6 +6,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import ru.fewizz.idextender.IEConfig;
@@ -32,6 +33,9 @@ public class VanillaDataWatcher implements IClassNodeTransformer{
 				AbstractInsnNode insn = it.next();
 				if(insn.getOpcode() == Opcodes.ICONST_5){
 					it.set(new IntInsnNode(Opcodes.BIPUSH, 6));
+				}
+				if(insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode)insn).name.equals("writeByte")){
+					it.set(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", "writeShort", "(I)Lio/netty/buffer/ByteBuf;", false));
 					break;
 				}
 			}
@@ -42,10 +46,38 @@ public class VanillaDataWatcher implements IClassNodeTransformer{
 			AsmUtil.transformInlinedSizeMethod(cn, method, 224, 448, false);
 			AsmUtil.transformInlinedSizeMethod(cn, method, 31, 63, false);
 			
+			int num = 0;
 			for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
 				AbstractInsnNode insn = it.next();
 				if(insn.getOpcode() == Opcodes.ICONST_5){
 					it.set(new IntInsnNode(Opcodes.BIPUSH, 6));
+				}
+				if(insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode)insn).name.equals("readByte")){
+					num++;
+					if(num == 2) continue;
+					it.set(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", "readShort", "()S", false));
+					if(num == 3) break;
+				}
+			}
+			
+			//////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			method = AsmUtil.findMethod(cn, Name.dataWatcher_writeWatchedListToPacketBuffer);
+			for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
+				AbstractInsnNode insn = it.next();
+				if(insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode)insn).name.equals("writeByte")){
+					it.set(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", "writeShort", "(I)Lio/netty/buffer/ByteBuf;", false));
+					break;
+				}
+			}
+			
+			//////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			method = AsmUtil.findMethod(cn, Name.dataWatcher_func_151509_a);
+			for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
+				AbstractInsnNode insn = it.next();
+				if(insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode)insn).name.equals("writeByte")){
+					it.set(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", "writeShort", "(I)Lio/netty/buffer/ByteBuf;", false));
 					break;
 				}
 			}

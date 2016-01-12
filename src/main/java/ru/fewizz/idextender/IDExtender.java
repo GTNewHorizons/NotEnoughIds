@@ -9,7 +9,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 
-@Mod(modid = "notenoughIDs", name = "NotEnoughIDs", version = "1.4.1")
+@Mod(modid = "notenoughIDs", name = "NotEnoughIDs", version = "1.4.2")
 public class IDExtender {
 	@EventHandler
 	public void test(FMLPreInitializationEvent event) {
