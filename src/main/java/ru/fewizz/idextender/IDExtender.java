@@ -16,7 +16,6 @@ public class IDExtender {
 		//for(int i = 0; i < 4500; i++){
 		//Block shield = new BlockIce().setBlockName(".shield" + i);
 		//GameRegistry.registerBlock(shield, i + "ShieldBlock");
-		//System.out.println("TUTA");
 		//shield.setCreativeTab(CreativeTabs.tabFood);
 		//}
 	}

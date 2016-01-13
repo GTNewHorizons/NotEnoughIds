@@ -11,4 +11,6 @@ public class Constants {
 	public static final int vanillaSize = 196864;
 	public static final int newEbsSize = ebsIdArraySize + 3 * ebsIdArrayLength / 2; // ids + 3 * nibble (meta, blocklight, skylight)
 	public static final int newSize = 16 * newEbsSize + 256; // ebsCount * ebsSize + biome
+	
+	public static final int maxDataWatcherId = 127;
 }
