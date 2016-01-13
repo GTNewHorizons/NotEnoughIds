@@ -33,5 +33,5 @@ Feel free to include this mod in your private or public modpack if you are link 
 
 #Credits
 immibis for [MinecraftForkage code](https://github.com/MinecraftForkage/MinecraftForkage)
-VikeStep and GloomyFolken for their coremod tutorials
+VikeStep and GloomyFolken for their coremod tutorials. 
 Bogdan-G for testing new builds

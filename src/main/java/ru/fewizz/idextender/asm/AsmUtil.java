@@ -87,6 +87,9 @@ public class AsmUtil {
 		x.access = (x.access & ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) | Opcodes.ACC_PUBLIC;
 	}
 
+	public static boolean transformInlinedSizeMethod(ClassNode cn, MethodNode method, int oldValue, int newValue) {
+		return transformInlinedSizeMethod(cn, method, oldValue, newValue, false);
+	}
 	public static boolean transformInlinedSizeMethod(ClassNode cn, MethodNode method, int oldValue, int newValue, boolean optional) {
 		boolean found = false;
 

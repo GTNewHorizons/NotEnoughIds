@@ -45,22 +45,17 @@ public enum Name {
 	ebs_setBlockMSBArray(extendedBlockStorage, "setBlockMSBArray", "a", "func_76673_a", "(Lnet/minecraft/world/chunk/NibbleArray;)V"),
 	ebs_isEmpty(extendedBlockStorage, "isEmpty", "a", "func_76663_a", "()Z"),
 	ebs_removeInvalidBlocks(extendedBlockStorage, "removeInvalidBlocks", "e", "func_76672_e", "()V"),
-	
 	dataWatcher_addObject(dataWatcher, "addObject", "a", "func_75682_a", "(ILjava/lang/Object;)V"),
 	dataWatcher_writeWatchableObjectToPacketBuffer(dataWatcher, "writeWatchableObjectToPacketBuffer", "a", "func_151510_a", "(Lnet/minecraft/network/PacketBuffer;Lnet/minecraft/entity/DataWatcher$WatchableObject;)V"),
 	dataWatcher_readWatchedListFromPacketBuffer(dataWatcher, "readWatchedListFromPacketBuffer", "b", "func_151508_b", "(Lnet/minecraft/network/PacketBuffer;)Ljava/util/List;"),
 	dataWatcher_writeWatchedListToPacketBuffer(dataWatcher, "writeWatchedListToPacketBuffer", "a", "func_151507_a", "(Ljava/util/List;Lnet/minecraft/network/PacketBuffer;)V"),
 	dataWatcher_func_151509_a(dataWatcher, "func_151509_a", "a", "func_151509_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
-
 	ebs_blockRefCount(extendedBlockStorage, "blockRefCount", "b", "field_76682_b", "I"),
 	ebs_tickRefCount(extendedBlockStorage, "tickRefCount", "c", "field_76683_c", "I"),
-
 	acl_writeChunkToNBT(acl, "writeChunkToNBT", "a", "func_75820_a", "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V"), // AnvilChunkLoader
 	acl_readChunkFromNBT(acl, "readChunkFromNBT", "a", "func_75823_a", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;"),
-
 	block_getIdFromBlock(block, "getIdFromBlock", "b", "func_149682_b", "(Lnet/minecraft/block/Block;)I"),
 	chunk_fillChunk(chunk, "fillChunk", "a", "func_76607_a", "([BIIZ)V"),
-
 	packet_readPacketData(packet, "readPacketData", "a", "func_148837_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
 	nhpc_handleMultiBlockChange(nhpc, "handleMultiBlockChange", "a", "func_147287_a", "(Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;)V"), // NetHandlerPlayClient
 	s22_init_server(s22, "<init>", null, null, "(I[SLnet/minecraft/world/chunk/Chunk;)V"), // S22PacketMultiBlockChange
@@ -68,11 +63,15 @@ public enum Name {
 	s21_undefined2(s21, "func_149269_a", "a", null, "(Lnet/minecraft/world/chunk/Chunk;ZI)Lnet/minecraft/network/play/server/S21PacketChunkData$Extracted;"),
 
 	// underground biomes
-
 	ub_bud("exterminatorJeff/undergroundBiomes/worldGen/BiomeUndergroundDecorator"),
 
 	ub_bud_replaceChunkOres_world(ub_bud, "replaceChunkOres", null, null, "(IILnet/minecraft/world/World;)V"),
-	ub_bud_replaceChunkOres_iChunkProvider(ub_bud, "replaceChunkOres", null, null, "(Lnet/minecraft/world/chunk/IChunkProvider;II)V"); // BiomeUndergroundDecorator
+	ub_bud_replaceChunkOres_iChunkProvider(ub_bud, "replaceChunkOres", null, null, "(Lnet/minecraft/world/chunk/IChunkProvider;II)V"), // BiomeUndergroundDecorator
+	
+	// MFQM
+	MFQM("MoreFunQuicksandMod/main/MFQM"),
+	
+	MFQM_preInit(MFQM, "preInit", null, null, "(Lcpw/mods/fml/common/event/FMLPreInitializationEvent;)V");
 
 	// for non-mc classes
 	private Name(String deobf) {
