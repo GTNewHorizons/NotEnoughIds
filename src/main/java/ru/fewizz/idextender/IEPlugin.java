@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import ru.fewizz.idextender.asm.IETransformer;
 
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
@@ -27,6 +28,7 @@ public class IEPlugin implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		IEConfig.init((File) data.get("coremodLocation"));
+		IETransformer.isObfuscated = (Boolean) data.get("runtimeDeobfuscationEnabled");
 	}
 
 	@Override

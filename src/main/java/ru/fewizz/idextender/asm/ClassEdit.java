@@ -28,7 +28,9 @@ public enum ClassEdit {
 	UndergroundBiomesOreUBifier(new UndergroundBiomesOreUBifier(), "exterminatorJeff.undergroundBiomes.worldGen.OreUBifier"),
 	UndergroundBiomesBiomeUndergroundDecorator(new UndergroundBiomesBiomeUndergroundDecorator(), "exterminatorJeff.undergroundBiomes.worldGen.BiomeUndergroundDecorator"),
 	
-	MFQM(new MFQM(), "MoreFunQuicksandMod.main.MFQM");
+	MFQM(new MFQM(), "MoreFunQuicksandMod.main.MFQM"),
+	
+	WorldEditBase(new WorldEditBaseBlock(), "com.sk89q.worldedit.blocks.BaseBlock");
 
 	private ClassEdit(IClassNodeTransformer transformer, String... classNames) {
 		this.transformer = transformer;

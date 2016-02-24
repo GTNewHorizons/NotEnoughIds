@@ -43,7 +43,7 @@ public class IETransformer implements IClassTransformer {
 		// patch
 
 		try {
-			edit.getTransformer().transform(cn, isObfuscated());
+			edit.getTransformer().transform(cn, isObfuscated);
 		} catch (AsmTransformException t) {
 			logger.error("Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
 			throw t;
@@ -81,18 +81,10 @@ public class IETransformer implements IClassTransformer {
 		return isClient;
 	}
 
-	private static boolean isObfuscated() {
-		if (isObfuscated == null) {
-			isObfuscated = IETransformer.class.getResource("/net/minecraft/world/World.class") == null;
-		}
-
-		return isObfuscated;
-	}
-
 	private static final boolean enablePreVerification = false;
 	private static final boolean enablePostVerification = true;
 
 	public static Logger logger = LogManager.getLogger("NEID");
-	private static Boolean isObfuscated = null;
+	public static boolean isObfuscated;
 	private static Boolean isClient = null;
 }
