@@ -33,8 +33,10 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 			if (insn.getOpcode() == Opcodes.LDC && ((LdcInsnNode) insn).cst.equals("Blocks")) {
 				iterator.remove();
 				iterator.next();
-				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL ExtendedBlockStorage.getBlockLSBArray
-				iterator.next(); iterator.remove(); // remove INVOKEVIRTUAL NBTTagCompound.setByteArray
+				iterator.next();
+				iterator.remove(); // remove INVOKEVIRTUAL ExtendedBlockStorage.getBlockLSBArray
+				iterator.next();
+				iterator.remove(); // remove INVOKEVIRTUAL NBTTagCompound.setByteArray
 
 				iterator.add(Name.hooks_writeChunkToNbt.staticInvocation(obfuscated));
 				return;
@@ -57,7 +59,8 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 					iterator.set(Name.hooks_readChunkFromNbt.staticInvocation(obfuscated));
 					part++;
 				}
-			} else if (part == 1) {
+			}
+			else if (part == 1) {
 				iterator.remove();
 
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
@@ -67,7 +70,8 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 						part++;
 					}
 				}
-			} else {
+			}
+			else {
 				if (insn.getType() == AbstractInsnNode.FRAME) {
 					iterator.remove();
 					part++;
@@ -76,6 +80,7 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 			}
 		}
 
-		if (part != 3) throw new AsmTransformException("no match for part "+part);
+		if (part != 3)
+			throw new AsmTransformException("no match for part " + part);
 	}
 }

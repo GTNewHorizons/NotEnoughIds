@@ -93,24 +93,27 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
 					part++;
-					
+
 					iterator.add(new VarInsnNode(Opcodes.ALOAD, 0));
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 1));
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 2));
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 3));
 					iterator.add(Name.ebs_getBlock.virtualInvocation(obfuscated));
 				}
-			} else if (part == 1) { // seek to the Block.getIdFromBlock call
+			}
+			else if (part == 1) { // seek to the Block.getIdFromBlock call
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
 					iterator.set(Name.hooks_getIdFromBlockWithCheck.staticInvocation(obfuscated));
 					part++;
 				}
-			} else { // remove the remainder
+			}
+			else { // remove the remainder
 				iterator.remove();
 			}
 		}
 
-		if (part != 2) throw new AsmTransformException("no match for part "+part);
+		if (part != 2)
+			throw new AsmTransformException("no match for part " + part);
 
 		// the block id is still on the stack from the previous INVOKESTATIC (Block.getIdFromBlock)
 		code.add(new VarInsnNode(Opcodes.ISTORE, 5));
@@ -140,12 +143,12 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		method.maxStack = 1;
 	}
 
-	private void transformRemoveInvalidBlocks(ClassNode cn, MethodNode method){
+	private void transformRemoveInvalidBlocks(ClassNode cn, MethodNode method) {
 		InsnList code = method.instructions;
 
 		code.clear();
 		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "removeInvalidBlocksHook", "(L"+cn.name+";)V", false));
+		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "removeInvalidBlocksHook", "(L" + cn.name + ";)V", false));
 		code.add(new InsnNode(Opcodes.RETURN));
 
 		method.localVariables = null;

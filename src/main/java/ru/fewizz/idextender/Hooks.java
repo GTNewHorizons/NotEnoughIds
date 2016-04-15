@@ -10,7 +10,6 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import ru.fewizz.idextender.asm.Constants;
 
-
 public class Hooks {
 	public static byte[] getBlockData(ExtendedBlockStorage ebs) {
 		short[] data = get(ebs);
@@ -29,7 +28,7 @@ public class Hooks {
 		nbt.setByteArray("Blocks16", getBlockData(ebs));
 
 		// save id in legacy format to leave worlds as intact as possible after removing NEIDs (only if this option is enabled in config file.)
-		if(IEConfig.postNeidWorldsSupport){
+		if (IEConfig.postNeidWorldsSupport) {
 			short[] data = get(ebs);
 			byte[] lsbData = new byte[data.length];
 			byte[] msbData = null;
@@ -39,17 +38,22 @@ public class Hooks {
 
 				if (id <= 0xff) {
 					lsbData[i] = (byte) id;
-				} else if (id <= 0xfff) {
-					if (msbData == null) msbData = new byte[data.length / 2];
-
+				}
+				else if (id <= 0xfff) {
+					if(msbData == null) {
+						msbData = new byte[data.length / 2];
+					}
+					
 					lsbData[i] = (byte) id;
 
 					if (i % 2 == 0) {
 						msbData[i / 2] |= (id >>> 8) & 0x0f;
-					} else {
+					}
+					else {
 						msbData[i / 2] |= (id >>> 4) & 0xf0;
 					}
-				} else {
+				}
+				else {
 					// ignore id, treat as 0 (air)
 				}
 			}
@@ -65,7 +69,8 @@ public class Hooks {
 	public static void readChunkFromNbt(ExtendedBlockStorage ebs, NBTTagCompound nbt) {
 		if (nbt.hasKey("Blocks16")) {
 			setBlockData(ebs, nbt.getByteArray("Blocks16"), 0);
-		} else if (nbt.hasKey("Blocks")) {
+		}
+		else if (nbt.hasKey("Blocks")) {
 			short[] out = get(ebs);
 			byte[] lsbData = nbt.getByteArray("Blocks");
 
@@ -78,12 +83,14 @@ public class Hooks {
 					out[i] = (short) (lsbData[i] & 0xff | (msPart & 0x0f) << 8);
 					out[i + 1] = (short) (lsbData[i + 1] & 0xff | (msPart & 0xf0) << 4);
 				}
-			} else {
+			}
+			else {
 				for (int i = 0; i < out.length; i++) {
 					out[i] = (short) (lsbData[i] & 0xff);
 				}
 			}
-		} else {
+		}
+		else {
 			assert false;
 		}
 	}
@@ -104,19 +111,19 @@ public class Hooks {
 		return new short[Constants.ebsIdArrayLength];
 	}
 
-	private static short[] get(ExtendedBlockStorage ebs) {
+	public static short[] get(ExtendedBlockStorage ebs) {
 		return null; // populated via asm (SelfHooks)
 	}
 
-	public static void setTickRefCount(ExtendedBlockStorage ebs, int value){
+	public static void setTickRefCount(ExtendedBlockStorage ebs, int value) {
 		// populated via asm (SelfHooks)
 	}
 
-	public static void setBlockRefCount(ExtendedBlockStorage ebs, int value){
+	public static void setBlockRefCount(ExtendedBlockStorage ebs, int value) {
 		// populated via asm (SelfHooks)
 	}
 
-	public static void removeInvalidBlocksHook(ExtendedBlockStorage ebs){
+	public static void removeInvalidBlocksHook(ExtendedBlockStorage ebs) {
 		short[] blkIds = get(ebs);
 		int cntNonEmpty = 0;
 		int cntTicking = 0;
@@ -129,7 +136,8 @@ public class Hooks {
 
 				if (block == null || block == Blocks.air) {
 					blkIds[off] = 0; // NOTE: setting the block to 0 is not vanilla behavior
-				} else{
+				}
+				else {
 					++cntNonEmpty;
 
 					if (block.getTickRandomly()) {
@@ -142,21 +150,22 @@ public class Hooks {
 		setBlockRefCount(ebs, cntNonEmpty);
 		setTickRefCount(ebs, cntTicking);
 	}
-	
+
 	public static int getIdFromBlockWithCheck(Block block) {
 		int id = Block.getIdFromBlock(block);
-		
-		if(id == -1) {
-			if(IEConfig.removeInvalidBlocks) {
-				id = Block.getIdFromBlock(Blocks.air); // default 0
+
+		if (id == -1) {
+			if (IEConfig.removeInvalidBlocks) {
+				id = Block.getIdFromBlock(Blocks.air);
 			}
 			else {
 				throw new IllegalArgumentException("Block " + block + " is not registered.");
 			}
 		}
-		
-		if (id < 0 || id > Constants.maxBlockId) throw new IllegalArgumentException("id out of range: "+id);
-		
+
+		if (id < 0 || id > Constants.maxBlockId)
+			throw new IllegalArgumentException("id out of range: " + id);
+
 		return id;
 	}
 }

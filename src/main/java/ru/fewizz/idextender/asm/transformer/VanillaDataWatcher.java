@@ -29,7 +29,7 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
 			method = AsmUtil.findMethod(cn, Name.dataWatcher_writeWatchableObjectToPacketBuffer);
 			AsmUtil.transformInlinedSizeMethod(cn, method, 31, Constants.maxDataWatcherId);
 			AsmUtil.transformInlinedSizeMethod(cn, method, 255, 32767);
-			AsmUtil.transformInlinedSizeMethod(cn, method, 5, 8);
+			AsmUtil.transformInlinedSizeMethod(cn, method, 5, 7);
 
 			for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
 				AbstractInsnNode insn = it.next();
@@ -42,10 +42,9 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
 			/////////////////////////////////////////////////////////////////////////////////////////////////
 
 			method = AsmUtil.findMethod(cn, Name.dataWatcher_readWatchedListFromPacketBuffer);
-			AsmUtil.transformInlinedSizeMethod(cn, method, 224, 32512);
+			AsmUtil.transformInlinedSizeMethod(cn, method, 224, 32640);
 			AsmUtil.transformInlinedSizeMethod(cn, method, 31, Constants.maxDataWatcherId);
-			AsmUtil.transformInlinedSizeMethod(cn, method, 5, 8);
-			AsmUtil.transformInlinedSizeMethod(cn, method, 127, 65535);
+			AsmUtil.transformInlinedSizeMethod(cn, method, 5, 7);
 
 			int num = 0;
 			for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
@@ -75,7 +74,6 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
 			//////////////////////////////////////////////////////////////////////////////////////////////////
 
 			method = AsmUtil.findMethod(cn, Name.dataWatcher_func_151509_a);
-			AsmUtil.transformInlinedSizeMethod(cn, method, 127, 65535);
 			for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
 				AbstractInsnNode insn = it.next();
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) insn).name.equals("writeByte")) {

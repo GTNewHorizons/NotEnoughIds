@@ -25,7 +25,7 @@ public class SelfHooks implements IClassNodeTransformer {
 		transformSetTickRefCount(cn, method, obfuscated);
 	}
 
-	private void transformGet(ClassNode cn, MethodNode method){
+	private void transformGet(ClassNode cn, MethodNode method) {
 		// replace with "return ebs.block16BArray;"
 		InsnList code = method.instructions;
 
@@ -38,7 +38,7 @@ public class SelfHooks implements IClassNodeTransformer {
 		method.maxStack = 1;
 	}
 
-	private void transformSetBlockRefCount(ClassNode cn, MethodNode method, boolean isObf){
+	private void transformSetBlockRefCount(ClassNode cn, MethodNode method, boolean isObf) {
 		InsnList code = method.instructions;
 
 		code.clear();
@@ -51,7 +51,7 @@ public class SelfHooks implements IClassNodeTransformer {
 		method.maxStack = 2;
 	}
 
-	private void transformSetTickRefCount(ClassNode cn, MethodNode method, boolean isObf){
+	private void transformSetTickRefCount(ClassNode cn, MethodNode method, boolean isObf) {
 		InsnList code = method.instructions;
 
 		code.clear();

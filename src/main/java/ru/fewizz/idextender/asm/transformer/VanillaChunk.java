@@ -24,8 +24,9 @@ public class VanillaChunk implements IClassNodeTransformer {
 	@Override
 	public void transform(ClassNode cn, boolean obfuscated) {
 		MethodNode method = AsmUtil.findMethod(cn, Name.chunk_fillChunk, true);
-		
-		if (method == null) return; // the method doesn't exist on the server side
+
+		if (method == null)
+			return; // the method doesn't exist on the server side
 
 		method.localVariables = null;
 
@@ -36,7 +37,7 @@ public class VanillaChunk implements IClassNodeTransformer {
 
 			if (part == 0) { // find getBlockLSBArray() call, replace with setting the data
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-					if (Name.ebs_getBlockLSBArray.matches((MethodInsnNode)insn, obfuscated)) {
+					if (Name.ebs_getBlockLSBArray.matches((MethodInsnNode) insn, obfuscated)) {
 						// ExtendedBlockStorage is on the stack
 						it.set(new VarInsnNode(Opcodes.ALOAD, 1)); // replace with data (byte[]) load
 						it.add(new VarInsnNode(Opcodes.ILOAD, 6)); // offset (k)
@@ -44,34 +45,37 @@ public class VanillaChunk implements IClassNodeTransformer {
 						part++;
 					}
 				}
-			} else if (part == 1) { // remove everything up to IADD (exclusive), insert add operands (k, Constants.ebsIdArraySize)
+			}
+			else if (part == 1) { // remove everything up to IADD (exclusive), insert add operands (k, Constants.ebsIdArraySize)
 				if (insn.getOpcode() == Opcodes.IADD) {
 					it.set(new VarInsnNode(Opcodes.ILOAD, 6));
 					it.add(new LdcInsnNode(Constants.ebsIdArraySize));
 					it.add(new InsnNode(Opcodes.IADD));
 					part++;
-				} 
+				}
 				else {
 					it.remove();
 				}
-			} else if (part == 2) { // seek to ExtendedBlockStorage.getBlockMSBArray, then back to ICONST_0 or the preceding label
+			}
+			else if (part == 2) { // seek to ExtendedBlockStorage.getBlockMSBArray, then back to ICONST_0 or the preceding label
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
 					if (Name.ebs_getBlockMSBArray.matches((MethodInsnNode) insn, obfuscated)) {
 						while (it.previous().getOpcode() != Opcodes.ICONST_0);
 						while (it.previous().getType() != AbstractInsnNode.LABEL);
-						while (true){
+						
+						while (true) {
 							insn = it.next();
-							if(insn.getOpcode() == Opcodes.IF_ICMPLT || insn.getOpcode() == Opcodes.IF_ICMPGE){
+							if (insn.getOpcode() == Opcodes.IF_ICMPLT || insn.getOpcode() == Opcodes.IF_ICMPGE) {
 								break;
 							}
 						}
-						it.set(new JumpInsnNode(insn.getOpcode() == Opcodes.IF_ICMPLT ? Opcodes.IF_ICMPGT : Opcodes.IF_ICMPLT,((JumpInsnNode)insn).label));
+						it.set(new JumpInsnNode(insn.getOpcode() == Opcodes.IF_ICMPLT ? Opcodes.IF_ICMPGT : Opcodes.IF_ICMPLT, ((JumpInsnNode) insn).label));
 						return;
 					}
 				}
 			}
 		}
 
-		throw new AsmTransformException("no match for part "+part);
+		throw new AsmTransformException("no match for part " + part);
 	}
 }

@@ -17,7 +17,7 @@ public class CofhBlockHelper implements IClassNodeTransformer {
 	@Override
 	public void transform(ClassNode cn, boolean obfuscated) {
 		MethodNode method = AsmUtil.findMethod(cn, "<clinit>");
-		if(!AsmUtil.transformInlinedSizeMethod(cn, method, 4096, Constants.maxBlockId + 1, true)){
+		if (!AsmUtil.transformInlinedSizeMethod(cn, method, 4096, Constants.maxBlockId + 1, true)) {
 			AsmUtil.transformInlinedSizeMethod(cn, method, 1024, Constants.maxBlockId + 1);
 		}
 	}

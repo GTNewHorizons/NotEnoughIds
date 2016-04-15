@@ -13,9 +13,13 @@ public class VanillaBlockFire implements IClassNodeTransformer {
 		boolean found = false;
 
 		for (MethodNode method : cn.methods) {
-			if (AsmUtil.transformInlinedSizeMethod(cn, method, 4096, Constants.maxBlockId + 1, true)) found = true;
+			if (AsmUtil.transformInlinedSizeMethod(cn, method, 4096, Constants.maxBlockId + 1, true)) {
+				found = true;
+			}
+			
 		}
 
-		if (!found) throw new AsmTransformException("can't find 4096 constant in any method");
+		if (!found)
+			throw new AsmTransformException("can't find 4096 constant in any method");
 	}
 }

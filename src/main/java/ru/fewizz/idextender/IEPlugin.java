@@ -6,13 +6,13 @@ import java.util.Map;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import ru.fewizz.idextender.asm.IETransformer;
 
-
 @IFMLLoadingPlugin.MCVersion("1.7.10")
 @IFMLLoadingPlugin.TransformerExclusions("ru.fewizz.idextender.asm")
 public class IEPlugin implements IFMLLoadingPlugin {
+
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[] { "ru.fewizz.idextender.asm.IETransformer" };
+		return new String[] { IETransformer.class.getName() };
 	}
 
 	@Override

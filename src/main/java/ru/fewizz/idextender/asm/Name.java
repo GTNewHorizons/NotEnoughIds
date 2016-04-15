@@ -67,10 +67,10 @@ public enum Name {
 
 	ub_bud_replaceChunkOres_world(ub_bud, "replaceChunkOres", null, null, "(IILnet/minecraft/world/World;)V"),
 	ub_bud_replaceChunkOres_iChunkProvider(ub_bud, "replaceChunkOres", null, null, "(Lnet/minecraft/world/chunk/IChunkProvider;II)V"), // BiomeUndergroundDecorator
-	
+
 	// MFQM
 	MFQM("MoreFunQuicksandMod/main/MFQM"),
-	
+
 	MFQM_preInit(MFQM, "preInit", null, null, "(Lcpw/mods/fml/common/event/FMLPreInitializationEvent;)V");
 
 	// for non-mc classes
@@ -98,38 +98,30 @@ public enum Name {
 
 	public boolean matches(MethodNode x) {
 		assert desc.startsWith("(");
-
-		return obf.equals(x.name) && obfDesc.equals(x.desc) ||
-				srg.equals(x.name) && desc.equals(x.desc) ||
-				deobf.equals(x.name) && desc.equals(x.desc);
+		return obf.equals(x.name) && obfDesc.equals(x.desc) || srg.equals(x.name) && desc.equals(x.desc) || deobf.equals(x.name) && desc.equals(x.desc);
 	}
 
 	public boolean matches(FieldNode x) {
 		assert !desc.startsWith("(");
-
-		return obf.equals(x.name) && obfDesc.equals(x.desc) ||
-				srg.equals(x.name) && desc.equals(x.desc) ||
-				deobf.equals(x.name) && desc.equals(x.desc);
+		return obf.equals(x.name) && obfDesc.equals(x.desc) || srg.equals(x.name) && desc.equals(x.desc) || deobf.equals(x.name) && desc.equals(x.desc);
 	}
 
 	public boolean matches(MethodInsnNode x, boolean obfuscated) {
 		assert desc.startsWith("(");
-
 		if (obfuscated) {
-			return clazz.obf.equals(x.owner) && obf.equals(x.name) && obfDesc.equals(x.desc) ||
-					clazz.srg.equals(x.owner) && srg.equals(x.name) && desc.equals(x.desc);
-		} else {
+			return clazz.obf.equals(x.owner) && obf.equals(x.name) && obfDesc.equals(x.desc) || clazz.srg.equals(x.owner) && srg.equals(x.name) && desc.equals(x.desc);
+		}
+		else {
 			return clazz.deobf.equals(x.owner) && deobf.equals(x.name) && desc.equals(x.desc);
 		}
 	}
 
 	public boolean matches(FieldInsnNode x, boolean obfuscated) {
 		assert !desc.startsWith("(");
-
 		if (obfuscated) {
-			return clazz.obf.equals(x.owner) && obf.equals(x.name) && obfDesc.equals(x.desc) ||
-					clazz.srg.equals(x.owner) && srg.equals(x.name) && desc.equals(x.desc);
-		} else {
+			return clazz.obf.equals(x.owner) && obf.equals(x.name) && obfDesc.equals(x.desc) || clazz.srg.equals(x.owner) && srg.equals(x.name) && desc.equals(x.desc);
+		}
+		else {
 			return clazz.deobf.equals(x.owner) && deobf.equals(x.name) && desc.equals(x.desc);
 		}
 	}
@@ -137,98 +129,89 @@ public enum Name {
 	public MethodInsnNode staticInvocation(boolean obfuscated) {
 		// static interface methods aren't supported by this, they'd need itf=true
 		assert desc.startsWith("(");
-
 		if (obfuscated) { // srg invocation
 			return new MethodInsnNode(Opcodes.INVOKESTATIC, clazz.srg, srg, desc, false);
-		} else {
+		}
+		else {
 			return new MethodInsnNode(Opcodes.INVOKESTATIC, clazz.deobf, deobf, desc, false);
 		}
 	}
 
 	public MethodInsnNode virtualInvocation(boolean obfuscated) {
 		assert desc.startsWith("(");
-
 		if (obfuscated) { // srg invocation
 			return new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz.srg, srg, desc, false);
-		} else {
+		}
+		else {
 			return new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz.deobf, deobf, desc, false);
 		}
 	}
 
 	public FieldInsnNode staticGet(boolean obfuscated) {
 		assert !desc.startsWith("(");
-
 		if (obfuscated) { // srg access
 			return new FieldInsnNode(Opcodes.GETSTATIC, clazz.srg, srg, desc);
-		} else {
+		}
+		else {
 			return new FieldInsnNode(Opcodes.GETSTATIC, clazz.deobf, deobf, desc);
 		}
 	}
 
 	public FieldInsnNode virtualGet(boolean obfuscated) {
 		assert !desc.startsWith("(");
-
 		if (obfuscated) { // srg access
 			return new FieldInsnNode(Opcodes.GETFIELD, clazz.srg, srg, desc);
-		} else {
+		}
+		else {
 			return new FieldInsnNode(Opcodes.GETFIELD, clazz.deobf, deobf, desc);
 		}
 	}
 
 	public FieldInsnNode staticSet(boolean obfuscated) {
 		assert !desc.startsWith("(");
-
 		if (obfuscated) { // srg access
 			return new FieldInsnNode(Opcodes.PUTSTATIC, clazz.srg, srg, desc);
-		} else {
+		}
+		else {
 			return new FieldInsnNode(Opcodes.PUTSTATIC, clazz.deobf, deobf, desc);
 		}
 	}
 
 	public FieldInsnNode virtualSet(boolean obfuscated) {
 		assert !desc.startsWith("(");
-
 		if (obfuscated) { // srg access
 			return new FieldInsnNode(Opcodes.PUTFIELD, clazz.srg, srg, desc);
-		} else {
+		}
+		else {
 			return new FieldInsnNode(Opcodes.PUTFIELD, clazz.deobf, deobf, desc);
 		}
 	}
 
 	private static void translateDescs() {
 		StringBuilder sb = new StringBuilder();
-
 		for (Name name : Name.values()) {
-			if (name.desc == null) continue;
-
+			if (name.desc == null)
+				continue;
 			int pos = 0;
 			int endPos = -1;
-
 			while ((pos = name.desc.indexOf('L', pos)) != -1) {
 				sb.append(name.desc, endPos + 1, pos);
 				endPos = name.desc.indexOf(';', pos + 1);
-
 				String cName = name.desc.substring(pos + 1, endPos);
-
 				for (Name name2 : Name.values()) {
 					if (name2.deobf.equals(cName)) {
 						cName = name2.obf;
 						break;
 					}
 				}
-
 				sb.append('L');
 				sb.append(cName);
 				sb.append(';');
-
 				pos = endPos + 1;
 			}
-
 			sb.append(name.desc, endPos + 1, name.desc.length());
-
 			name.obfDesc = sb.toString();
 			sb.setLength(0);
-
 			//System.out.printf("deobf: %s, obf: %s, desc: %s, obfDesc: %s%n", name.deobf, name.obf, name.desc, name.obfDesc);
 		}
 	}

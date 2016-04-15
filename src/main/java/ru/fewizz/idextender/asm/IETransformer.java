@@ -11,14 +11,22 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.util.CheckClassAdapter;
 
-
 public class IETransformer implements IClassTransformer {
+	private static final boolean enablePreVerification = false;
+	private static final boolean enablePostVerification = true;
+
+	public static final Logger logger = LogManager.getLogger("NEID");
+	public static boolean isObfuscated;
+	private static Boolean isClient = null;
+
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
-		if (bytes == null) return bytes; // we don't create classes
+		if (bytes == null)
+			return bytes; // we don't create classes
 
 		ClassEdit edit = ClassEdit.get(transformedName);
-		if (edit == null) return bytes;
+		if (edit == null)
+			return bytes;
 
 		logger.debug("Patching {} with {}...", transformedName, edit.getName());
 
@@ -36,7 +44,8 @@ public class IETransformer implements IClassTransformer {
 
 				throw new RuntimeException(t);
 			}
-		} else {
+		}
+		else {
 			reader.accept(cn, readFlags);
 		}
 
@@ -64,7 +73,8 @@ public class IETransformer implements IClassTransformer {
 
 				throw new RuntimeException(t);
 			}
-		} else {
+		}
+		else {
 			cn.accept(writer);
 		}
 
@@ -80,11 +90,5 @@ public class IETransformer implements IClassTransformer {
 
 		return isClient;
 	}
-
-	private static final boolean enablePreVerification = false;
-	private static final boolean enablePostVerification = true;
-
-	public static Logger logger = LogManager.getLogger("NEID");
-	public static boolean isObfuscated;
-	private static Boolean isClient = null;
+	
 }

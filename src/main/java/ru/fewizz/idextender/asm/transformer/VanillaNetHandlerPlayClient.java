@@ -29,7 +29,7 @@ public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
 
 		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
 			AbstractInsnNode insn = iterator.next();
-			
+
 			if (part == 0) { // short short1
 				if (insn.getOpcode() == Opcodes.ALOAD && ((VarInsnNode) insn).var == 4)
 					part++;
@@ -42,22 +42,23 @@ public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
 					part++;
 				}
 			}
-			else if (part == 2){ // int l
-				if (insn.getOpcode() == Opcodes.ILOAD && ((VarInsnNode) insn).var == 7){
+			else if (part == 2) { // int l
+				if (insn.getOpcode() == Opcodes.ILOAD && ((VarInsnNode) insn).var == 7) {
 					iterator.set(new VarInsnNode(Opcodes.ALOAD, 4));
 					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream", "readShort", "()S", false));
 					part++;
 				}
 			}
-			else if (part == 3){ // remove everything up to ISTORE (exclusive)
+			else if (part == 3) { // remove everything up to ISTORE (exclusive)
 				if (insn.getOpcode() == Opcodes.ISTORE) {
 					part++;
-				} else {
+				}
+				else {
 					iterator.remove();
 				}
 			}
-			else if (part == 4){ // int i1
-				if (insn.getOpcode() == Opcodes.ILOAD && ((VarInsnNode) insn).var == 7){
+			else if (part == 4) { // int i1
+				if (insn.getOpcode() == Opcodes.ILOAD && ((VarInsnNode) insn).var == 7) {
 					iterator.set(new VarInsnNode(Opcodes.ALOAD, 4));
 					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream", "readByte", "()B", false));
 					iterator.add(new IntInsnNode(Opcodes.BIPUSH, 15));
@@ -65,15 +66,16 @@ public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
 					part++;
 				}
 			}
-			else if (part == 5){ // remove everything up to ISTORE (exclusive)
+			else if (part == 5) { // remove everything up to ISTORE (exclusive)
 				if (insn.getOpcode() == Opcodes.ISTORE) {
 					return;
-				} else {
+				}
+				else {
 					iterator.remove();
 				}
 			}
 		}
 
-		throw new AsmTransformException("no match for part "+part);
+		throw new AsmTransformException("no match for part " + part);
 	}
 }

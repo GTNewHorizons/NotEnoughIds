@@ -12,14 +12,19 @@ public class FmlRegistry implements IClassNodeTransformer {
 	@Override
 	public void transform(ClassNode cn, boolean obfuscated) {
 		FieldNode field = AsmUtil.findField(cn, "MAX_BLOCK_ID", true);
-		if (field != null) field.value = Constants.maxBlockId;
+		if (field != null) {
+			field.value = Constants.maxBlockId;
+		}
 
 		boolean found = false;
 
 		for (MethodNode method : cn.methods) {
-			if (AsmUtil.transformInlinedSizeMethod(cn, method, 4095, Constants.maxBlockId, true)) found = true;
+			if (AsmUtil.transformInlinedSizeMethod(cn, method, 4095, Constants.maxBlockId, true)) {
+				found = true;
+			}
 		}
 
-		if (!found) throw new AsmTransformException("can't find 4095 constant in any method");
+		if (!found)
+			throw new AsmTransformException("can't find 4095 constant in any method");
 	}
 }

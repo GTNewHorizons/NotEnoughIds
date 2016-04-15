@@ -31,7 +31,8 @@ public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
 					iterator.set(new InsnNode(Opcodes.ICONST_5));
 					part++;
 				}
-			} else if (part == 1) { // search Block.getIdFromBlock call, write result to the stream directly
+			}
+			else if (part == 1) { // search Block.getIdFromBlock call, write result to the stream directly
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
 					MethodInsnNode node = (MethodInsnNode) insn;
 
@@ -40,20 +41,24 @@ public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
 						part++;
 					}
 				}
-			} else if (part == 2) { // remove everything up to ALOAD (exclusive)
+			}
+			else if (part == 2) { // remove everything up to ALOAD (exclusive)
 				if (insn.getOpcode() == Opcodes.ALOAD) {
 					part++;
-				} else {
+				}
+				else {
 					iterator.remove();
 				}
-			} else if (part == 3) { // seek to the next INVOKEVIRTUAL (Chunk.getBlockMetadata), add stream byte write afterwards
+			}
+			else if (part == 3) { // seek to the next INVOKEVIRTUAL (Chunk.getBlockMetadata), add stream byte write afterwards
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
 					iterator.add(new VarInsnNode(Opcodes.ALOAD, 6)); // DataOutputStream
 					iterator.add(new InsnNode(Opcodes.SWAP));
 					iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataOutputStream", "writeByte", "(I)V", false));
 					part++;
 				}
-			} else { // remove everything up to INVOKEVIRTUAL (inclusive, DataOutputStream.writeShort)
+			}
+			else { // remove everything up to INVOKEVIRTUAL (inclusive, DataOutputStream.writeShort)
 				iterator.remove();
 
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
@@ -62,6 +67,6 @@ public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
 			}
 		}
 
-		throw new AsmTransformException("no match for part "+part);
+		throw new AsmTransformException("no match for part " + part);
 	}
 }
