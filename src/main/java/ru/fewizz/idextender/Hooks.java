@@ -132,12 +132,14 @@ public class Hooks {
 			int id = blkIds[off] & 0xffff;
 
 			if (id > 0) {
-				Block block = Block.getBlockById(id);
+				Block block = (Block) Block.blockRegistry.getObjectById(id);
 
-				if (block == null || block == Blocks.air) {
-					blkIds[off] = 0; // NOTE: setting the block to 0 is not vanilla behavior
+				if (block == null) {
+					if (IEConfig.removeInvalidBlocks)
+						blkIds[off] = 0; // NOTE: setting the block to 0 is not vanilla behavior
+
 				}
-				else {
+				else if (block != Blocks.air) {
 					++cntNonEmpty;
 
 					if (block.getTickRandomly()) {
@@ -155,12 +157,7 @@ public class Hooks {
 		int id = Block.getIdFromBlock(block);
 
 		if (IEConfig.catchUnregisteredBlocks && id == -1) {
-			if (IEConfig.removeInvalidBlocks) {
-				return Block.getIdFromBlock(Blocks.air);
-			}
-			else {
-				throw new IllegalArgumentException("Block " + block + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
-			}
+			throw new IllegalArgumentException("Block " + block + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
 		}
 
 		if (id < -1 || id > Constants.maxBlockId) // Bcs vanilla can save -1 if block is not registered =\

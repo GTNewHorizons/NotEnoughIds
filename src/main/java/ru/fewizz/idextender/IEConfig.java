@@ -6,10 +6,10 @@ import net.minecraftforge.common.config.Configuration;
 
 public class IEConfig {
 	static Configuration config;
+	public static boolean catchUnregisteredBlocks = false;
 	public static boolean removeInvalidBlocks = false;
 	public static boolean postNeidWorldsSupport = true;
 	public static boolean extendDataWatcher = false;
-	public static boolean catchUnregisteredBlocks = false;
 
 	public static void init(File file) {
 		File newFile;
