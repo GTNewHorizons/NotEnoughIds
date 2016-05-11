@@ -15,10 +15,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class IDExtender {
 	@EventHandler
 	public void test(FMLPreInitializationEvent event) {
-		for(int i = 0; i < 4500; i++){
-		    Block shield = new BlockIce().setBlockName(".shield" + i);
-		    GameRegistry.registerBlock(shield, i + "ShieldBlock");
-		    shield.setCreativeTab(CreativeTabs.tabFood);
-		}
+		//for(int i = 0; i < 4500; i++){
+		//    Block shield = new BlockIce().setBlockName(".shield" + i);
+		//    GameRegistry.registerBlock(shield, i + "ShieldBlock");
+		//    shield.setCreativeTab(CreativeTabs.tabFood);
+		//}
 	}
 }
