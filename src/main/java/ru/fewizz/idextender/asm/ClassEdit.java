@@ -30,7 +30,7 @@ public enum ClassEdit {
 	
 	MFQM(new MFQM(), "MoreFunQuicksandMod.main.MFQM"),
 	
-	WorldEditBase(new WorldEditBaseBlock(), "com.sk89q.worldedit.blocks.BaseBlock");
+	WorldEditBaseBlock(new WorldEditBaseBlock(), "com.sk89q.worldedit.blocks.BaseBlock");
 
 	private ClassEdit(IClassNodeTransformer transformer, String... classNames) {
 		this.transformer = transformer;

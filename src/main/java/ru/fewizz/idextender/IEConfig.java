@@ -9,6 +9,7 @@ public class IEConfig {
 	public static boolean removeInvalidBlocks = false;
 	public static boolean postNeidWorldsSupport = true;
 	public static boolean extendDataWatcher = false;
+	public static boolean catchUnregisteredBlocks = false;
 
 	public static void init(File file) {
 		File newFile;
@@ -21,8 +22,9 @@ public class IEConfig {
 
 		config = new Configuration(newFile);
 
+		catchUnregisteredBlocks = config.getBoolean("CatchUnregisteredBlocks", "NEID", false, "");
 		removeInvalidBlocks = config.getBoolean("RemoveInvalidBlocks", "NEID", false, "Remove invalid (corrupted) blocks from the game.");
-		postNeidWorldsSupport = config.getBoolean("PostNeidWorldsSupport", "NEID", true, "If true only blocks with IDs > 4095 will disappear after removing NEID.");
+		postNeidWorldsSupport = config.getBoolean("PostNeidWorldsSupport", "NEID", true, "If true, only blocks with IDs > 4095 will disappear after removing NEID.");
 		extendDataWatcher = config.getBoolean("ExtendDataWatcher", "NEID", false, "Extend DataWatcher IDs. Vanilla limit is 31, new limit is 127.");
 
 		config.save();

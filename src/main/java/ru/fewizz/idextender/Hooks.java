@@ -40,10 +40,10 @@ public class Hooks {
 					lsbData[i] = (byte) id;
 				}
 				else if (id <= 0xfff) {
-					if(msbData == null) {
+					if (msbData == null) {
 						msbData = new byte[data.length / 2];
 					}
-					
+
 					lsbData[i] = (byte) id;
 
 					if (i % 2 == 0) {
@@ -154,16 +154,16 @@ public class Hooks {
 	public static int getIdFromBlockWithCheck(Block block) {
 		int id = Block.getIdFromBlock(block);
 
-		if (id == -1) {
+		if (IEConfig.catchUnregisteredBlocks && id == -1) {
 			if (IEConfig.removeInvalidBlocks) {
-				id = Block.getIdFromBlock(Blocks.air);
+				return Block.getIdFromBlock(Blocks.air);
 			}
 			else {
-				throw new IllegalArgumentException("Block " + block + " is not registered.");
+				throw new IllegalArgumentException("Block " + block + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
 			}
 		}
 
-		if (id < 0 || id > Constants.maxBlockId)
+		if (id < -1 || id > Constants.maxBlockId) // Bcs vanilla can save -1 if block is not registered =\
 			throw new IllegalArgumentException("id out of range: " + id);
 
 		return id;

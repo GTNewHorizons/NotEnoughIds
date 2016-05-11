@@ -16,7 +16,11 @@ public class WorldEditBaseBlock implements IClassNodeTransformer {
 
 	@Override
 	public void transform(ClassNode cn, boolean obfuscated) {
-		MethodNode method = AsmUtil.findMethod(cn, "internalSetId");
+		MethodNode method = AsmUtil.findMethod(cn, "internalSetId", true);
+		if(method == null) {
+			return;
+		}
+		
 		AsmUtil.transformInlinedSizeMethod(cn, method, 4095, Constants.maxBlockId);
 
 		InsnList code = method.instructions;
