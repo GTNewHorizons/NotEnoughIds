@@ -40,6 +40,7 @@ public enum Name {
 	renderGlobal("net/minecraft/client/renderer/RenderGlobal", "bma"),
 	playerControllerMP("net/minecraft/client/multiplayer/PlayerControllerMP", "bje"),
 	itemInWorldManager("net/minecraft/server/management/ItemInWorldManager", "mx"),
+	entityPlayer("net/minecraft/entity/player/EntityPlayer", "yz"),
 
 	ebs_getBlock(extendedBlockStorage, "getBlockByExtId", "a", "func_150819_a", "(III)Lnet/minecraft/block/Block;"), // ExtendedBlockStorage
 	ebs_setBlock(extendedBlockStorage, "func_150818_a", "a", null, "(IIILnet/minecraft/block/Block;)V"),
