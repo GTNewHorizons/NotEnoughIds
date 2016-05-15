@@ -1,9 +1,11 @@
 package ru.fewizz.idextender;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBookshelf;
 import net.minecraft.block.BlockIce;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.block.BlockOre;
+import net.minecraft.block.BlockSand;
+import net.minecraft.block.BlockStone;
 import net.minecraft.creativetab.CreativeTabs;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -16,7 +18,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @Mod(
 		modid = "notenoughIDs",
 		name = "NotEnoughIDs",
-		version = "1.4.3")
+		version = "1.4.3.1")
 public class IDExtender {
 
 	@EventHandler
@@ -24,20 +26,28 @@ public class IDExtender {
 		//FMLCommonHandler.instance().bus().register(this);
 		//for (int i = 0; i < 4500; i++) {
 		//	Block shield = new BlockIce().setBlockName(".shield" + i);
-		//	GameRegistry.registerBlock(shield, i + "ShieldBlock");
 		//	shield.setCreativeTab(CreativeTabs.tabFood);
+		//	GameRegistry.registerBlock(shield, i + "ShieldBlock");
 		//}
+		
+		//Block ore = new BlockBookshelf().setBlockName("ore");
+		//ore.setCreativeTab(CreativeTabs.tabFood);
+		//GameRegistry.registerBlock(ore, "ore");
+		
+		//Block sand = new BlockSand().setBlockName("sand");
+		//sand.setCreativeTab(CreativeTabs.tabFood);
+		//GameRegistry.registerBlock(sand, "sand");
 	}
 
-	@SubscribeEvent
-	public void setBlock(TickEvent.WorldTickEvent e) {
-		boolean setunregisteredBlock = false; // Controlling only in debug mode
-		if (setunregisteredBlock) {
-			System.out.println("Setting unregistered block");
-			EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-			e.world.setBlock((int) player.posX, (int) player.posY - 2, (int) player.posZ, new BlockIce());
-		}
-
-	}
+	
+	//@SubscribeEvent
+	//public void setBlock(TickEvent.WorldTickEvent e) {
+	//	boolean setunregisteredBlock = false; // Controlling only in debug mode
+	//	if (setunregisteredBlock) {
+	//		System.out.println("Setting unregistered block");
+	//		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+	//		e.world.setBlock((int) player.posX, (int) player.posY - 2, (int) player.posZ, new BlockIce());
+	//	}
+	//}
 
 }

@@ -37,6 +37,9 @@ public enum Name {
 	world("net/minecraft/world/World", "ahb"),
 	dataWatcher("net/minecraft/entity/DataWatcher", "te"),
 	dataWatcher_watchableObject("net/minecraft/entity/DataWatcher$WatchableObject", "tf"),
+	renderGlobal("net/minecraft/client/renderer/RenderGlobal", "bma"),
+	playerControllerMP("net/minecraft/client/multiplayer/PlayerControllerMP", "bje"),
+	itemInWorldManager("net/minecraft/server/management/ItemInWorldManager", "mx"),
 
 	ebs_getBlock(extendedBlockStorage, "getBlockByExtId", "a", "func_150819_a", "(III)Lnet/minecraft/block/Block;"), // ExtendedBlockStorage
 	ebs_setBlock(extendedBlockStorage, "func_150818_a", "a", null, "(IIILnet/minecraft/block/Block;)V"),
@@ -57,10 +60,15 @@ public enum Name {
 	block_getIdFromBlock(block, "getIdFromBlock", "b", "func_149682_b", "(Lnet/minecraft/block/Block;)I"),
 	chunk_fillChunk(chunk, "fillChunk", "a", "func_76607_a", "([BIIZ)V"),
 	packet_readPacketData(packet, "readPacketData", "a", "func_148837_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
+	packet_writePacketData(packet, "writePacketData", "b", "func_148840_b", "(Lnet/minecraft/network/PacketBuffer;)V"),
 	nhpc_handleMultiBlockChange(nhpc, "handleMultiBlockChange", "a", "func_147287_a", "(Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;)V"), // NetHandlerPlayClient
 	s22_init_server(s22, "<init>", null, null, "(I[SLnet/minecraft/world/chunk/Chunk;)V"), // S22PacketMultiBlockChange
 	s21_undefined1(s21, "func_149275_c", "c", null, "()I"),
 	s21_undefined2(s21, "func_149269_a", "a", null, "(Lnet/minecraft/world/chunk/Chunk;ZI)Lnet/minecraft/network/play/server/S21PacketChunkData$Extracted;"),
+	renderGlobal_playAuxSFX(renderGlobal, "playAuxSFX", "a", "func_72706_a", "(Lnet/minecraft/entity/player/EntityPlayer;IIIII)V"),
+	playerControllerMP_onPlayerDestroyBlock(playerControllerMP, "onPlayerDestroyBlock", "a", "func_78751_a", "(IIII)Z"),
+	itemInWorldManager_tryHarvestBlock(itemInWorldManager, "tryHarvestBlock", "b", "func_73084_b", "(III)Z"),
+	world_breakBlock(world, "func_147480_a", "a", null, "(IIIZ)Z"),
 
 	// underground biomes
 	ub_bud("exterminatorJeff/undergroundBiomes/worldGen/BiomeUndergroundDecorator"),

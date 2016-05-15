@@ -19,7 +19,13 @@ public enum ClassEdit {
 	VanillaNetHandlerPlayClient(new VanillaNetHandlerPlayClient(), "net.minecraft.client.network.NetHandlerPlayClient"),
 	VanillaS21PacketChunkData(new VanillaS21PacketChunkData(), "net.minecraft.network.play.server.S21PacketChunkData"),
 	VanillaS22PacketMultiBlockChange(new VanillaS22PacketMultiBlockChange(), "net.minecraft.network.play.server.S22PacketMultiBlockChange"),
+	VanillaS24PacketBlockActivation(new VanillaS24PacketBlockActivation(), "net.minecraft.network.play.server.S24PacketBlockAction"),
 	VanillaS26PacketMapChunkBulk(new VanillaS26PacketMapChunkBulk(), "net.minecraft.network.play.server.S26PacketMapChunkBulk"),
+	
+	VanillaRenderGlobal(new VanillaRenderGlobal(), "net.minecraft.client.renderer.RenderGlobal"),
+	VanillaPlayerControllerMP(new VanillaPlayerControllerMP(), "net.minecraft.client.multiplayer.PlayerControllerMP"),
+	VanillaItemInWorldManager(new VanillaItemInWorldManager(), "net.minecraft.server.management.ItemInWorldManager"),
+	VanillaWorld(new VanillaWorld(), "net.minecraft.world.World"),
 
 	FmlRegistry(new FmlRegistry(), "cpw.mods.fml.common.registry.GameData", "cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry"),
 
