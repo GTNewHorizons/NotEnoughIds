@@ -18,7 +18,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @Mod(
 		modid = "notenoughIDs",
 		name = "NotEnoughIDs",
-		version = "1.4.3.2")
+		version = "1.4.3.3")
 public class IDExtender {
 
 	@EventHandler

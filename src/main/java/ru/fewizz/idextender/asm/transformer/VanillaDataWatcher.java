@@ -28,7 +28,7 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
 
 			method = AsmUtil.findMethod(cn, Name.dataWatcher_writeWatchableObjectToPacketBuffer);
 			AsmUtil.transformInlinedSizeMethod(cn, method, 31, Constants.maxDataWatcherId);
-			AsmUtil.transformInlinedSizeMethod(cn, method, 255, 1024);
+			AsmUtil.transformInlinedSizeMethod(cn, method, 255, 1023);
 			AsmUtil.transformInlinedSizeMethod(cn, method, 5, 7);
 
 			for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
@@ -42,6 +42,7 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
 			/////////////////////////////////////////////////////////////////////////////////////////////////
 
 			method = AsmUtil.findMethod(cn, Name.dataWatcher_readWatchedListFromPacketBuffer);
+			AsmUtil.transformInlinedSizeMethod(cn, method, 127, 32767);
 			AsmUtil.transformInlinedSizeMethod(cn, method, 224, 896);
 			AsmUtil.transformInlinedSizeMethod(cn, method, 31, Constants.maxDataWatcherId);
 			AsmUtil.transformInlinedSizeMethod(cn, method, 5, 7);
@@ -62,6 +63,7 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
 			//////////////////////////////////////////////////////////////////////////////////////////////////
 
 			method = AsmUtil.findMethod(cn, Name.dataWatcher_writeWatchedListToPacketBuffer);
+			AsmUtil.transformInlinedSizeMethod(cn, method, 127, 32767);
 
 			for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
 				AbstractInsnNode insn = it.next();
@@ -74,6 +76,8 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
 			//////////////////////////////////////////////////////////////////////////////////////////////////
 
 			method = AsmUtil.findMethod(cn, Name.dataWatcher_func_151509_a);
+			AsmUtil.transformInlinedSizeMethod(cn, method, 127, 32767);
+			
 			for (ListIterator<AbstractInsnNode> it = method.instructions.iterator(); it.hasNext();) {
 				AbstractInsnNode insn = it.next();
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) insn).name.equals("writeByte")) {
