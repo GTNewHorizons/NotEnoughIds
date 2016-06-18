@@ -160,8 +160,12 @@ public class Hooks {
 			throw new IllegalArgumentException("Block " + block + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
 		}
 
-		if (id < -1 || id > Constants.maxBlockId) // Bcs vanilla can save -1 if block is not registered =\
+		if (id < 0 || id > Constants.maxBlockId) {
+			if(id == -1) {
+				return Block.getIdFromBlock(Blocks.air); // 0
+			}
 			throw new IllegalArgumentException("id out of range: " + id);
+		}
 
 		return id;
 	}
