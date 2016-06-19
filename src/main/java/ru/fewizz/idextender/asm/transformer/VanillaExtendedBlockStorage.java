@@ -103,7 +103,8 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 			}
 			else if (part == 1) { // seek to the Block.getIdFromBlock call
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
-					iterator.set(Name.hooks_getIdFromBlockWithCheck.staticInvocation(obfuscated));
+					iterator.set(new VarInsnNode(Opcodes.ALOAD, 6));
+					iterator.add(Name.hooks_getIdFromBlockWithCheck.staticInvocation(obfuscated));
 					part++;
 				}
 			}

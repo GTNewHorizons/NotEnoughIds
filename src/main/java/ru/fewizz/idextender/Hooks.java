@@ -153,7 +153,7 @@ public class Hooks {
 		setTickRefCount(ebs, cntTicking);
 	}
 
-	public static int getIdFromBlockWithCheck(Block block) {
+	public static int getIdFromBlockWithCheck(Block block, Block oldBlock) {
 		int id = Block.getIdFromBlock(block);
 
 		if (IEConfig.catchUnregisteredBlocks && id == -1) {
@@ -161,8 +161,8 @@ public class Hooks {
 		}
 
 		if (id < 0 || id > Constants.maxBlockId) {
-			if(id == -1) {
-				return Block.getIdFromBlock(Blocks.air); // 0
+			if(id == -1) { // If Block is not registered
+				return Block.getIdFromBlock(oldBlock);
 			}
 			throw new IllegalArgumentException("id out of range: " + id);
 		}
