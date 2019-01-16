@@ -56,6 +56,7 @@ public enum Name {
 	dataWatcher_func_151509_a(dataWatcher, "func_151509_a", "a", "func_151509_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
 	ebs_blockRefCount(extendedBlockStorage, "blockRefCount", "b", "field_76682_b", "I"),
 	ebs_tickRefCount(extendedBlockStorage, "tickRefCount", "c", "field_76683_c", "I"),
+	ebs_lsb(extendedBlockStorage, "blockLSBArray", "d", "field_76680_d", "[B"),
 	acl_writeChunkToNBT(acl, "writeChunkToNBT", "a", "func_75820_a", "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V"), // AnvilChunkLoader
 	acl_readChunkFromNBT(acl, "readChunkFromNBT", "a", "func_75823_a", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;"),
 	block_getIdFromBlock(block, "getIdFromBlock", "b", "func_149682_b", "(Lnet/minecraft/block/Block;)I"),

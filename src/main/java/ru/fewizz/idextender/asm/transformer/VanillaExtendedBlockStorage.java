@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -39,6 +40,8 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 
 		method = AsmUtil.findMethod(cn, Name.ebs_removeInvalidBlocks);
 		transformRemoveInvalidBlocks(cn, method);
+		
+		//cn.fields.remove(AsmUtil.findField(cn, Name.ebs_lsb));
 	}
 
 	private void transformConstructor(ClassNode cn, MethodNode method, boolean obfuscated) {
@@ -59,6 +62,24 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 			method.instructions.insert(insn, toInsert);
 
 			break;
+		}
+		
+		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
+			AbstractInsnNode insn = iterator.next();
+
+			if(insn instanceof IntInsnNode && ((IntInsnNode)insn).operand == 16*16*16) {
+  				((IntInsnNode)insn).operand = 0;
+	
+			}
+			if(insn instanceof InsnNode && ((InsnNode)insn).getOpcode() == Opcodes.DUP) {
+				iterator.next();
+				iterator.remove();
+				iterator.next();
+				iterator.remove();
+				iterator.next();
+				iterator.remove();
+				iterator.add(new IntInsnNode(Opcodes.SIPUSH, 16*16*16));
+			}
 		}
 
 		method.maxStack = Math.max(method.maxStack, 2);
