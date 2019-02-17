@@ -17,7 +17,7 @@ import ru.fewizz.idextender.asm.Name;
 
 public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
 	@Override
-	public void transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn) {
 		MethodNode method = AsmUtil.findMethod(cn, Name.s22_init_server);
 
 		InsnList code = method.instructions;
@@ -36,7 +36,7 @@ public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
 					MethodInsnNode node = (MethodInsnNode) insn;
 
-					if (Name.block_getIdFromBlock.matches(node, obfuscated)) {
+					if (Name.block_getIdFromBlock.matches(node)) {
 						iterator.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataOutputStream", "writeShort", "(I)V", false));
 						part++;
 					}

@@ -11,10 +11,10 @@ import ru.fewizz.idextender.asm.Name;
 public class VanillaRenderGlobal implements IClassNodeTransformer {
 
 	@Override
-	public void transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn) {
 		MethodNode method = AsmUtil.findMethod(cn, Name.renderGlobal_playAuxSFX);
-		AsmUtil.transformInlinedSizeMethod(cn, method, 4095, Constants.blockIdMask);
-		AsmUtil.transformInlinedSizeMethod(cn, method, 12, 16);
+		AsmUtil.transformIntConst(cn, method, 4095, Constants.BLOCK_ID_MASK);
+		AsmUtil.transformIntConst(cn, method, 12, 16);
 	}
 
 }

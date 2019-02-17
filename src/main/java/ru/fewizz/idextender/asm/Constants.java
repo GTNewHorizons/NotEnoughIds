@@ -1,8 +1,8 @@
 package ru.fewizz.idextender.asm;
 
 public class Constants {
-	public static final int maxBlockId = 32767;
-	public static final int blockIdMask = 0xffff; // 65535
+	public static final int MAX_BLOCK_ID = 32767;
+	public static final int BLOCK_ID_MASK = 0xffff; // 65535
 
 	public static final int ebsIdArrayLength = 4096;
 	public static final int ebsIdArraySize = ebsIdArrayLength * 2;

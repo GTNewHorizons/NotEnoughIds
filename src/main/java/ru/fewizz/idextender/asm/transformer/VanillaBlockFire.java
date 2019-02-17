@@ -9,14 +9,12 @@ import ru.fewizz.idextender.asm.IClassNodeTransformer;
 
 public class VanillaBlockFire implements IClassNodeTransformer {
 	@Override
-	public void transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn) {
 		boolean found = false;
 
 		for (MethodNode method : cn.methods) {
-			if (AsmUtil.transformInlinedSizeMethod(cn, method, 4096, Constants.maxBlockId + 1, true)) {
+			if (AsmUtil.transformIntConst(cn, method, 4096, Constants.MAX_BLOCK_ID + 1, true))
 				found = true;
-			}
-			
 		}
 
 		if (!found)

@@ -16,15 +16,15 @@ import ru.fewizz.idextender.asm.Name;
 
 public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 	@Override
-	public void transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn) {
 		MethodNode method = AsmUtil.findMethod(cn, Name.acl_writeChunkToNBT);
-		transformWriteChunkToNBT(cn, method, obfuscated);
+		transformWriteChunkToNBT(cn, method);
 
 		method = AsmUtil.findMethod(cn, Name.acl_readChunkFromNBT);
-		transformReadChunkFromNBT(cn, method, obfuscated);
+		transformReadChunkFromNBT(cn, method);
 	}
 
-	private void transformWriteChunkToNBT(ClassNode cn, MethodNode method, boolean obfuscated) {
+	private void transformWriteChunkToNBT(ClassNode cn, MethodNode method) {
 		InsnList code = method.instructions;
 
 		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
@@ -38,7 +38,7 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 				iterator.next();
 				iterator.remove(); // remove INVOKEVIRTUAL NBTTagCompound.setByteArray
 
-				iterator.add(Name.hooks_writeChunkToNbt.staticInvocation(obfuscated));
+				iterator.add(Name.hooks_writeChunkToNbt.staticInvocation());
 				return;
 			}
 		}
@@ -46,7 +46,7 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 		throw new AsmTransformException("can't find Blocks LDC");
 	}
 
-	private void transformReadChunkFromNBT(ClassNode cn, MethodNode method, boolean obfuscated) {
+	private void transformReadChunkFromNBT(ClassNode cn, MethodNode method) {
 		InsnList code = method.instructions;
 		int part = 0;
 
@@ -56,7 +56,7 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 			if (part == 0) {
 				if (insn.getOpcode() == Opcodes.LDC && ((LdcInsnNode) insn).cst.equals("Blocks")) {
 					// ExtendedBlockStorage, NBTTagCompound are on the stack
-					iterator.set(Name.hooks_readChunkFromNbt.staticInvocation(obfuscated));
+					iterator.set(Name.hooks_readChunkFromNbt.staticInvocation());
 					part++;
 				}
 			}
@@ -66,9 +66,8 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 				if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
 					MethodInsnNode node = (MethodInsnNode) insn;
 
-					if (Name.ebs_setBlockMSBArray.matches(node, obfuscated)) {
+					if (Name.ebs_setBlockMSBArray.matches(node))
 						part++;
-					}
 				}
 			}
 			else {

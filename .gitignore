@@ -15,3 +15,6 @@ otherclasses/
 !/eclipse/mods/
 *.classpath
 *.project
+/.gradle/
+/bin/
+/build/

@@ -1,21 +1,17 @@
 package ru.fewizz.idextender;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockBookshelf;
-import net.minecraft.block.BlockIce;
-import net.minecraft.block.BlockOre;
-import net.minecraft.block.BlockSand;
-import net.minecraft.block.BlockStone;
-//import net.minecraft.client.Minecraft;
-//import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.creativetab.CreativeTabs;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockBookshelf;
+import net.minecraft.block.BlockIce;
+import net.minecraft.block.BlockSand;
+//import net.minecraft.client.Minecraft;
+//import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.creativetab.CreativeTabs;
 
 @Mod(
 		modid = "notenoughIDs",
@@ -23,9 +19,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
 		version = "1.4.3.5")
 public class IDExtender {
 
+	static boolean debug = Boolean.parseBoolean(System.getProperty("neid.debug", "false"));
+
 	@EventHandler
 	public void test(FMLPreInitializationEvent event) {
-		/*FMLCommonHandler.instance().bus().register(this);
+		if(!debug)
+			return;
+		FMLCommonHandler.instance().bus().register(this);
 		for (int i = 0; i < 4500; i++) {
 			Block shield = new BlockIce().setBlockName(".shield" + i);
 			shield.setCreativeTab(CreativeTabs.tabFood);
@@ -39,17 +39,7 @@ public class IDExtender {
 		Block sand = new BlockSand().setBlockName("sand");
 		sand.setCreativeTab(CreativeTabs.tabFood);
 		GameRegistry.registerBlock(sand, "sand");
-		*/
+		
 	}
-
-	
-	/*@SubscribeEvent
-	public void setBlock(TickEvent.WorldTickEvent e) {
-		if(e.world != null && Minecraft.getMinecraft().thePlayer != null) {
-			System.out.println("Setting unregistered block");
-			EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-			e.world.setBlock((int) player.posX, (int) player.posY - 2, (int) player.posZ, new BlockIce());
-		}
-	}*/
 
 }

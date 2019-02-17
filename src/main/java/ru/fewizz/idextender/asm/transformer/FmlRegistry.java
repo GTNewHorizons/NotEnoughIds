@@ -10,18 +10,17 @@ import ru.fewizz.idextender.asm.IClassNodeTransformer;
 
 public class FmlRegistry implements IClassNodeTransformer {
 	@Override
-	public void transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn) {
 		FieldNode field = AsmUtil.findField(cn, "MAX_BLOCK_ID", true);
-		if (field != null) {
-			field.value = Constants.maxBlockId;
-		}
+		if (field != null)
+			field.value = Constants.MAX_BLOCK_ID;
+		
 
 		boolean found = false;
 
 		for (MethodNode method : cn.methods) {
-			if (AsmUtil.transformInlinedSizeMethod(cn, method, 4095, Constants.maxBlockId, true)) {
+			if (AsmUtil.transformIntConst(cn, method, 4095, Constants.MAX_BLOCK_ID, true))
 				found = true;
-			}
 		}
 
 		if (!found)

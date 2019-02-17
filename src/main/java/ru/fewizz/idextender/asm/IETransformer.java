@@ -12,10 +12,10 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.util.CheckClassAdapter;
 
 public class IETransformer implements IClassTransformer {
-	private static final boolean enablePreVerification = false;
-	private static final boolean enablePostVerification = true;
+	private static final boolean PRE_VERIFICATION = false;
+	private static final boolean POST_VERIFICATION = true;
 
-	public static final Logger logger = LogManager.getLogger("NEID");
+	public static final Logger LOGGER = LogManager.getLogger("NEID");
 	public static boolean isObfuscated;
 	private static Boolean isClient = null;
 
@@ -28,20 +28,19 @@ public class IETransformer implements IClassTransformer {
 		if (edit == null)
 			return bytes;
 
-		logger.debug("Patching {} with {}...", transformedName, edit.getName());
+		LOGGER.debug("Patching {} with {}...", transformedName, edit.getName());
 
 		// read
 		ClassNode cn = new ClassNode(Opcodes.ASM5);
 		ClassReader reader = new ClassReader(bytes);
 		final int readFlags = 0;
 
-		if (enablePreVerification) { // verify the code before processing it
+		if (PRE_VERIFICATION) { // verify the code before processing it
 			try {
 				ClassVisitor check = new CheckClassAdapter(cn);
 				reader.accept(check, readFlags);
 			} catch (Throwable t) {
-				logger.error("Error preverifying {}: {}", transformedName, t.getMessage());
-
+				LOGGER.error("Error preverifying {}: {}", transformedName, t.getMessage());
 				throw new RuntimeException(t);
 			}
 		}
@@ -52,24 +51,24 @@ public class IETransformer implements IClassTransformer {
 		// patch
 
 		try {
-			edit.getTransformer().transform(cn, isObfuscated);
+			edit.getTransformer().transform(cn);
 		} catch (AsmTransformException t) {
-			logger.error("Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
+			LOGGER.error("Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
 			throw t;
 		} catch (Throwable t) {
-			logger.error("Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
+			LOGGER.error("Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
 			throw new RuntimeException(t);
 		}
 
 		// write
 		ClassWriter writer = new ClassWriter(0);
 
-		if (enablePostVerification) { // verify the code after processing it
+		if (POST_VERIFICATION) { // verify the code after processing it
 			try {
 				ClassVisitor check = new CheckClassAdapter(writer);
 				cn.accept(check);
 			} catch (Throwable t) {
-				logger.error("Error verifying {} transformed with {}: {}", transformedName, edit.getName(), t.getMessage());
+				LOGGER.error("Error verifying {} transformed with {}: {}", transformedName, edit.getName(), t.getMessage());
 
 				throw new RuntimeException(t);
 			}
@@ -78,15 +77,14 @@ public class IETransformer implements IClassTransformer {
 			cn.accept(writer);
 		}
 
-		logger.debug("Patched {} successfully.", edit.getName());
+		LOGGER.debug("Patched {} successfully.", edit.getName());
 
 		return writer.toByteArray();
 	}
 
 	public static boolean isClient() {
-		if (isClient == null) {
+		if (isClient == null)
 			isClient = IETransformer.class.getResource("/net/minecraft/client/main/Main.class") != null;
-		}
 
 		return isClient;
 	}

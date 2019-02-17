@@ -20,20 +20,20 @@ import ru.fewizz.idextender.asm.Name;
 
 public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 	@Override
-	public void transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn) {
 		cn.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "block16BArray", "[S", null, null));
 
 		AsmUtil.makePublic(AsmUtil.findField(cn, Name.ebs_blockRefCount));
 		AsmUtil.makePublic(AsmUtil.findField(cn, Name.ebs_tickRefCount));
 
 		MethodNode method = AsmUtil.findMethod(cn, "<init>");
-		transformConstructor(cn, method, obfuscated);
+		transformConstructor(cn, method);
 
 		method = AsmUtil.findMethod(cn, Name.ebs_getBlock);
-		transformGetBlock(cn, method, obfuscated);
+		transformGetBlock(cn, method);
 
 		method = AsmUtil.findMethod(cn, Name.ebs_setBlock);
-		transformSetBlock(cn, method, obfuscated);
+		transformSetBlock(cn, method);
 
 		method = AsmUtil.findMethod(cn, Name.ebs_getBlockMSBArray);
 		transformGetBlockMSBArray(cn, method);
@@ -44,7 +44,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		//cn.fields.remove(AsmUtil.findField(cn, Name.ebs_lsb));
 	}
 
-	private void transformConstructor(ClassNode cn, MethodNode method, boolean obfuscated) {
+	private void transformConstructor(ClassNode cn, MethodNode method) {
 		// add block16BArray initialization by forwarding to Hooks.create16BArray
 		InsnList code = method.instructions;
 
@@ -56,7 +56,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 			InsnList toInsert = new InsnList();
 
 			toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
-			toInsert.add(Name.hooks_create16BArray.staticInvocation(obfuscated));
+			toInsert.add(Name.hooks_create16BArray.staticInvocation());
 			toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, cn.name, "block16BArray", "[S"));
 
 			method.instructions.insert(insn, toInsert);
@@ -85,7 +85,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		method.maxStack = Math.max(method.maxStack, 2);
 	}
 
-	private void transformGetBlock(ClassNode cn, MethodNode method, boolean obfuscated) {
+	private void transformGetBlock(ClassNode cn, MethodNode method) {
 		// redirect to Hooks.getBlockById
 		InsnList code = method.instructions;
 
@@ -94,14 +94,14 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 2));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 3));
-		code.add(Name.hooks_getBlockById.staticInvocation(obfuscated));
+		code.add(Name.hooks_getBlockById.staticInvocation());
 		code.add(new InsnNode(Opcodes.ARETURN));
 
 		method.localVariables = null;
 		method.maxStack = 4;
 	}
 
-	private void transformSetBlock(ClassNode cn, MethodNode method, boolean obfuscated) {
+	private void transformSetBlock(ClassNode cn, MethodNode method) {
 		// this will remove everything but the ref count manipulation and delegate to Hooks.setBlock
 		InsnList code = method.instructions;
 		int part = 0;
@@ -119,13 +119,13 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 1));
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 2));
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 3));
-					iterator.add(Name.ebs_getBlock.virtualInvocation(obfuscated));
+					iterator.add(Name.ebs_getBlock.virtualInvocation());
 				}
 			}
 			else if (part == 1) { // seek to the Block.getIdFromBlock call
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
 					iterator.set(new VarInsnNode(Opcodes.ALOAD, 6));
-					iterator.add(Name.hooks_getIdFromBlockWithCheck.staticInvocation(obfuscated));
+					iterator.add(Name.hooks_getIdFromBlockWithCheck.staticInvocation());
 					part++;
 				}
 			}
@@ -145,7 +145,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		code.add(new VarInsnNode(Opcodes.ILOAD, 2)); // y
 		code.add(new VarInsnNode(Opcodes.ILOAD, 3)); // z
 		code.add(new VarInsnNode(Opcodes.ILOAD, 5)); // block id
-		code.add(Name.hooks_setBlockId.staticInvocation(obfuscated));
+		code.add(Name.hooks_setBlockId.staticInvocation());
 		code.add(new InsnNode(Opcodes.RETURN));
 
 		method.localVariables = null;

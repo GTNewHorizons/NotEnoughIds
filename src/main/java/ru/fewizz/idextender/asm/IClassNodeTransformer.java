@@ -1,7 +1,8 @@
 package ru.fewizz.idextender.asm;
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 
-public interface IClassNodeTransformer {
-	void transform(ClassNode cn, boolean obfuscated);
+public interface IClassNodeTransformer extends Opcodes {
+	void transform(ClassNode cn);
 }

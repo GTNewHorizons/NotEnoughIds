@@ -96,7 +96,7 @@ public class Hooks {
 	}
 
 	public static int getBlockId(ExtendedBlockStorage ebs, int x, int y, int z) {
-		return get(ebs)[y << 8 | z << 4 | x] & Constants.blockIdMask;
+		return get(ebs)[y << 8 | z << 4 | x] & Constants.BLOCK_ID_MASK;
 	}
 
 	public static Block getBlock(ExtendedBlockStorage ebs, int x, int y, int z) {
@@ -160,7 +160,7 @@ public class Hooks {
 			throw new IllegalArgumentException("Block " + block + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
 		}
 
-		if (id < 0 || id > Constants.maxBlockId) {
+		if (id < 0 || id > Constants.MAX_BLOCK_ID) {
 			if(id == -1) { // If Block is not registered
 				return Block.getIdFromBlock(oldBlock);
 			}

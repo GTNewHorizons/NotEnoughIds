@@ -15,23 +15,23 @@ import ru.fewizz.idextender.asm.IClassNodeTransformer;
 public class WorldEditBaseBlock implements IClassNodeTransformer {
 
 	@Override
-	public void transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn) {
 		MethodNode method = AsmUtil.findMethod(cn, "internalSetId", true);
 		if(method == null) {
 			return;
 		}
 		
-		AsmUtil.transformInlinedSizeMethod(cn, method, 4095, Constants.maxBlockId);
+		AsmUtil.transformIntConst(cn, method, 4095, Constants.MAX_BLOCK_ID);
 
 		InsnList code = method.instructions;
 
 		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
 			AbstractInsnNode insn = iterator.next();
 
-			if (insn.getType() == insn.LDC_INSN && ((LdcInsnNode) insn).cst instanceof String) {
+			if (insn.getType() == AbstractInsnNode.LDC_INSN && ((LdcInsnNode) insn).cst instanceof String) {
 				String string = (String) (((LdcInsnNode) insn).cst);
 				if (string.contains("4095")) {
-					((LdcInsnNode) insn).cst = string.replace("4095", Integer.toString(Constants.maxBlockId));
+					((LdcInsnNode) insn).cst = string.replace("4095", Integer.toString(Constants.MAX_BLOCK_ID));
 					break;
 				}
 			}

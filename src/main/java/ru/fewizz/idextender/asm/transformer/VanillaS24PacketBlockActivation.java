@@ -11,12 +11,12 @@ import ru.fewizz.idextender.asm.Name;
 public class VanillaS24PacketBlockActivation implements IClassNodeTransformer {
 
 	@Override
-	public void transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn) {
 		MethodNode method = AsmUtil.findMethod(cn, Name.packet_readPacketData);
-		AsmUtil.transformInlinedSizeMethod(cn, method, 4095, Constants.blockIdMask);
+		AsmUtil.transformIntConst(cn, method, 4095, Constants.BLOCK_ID_MASK);
 		
 		method = AsmUtil.findMethod(cn, Name.packet_writePacketData);
-		AsmUtil.transformInlinedSizeMethod(cn, method, 4095, Constants.blockIdMask);
+		AsmUtil.transformIntConst(cn, method, 4095, Constants.BLOCK_ID_MASK);
 	}
 	
 }

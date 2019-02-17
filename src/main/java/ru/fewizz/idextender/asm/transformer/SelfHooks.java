@@ -14,15 +14,15 @@ import ru.fewizz.idextender.asm.Name;
 
 public class SelfHooks implements IClassNodeTransformer {
 	@Override
-	public void transform(ClassNode cn, boolean obfuscated) {
+	public void transform(ClassNode cn) {
 		MethodNode method = AsmUtil.findMethod(cn, "get");
 		transformGet(cn, method);
 
 		method = AsmUtil.findMethod(cn, "setBlockRefCount");
-		transformSetBlockRefCount(cn, method, obfuscated);
+		transformSetBlockRefCount(cn, method);
 
 		method = AsmUtil.findMethod(cn, "setTickRefCount");
-		transformSetTickRefCount(cn, method, obfuscated);
+		transformSetTickRefCount(cn, method);
 	}
 
 	private void transformGet(ClassNode cn, MethodNode method) {
@@ -38,26 +38,26 @@ public class SelfHooks implements IClassNodeTransformer {
 		method.maxStack = 1;
 	}
 
-	private void transformSetBlockRefCount(ClassNode cn, MethodNode method, boolean isObf) {
+	private void transformSetBlockRefCount(ClassNode cn, MethodNode method) {
 		InsnList code = method.instructions;
 
 		code.clear();
 		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
-		code.add(Name.ebs_blockRefCount.virtualSet(isObf));
+		code.add(Name.ebs_blockRefCount.virtualSet());
 		code.add(new InsnNode(Opcodes.RETURN));
 
 		method.localVariables = null;
 		method.maxStack = 2;
 	}
 
-	private void transformSetTickRefCount(ClassNode cn, MethodNode method, boolean isObf) {
+	private void transformSetTickRefCount(ClassNode cn, MethodNode method) {
 		InsnList code = method.instructions;
 
 		code.clear();
 		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
-		code.add(Name.ebs_tickRefCount.virtualSet(isObf));
+		code.add(Name.ebs_tickRefCount.virtualSet());
 		code.add(new InsnNode(Opcodes.RETURN));
 
 		method.localVariables = null;
