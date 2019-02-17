@@ -19,11 +19,11 @@ import net.minecraft.creativetab.CreativeTabs;
 		version = "1.4.3.5")
 public class IDExtender {
 
-	static boolean debug = Boolean.parseBoolean(System.getProperty("neid.debug", "false"));
+	static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("neid.debug", "false"));
 
 	@EventHandler
 	public void test(FMLPreInitializationEvent event) {
-		if(!debug)
+		if(!DEBUG)
 			return;
 		FMLCommonHandler.instance().bus().register(this);
 		for (int i = 0; i < 4500; i++) {

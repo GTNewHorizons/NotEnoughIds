@@ -22,10 +22,9 @@ public class AsmUtil implements Opcodes {
 				return ret;
 		}
 
-		if (optional)
-			return null;
-		else
+		if (!optional)
 			throw new MethodNotFoundException(name);
+		return null;
 	}
 	
 	public static MethodNode findMethod(ClassNode cn, String name, boolean optional) {
@@ -56,10 +55,9 @@ public class AsmUtil implements Opcodes {
 			if (name.equals(ret.name) && (desc == null || ret.desc.equals(desc)))
 				return ret;
 		}
-		if (optional)
-			return null;
-		else
+		if (!optional)
 			throw new FieldNotFoundException(name);
+		return null;
 	}
 
 	public static FieldNode findField(ClassNode cn, Name name, boolean optional) {
@@ -129,11 +127,11 @@ public class AsmUtil implements Opcodes {
 				&& insn.getOpcode() <= ICONST_5
 				&& oldValue == insn.getOpcode() - ICONST_M1)
 					setIntConst(il, insn, newValue);
-			else if(insn.getOpcode() == SIPUSH
-				|| insn.getOpcode() == BIPUSH
+			else if(
+				(insn.getOpcode() == SIPUSH || insn.getOpcode() == BIPUSH)
 				&& ((IntInsnNode)insn).operand == oldValue)
 				setIntConst(il, insn, newValue);
-			else if (insn.getOpcode() == LDC) 
+			else if (insn.getOpcode() == LDC && ((LdcInsnNode)insn).cst.equals(oldValue)) 
 				setIntConst(il, insn, newValue);
 			else 
 				continue;
