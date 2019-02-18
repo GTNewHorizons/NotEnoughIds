@@ -56,7 +56,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 			InsnList toInsert = new InsnList();
 
 			toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
-			toInsert.add(Name.hooks_create16BArray.staticInvocation());
+			toInsert.add(Name.hooks_create16BArray.invokeStatic());
 			toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, cn.name, "block16BArray", "[S"));
 
 			method.instructions.insert(insn, toInsert);
@@ -94,7 +94,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 2));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 3));
-		code.add(Name.hooks_getBlockById.staticInvocation());
+		code.add(Name.hooks_getBlockById.invokeStatic());
 		code.add(new InsnNode(Opcodes.ARETURN));
 
 		method.localVariables = null;
@@ -119,13 +119,13 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 1));
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 2));
 					iterator.add(new VarInsnNode(Opcodes.ILOAD, 3));
-					iterator.add(Name.ebs_getBlock.virtualInvocation());
+					iterator.add(Name.ebs_getBlock.invokeSpecial());
 				}
 			}
 			else if (part == 1) { // seek to the Block.getIdFromBlock call
 				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
 					iterator.set(new VarInsnNode(Opcodes.ALOAD, 6));
-					iterator.add(Name.hooks_getIdFromBlockWithCheck.staticInvocation());
+					iterator.add(Name.hooks_getIdFromBlockWithCheck.invokeStatic());
 					part++;
 				}
 			}
@@ -145,7 +145,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 		code.add(new VarInsnNode(Opcodes.ILOAD, 2)); // y
 		code.add(new VarInsnNode(Opcodes.ILOAD, 3)); // z
 		code.add(new VarInsnNode(Opcodes.ILOAD, 5)); // block id
-		code.add(Name.hooks_setBlockId.staticInvocation());
+		code.add(Name.hooks_setBlockId.invokeStatic());
 		code.add(new InsnNode(Opcodes.RETURN));
 
 		method.localVariables = null;

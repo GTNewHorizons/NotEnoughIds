@@ -1,11 +1,14 @@
 package ru.fewizz.idextender;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import ru.fewizz.idextender.asm.Constants;
@@ -20,8 +23,111 @@ public class Hooks {
 		return ret;
 	}
 
+	public static int handleMultiBlockChange_readBlockIDAdditionalBitsIfNeed(DataInputStream dis, int size, int count) {
+		if(size / (Short.BYTES*2 + Byte.BYTES) == count) {
+			try {
+				return dis.readByte();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else if(size / (Short.BYTES*2) == count) { // Vanilla
+			return 0;
+		}
+		throw new RuntimeException();
+	}
+	
 	public static void setBlockData(ExtendedBlockStorage ebs, byte[] data, int offset) {
 		ShortBuffer.wrap(get(ebs)).put(ByteBuffer.wrap(data, offset, Constants.ebsIdArraySize).asShortBuffer());
+	}
+	
+	public static void grabDataFromChunkBulkPacket(byte[] overallData, int size, byte[][] data, int[] chunks, boolean hasSky) {
+		int old = (4096 + 2*2048 + (hasSky ? 2048 : 0)); // Without MSB
+		int nw = old + 4096;
+		int step = -1;
+		
+		int count = 0; // Recalculating this every time, meh...
+		for(int c = 0; c < chunks.length; c++) {
+			for(int i = 0; i < 16; i++) {
+				count += (chunks[c] >> i) & 1; // Could better, but not so critical 
+			}
+		}
+		
+		if(old*count + chunks.length*256 == size)
+			step = old;
+		else if(nw*count + chunks.length*256 == size)
+			step = nw;
+		else
+			throw new RuntimeException("Something is wrong with chunk bulk packet");
+		
+		int off = 0;
+		
+		for(int c = 0; c < chunks.length; c++) {
+			count = 0;
+			for(int i = 0; i < 16; i++) {
+				count += (chunks[c] >> i) & 1; // Could better, but not so critical 
+			}
+			size = step*count + 256;
+			data[c] = new byte[size];
+			
+			System.arraycopy(overallData, off, data[c], 0, size);
+			off += size;
+		}
+	}
+	
+	public static int copyBlockDataFromPacket(Chunk c, byte[] data, int bits, boolean affectTop) {
+		int resultingOldSize = 0;
+		int resultingNewSize = 0;
+		
+		int oldAddition = 4096 + 2048*2 + (!c.worldObj.provider.hasNoSky ? 2048 : 0);
+		int newAddition = oldAddition + 4096;
+		
+		for(int e = 0; e < 16; e++) {
+			if(((bits >> e) & 1) == 1) {
+				if(c.getBlockStorageArray()[e] == null)
+					c.getBlockStorageArray()[e] = new ExtendedBlockStorage(e, !c.worldObj.provider.hasNoSky);
+				resultingOldSize += oldAddition;
+				resultingNewSize += newAddition;
+			} else if(affectTop && c.getBlockStorageArray()[e] != null) { // Vanilla like behavior
+				c.getBlockStorageArray()[e] = null;
+			}
+		}
+		
+		if(affectTop) {
+			resultingNewSize += 256;
+			resultingOldSize += 256;
+		}
+		
+		int offset = 0;
+		
+		if(data.length == resultingNewSize) {
+			for(int e = 0; e < 16; e++) {
+				if(((bits >> e) & 1) == 0)
+					continue;
+				setBlockData(c.getBlockStorageArray()[e], data, offset);
+				offset += 16*16*16*Short.BYTES;
+			}
+		}
+		else if(data.length == resultingOldSize) {
+			// Hmm, ok
+			for(int e = 0; e < 16; e++) {
+				if(((bits >> e) & 1) == 0)
+					continue;
+				
+				short[] data0 = get(c.getBlockStorageArray()[e]);
+				for(int i = 0; i < 16*16*16; i++)
+					data0[i] = data[offset + i];
+				offset += 16*16*16;
+			}
+		}
+		else {
+			throw new RuntimeException(
+					"Oops, looks like invalid chunk data. The size is: "
+					+ data.length + ", but should be either "
+					+ resultingOldSize + " or " + resultingNewSize
+					+ ". Report to NEID dev. Thx.");
+		}
+		return offset;
 	}
 
 	public static void writeChunkToNbt(NBTTagCompound nbt, ExtendedBlockStorage ebs) {

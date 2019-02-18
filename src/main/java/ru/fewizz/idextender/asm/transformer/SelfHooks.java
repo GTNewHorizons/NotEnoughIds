@@ -44,7 +44,7 @@ public class SelfHooks implements IClassNodeTransformer {
 		code.clear();
 		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
-		code.add(Name.ebs_blockRefCount.virtualSet());
+		code.add(Name.ebs_blockRefCount.putField());
 		code.add(new InsnNode(Opcodes.RETURN));
 
 		method.localVariables = null;
@@ -57,7 +57,7 @@ public class SelfHooks implements IClassNodeTransformer {
 		code.clear();
 		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
-		code.add(Name.ebs_tickRefCount.virtualSet());
+		code.add(Name.ebs_tickRefCount.putField());
 		code.add(new InsnNode(Opcodes.RETURN));
 
 		method.localVariables = null;

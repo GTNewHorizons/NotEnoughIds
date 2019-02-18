@@ -38,7 +38,7 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 				iterator.next();
 				iterator.remove(); // remove INVOKEVIRTUAL NBTTagCompound.setByteArray
 
-				iterator.add(Name.hooks_writeChunkToNbt.staticInvocation());
+				iterator.add(Name.hooks_writeChunkToNbt.invokeStatic());
 				return;
 			}
 		}
@@ -56,7 +56,7 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 			if (part == 0) {
 				if (insn.getOpcode() == Opcodes.LDC && ((LdcInsnNode) insn).cst.equals("Blocks")) {
 					// ExtendedBlockStorage, NBTTagCompound are on the stack
-					iterator.set(Name.hooks_readChunkFromNbt.staticInvocation());
+					iterator.set(Name.hooks_readChunkFromNbt.invokeStatic());
 					part++;
 				}
 			}

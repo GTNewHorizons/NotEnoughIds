@@ -11,7 +11,9 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
@@ -144,6 +146,116 @@ public class AsmUtil implements Opcodes {
 			throw new AsmTransformException("can't find constant value "+oldValue+" in method "+method.name);
 
 		return occur > 0;
+	}
+	
+	enum Action {
+		CONTINUE,
+		FOUND_RETURN,
+		FOUND_CONTINUE
+	}
+	
+	public static abstract class InsnNodeSearcher {
+		abstract Action test(AbstractInsnNode insn);
+	}
+	
+	public static AbstractInsnNode find(AbstractInsnNode begin, InsnNodeSearcher s) {
+		AbstractInsnNode res = null;
+		for (AbstractInsnNode insn = begin; insn.getNext() != null;insn = insn.getNext()) {
+			Action a = s.test(insn);
+			if(a == Action.FOUND_RETURN)
+				return insn;
+			if(a == Action.FOUND_CONTINUE)
+				res = insn;
+		}
+		return res;
+	}
+	
+	public static MethodInsnNode findMethodInsnNode(AbstractInsnNode begin, final Name name) {
+		return (MethodInsnNode) find(begin, new InsnNodeSearcher() {
+			@Override
+			Action test(AbstractInsnNode insn) {
+				if(insn.getType() == AbstractInsnNode.METHOD_INSN
+						&& name.matches((MethodInsnNode)insn))
+					return Action.FOUND_RETURN;
+				return Action.CONTINUE;
+			}
+		});
+	}
+	
+	public static VarInsnNode findVarInsnNode(AbstractInsnNode begin, final int opcode, final int var) {
+		return (VarInsnNode) find(begin, new InsnNodeSearcher() {
+			@Override
+			Action test(AbstractInsnNode insn) {
+				if(insn.getType() == AbstractInsnNode.VAR_INSN
+						&& insn.getOpcode() == opcode
+						&& ((VarInsnNode)insn).var == var)
+					return Action.FOUND_RETURN;
+				return Action.CONTINUE;
+			}
+		});
+	}
+	
+	public static IntInsnNode findIntInsnNode(AbstractInsnNode begin, final int val) {
+		return (IntInsnNode) find(begin, new InsnNodeSearcher() {
+			@Override
+			Action test(AbstractInsnNode insn) {
+				if(insn.getType() == AbstractInsnNode.INT_INSN
+						&& ((IntInsnNode)insn).operand == val)
+					return Action.FOUND_RETURN;
+				return Action.CONTINUE;
+			}
+		});
+	}
+	
+	public static MethodInsnNode findMethodInsnNode(AbstractInsnNode begin, final String name, final String desc) {
+		return (MethodInsnNode) find(begin, new InsnNodeSearcher() {
+			@Override
+			Action test(AbstractInsnNode insn) {
+				if(insn.getType() == AbstractInsnNode.METHOD_INSN
+						&& ((MethodInsnNode)insn).name.equals(name)
+						&& (desc == null || ((MethodInsnNode)insn).desc.equals(desc))
+						)
+					return Action.FOUND_RETURN;
+				return Action.CONTINUE;
+			}
+		});
+	}
+	
+	
+	public static InsnNode findInsnNode(AbstractInsnNode begin, final int opcode) {
+		return (InsnNode) find(begin, new InsnNodeSearcher() {
+			@Override
+			Action test(AbstractInsnNode insn) {
+				if(insn.getOpcode() == opcode)
+					return Action.FOUND_RETURN;
+				return Action.CONTINUE;
+			}
+		});
+	}
+	
+	public static void removeRange(InsnList il, AbstractInsnNode begIn, AbstractInsnNode endEx) {
+		ListIterator<AbstractInsnNode> it = il.iterator(il.indexOf(begIn));
+		if(it.hasNext()) { // Bug?
+			it.next();
+			it.previous();
+		}
+		else if(it.hasPrevious()) {
+			it.previous();
+			it.next();
+		}
+		else throw new RuntimeException();
+		for(; begIn != endEx;begIn = it.next()) {
+			it.remove();
+		}
+	}
+	
+	public static AbstractInsnNode getRelative(AbstractInsnNode insn, int way) {
+		while(way != 0) {
+			if(way>0) insn = insn.getNext();
+			else insn = insn.getPrevious();
+			way -= way / Math.abs(way);
+		}
+		return insn;
 	}
 
 	public static void dump(InsnList list) {

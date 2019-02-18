@@ -20,7 +20,10 @@ public enum Name {
 	hooks_getBlockById(hooks, "getBlock", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)Lnet/minecraft/block/Block;"),
 	hooks_setBlockId(hooks, "setBlockId", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;IIII)V"),
 	hooks_getIdFromBlockWithCheck(hooks, "getIdFromBlockWithCheck", null, null, "(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)I"),
-
+	hooks_copyBlockDataFromPacket(hooks, "copyBlockDataFromPacket", null, null, "(Lnet/minecraft/world/chunk/Chunk;[BIZ)I"),
+	hooks_grabDataFromChunkBulkPacket(hooks, "grabDataFromChunkBulkPacket", null, null, "([BI[[B[IZ)V"),
+	hooks_handleMultiBlockChange_handleMultiBlockChange_readBlockIDAdditionalBitsIfNeed(hooks, "handleMultiBlockChange_readBlockIDAdditionalBitsIfNeed", null, null, "(Ljava/io/DataInputStream;II)I"),
+	
 	// vanilla
 	acl("net/minecraft/world/chunk/storage/AnvilChunkLoader", "aqk"),
 	block("net/minecraft/block/Block", "aji"),
@@ -35,6 +38,7 @@ public enum Name {
 	s22("net/minecraft/network/play/server/S22PacketMultiBlockChange", "gk"),
 	s21("net/minecraft/network/play/server/S21PacketChunkData", "gx"),
 	s21_extracted("net/minecraft/network/play/server/S21PacketChunkData$Extracted", "gy"),
+	s26("net/minecraft/network/play/server/S26PacketMapChunkBulk", "gz"),
 	world("net/minecraft/world/World", "ahb"),
 	dataWatcher("net/minecraft/entity/DataWatcher", "te"),
 	dataWatcher_watchableObject("net/minecraft/entity/DataWatcher$WatchableObject", "tf"),
@@ -61,13 +65,22 @@ public enum Name {
 	acl_writeChunkToNBT(acl, "writeChunkToNBT", "a", "func_75820_a", "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V"), // AnvilChunkLoader
 	acl_readChunkFromNBT(acl, "readChunkFromNBT", "a", "func_75823_a", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;"),
 	block_getIdFromBlock(block, "getIdFromBlock", "b", "func_149682_b", "(Lnet/minecraft/block/Block;)I"),
+	block_getBlockByID(block, "getBlockById", "e", "func_149729_e", "(I)Lnet/minecraft/block/Block;"),
 	chunk_fillChunk(chunk, "fillChunk", "a", "func_76607_a", "([BIIZ)V"),
 	packet_readPacketData(packet, "readPacketData", "a", "func_148837_a", "(Lnet/minecraft/network/PacketBuffer;)V"),
 	packet_writePacketData(packet, "writePacketData", "b", "func_148840_b", "(Lnet/minecraft/network/PacketBuffer;)V"),
 	nhpc_handleMultiBlockChange(nhpc, "handleMultiBlockChange", "a", "func_147287_a", "(Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;)V"), // NetHandlerPlayClient
 	s22_init_server(s22, "<init>", null, null, "(I[SLnet/minecraft/world/chunk/Chunk;)V"), // S22PacketMultiBlockChange
+	s22_get_array(s22, "func_148921_d", "d", null, "()[B"),
+	s22_get_blocks_count(s22, "func_148922_e", "e", null, "()I"),
 	s21_undefined1(s21, "func_149275_c", "c", null, "()I"),
 	s21_undefined2(s21, "func_149269_a", "a", null, "(Lnet/minecraft/world/chunk/Chunk;ZI)Lnet/minecraft/network/play/server/S21PacketChunkData$Extracted;"),
+	//s21_readSize(s21, "readSize", null, null, "I"),
+	s21_data(s21, "field_149278_f", "f", null, "[B"),
+	s26_sections(s26, "field_149265_c", "c", null, "[I"),
+	s26_hasSky(s26, "field_149267_h", "h", null, "Z"),
+	s26_sectionsData(s26, "field_149260_f", "f", null, "[[B"),
+	s26_readSize(s26, "readSize", null, null, "I"),
 	renderGlobal_playAuxSFX(renderGlobal, "playAuxSFX", "a", "func_72706_a", "(Lnet/minecraft/entity/player/EntityPlayer;IIIII)V"),
 	playerControllerMP_onPlayerDestroyBlock(playerControllerMP, "onPlayerDestroyBlock", "a", "func_78751_a", "(IIII)Z"),
 	itemInWorldManager_tryHarvestBlock(itemInWorldManager, "tryHarvestBlock", "b", "func_73084_b", "(III)Z"),
@@ -146,12 +159,16 @@ public enum Name {
 			return new MethodInsnNode(opcode, clazz.deobf, deobf, desc, false);
 	}
 
-	public MethodInsnNode staticInvocation() {
+	public MethodInsnNode invokeStatic() {
 		return invocation(INVOKESTATIC);
 	}
 
-	public MethodInsnNode virtualInvocation() {
+	public MethodInsnNode invokeSpecial() {
 		return invocation(INVOKESPECIAL);
+	}
+	
+	public MethodInsnNode invokeVirtual() {
+		return invocation(INVOKEVIRTUAL);
 	}
 	
 	public FieldInsnNode field(int opcode) {
@@ -163,19 +180,19 @@ public enum Name {
 		}
 	}
 
-	public FieldInsnNode staticGet() {
+	public FieldInsnNode getStatic() {
 		return field(GETSTATIC);
 	}
 
-	public FieldInsnNode virtualGet() {
+	public FieldInsnNode getField() {
 		return field(GETFIELD);
 	}
 
-	public FieldInsnNode staticSet(boolean obfuscated) {
+	public FieldInsnNode putStatic() {
 		return field(PUTSTATIC);
 	}
 
-	public FieldInsnNode virtualSet() {
+	public FieldInsnNode putField() {
 		return field(PUTFIELD);
 	}
 
