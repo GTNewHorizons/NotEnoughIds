@@ -127,7 +127,7 @@ public class AsmUtil implements Opcodes {
 			
 			if(insn.getOpcode() >= ICONST_M1
 				&& insn.getOpcode() <= ICONST_5
-				&& oldValue == insn.getOpcode() - ICONST_M1)
+				&& oldValue == insn.getOpcode() - ICONST_0)
 					setIntConst(il, insn, newValue);
 			else if(
 				(insn.getOpcode() == SIPUSH || insn.getOpcode() == BIPUSH)
