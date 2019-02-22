@@ -85,7 +85,7 @@ public class Hooks {
 		for(int e = 0; e < 16; e++) {
 			if(((bits >> e) & 1) == 1) {
 				if(c.getBlockStorageArray()[e] == null)
-					c.getBlockStorageArray()[e] = new ExtendedBlockStorage(e, !c.worldObj.provider.hasNoSky);
+					c.getBlockStorageArray()[e] = new ExtendedBlockStorage(e << 4, !c.worldObj.provider.hasNoSky);
 				resultingOldSize += oldAddition;
 				resultingNewSize += newAddition;
 			} else if(affectTop && c.getBlockStorageArray()[e] != null) { // Vanilla like behavior
@@ -116,7 +116,7 @@ public class Hooks {
 				
 				short[] data0 = get(c.getBlockStorageArray()[e]);
 				for(int i = 0; i < 16*16*16; i++)
-					data0[i] = data[offset + i];
+					data0[i] = (short)(data[offset + i] & 0xFF);
 				offset += 16*16*16;
 			}
 		}
