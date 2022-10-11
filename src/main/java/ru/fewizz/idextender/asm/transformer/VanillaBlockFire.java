@@ -1,11 +1,10 @@
 package ru.fewizz.idextender.asm.transformer;
 
+import java.util.*;
 import org.objectweb.asm.tree.*;
 import ru.fewizz.idextender.asm.*;
-import java.util.*;
 
-public class VanillaBlockFire implements IClassNodeTransformer
-{
+public class VanillaBlockFire implements IClassNodeTransformer {
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         boolean found = false;

@@ -1,11 +1,10 @@
 package ru.fewizz.idextender.asm.transformer;
 
-import ru.fewizz.idextender.asm.*;
-import org.objectweb.asm.tree.*;
 import java.util.*;
+import org.objectweb.asm.tree.*;
+import ru.fewizz.idextender.asm.*;
 
-public class FmlRegistry implements IClassNodeTransformer
-{
+public class FmlRegistry implements IClassNodeTransformer {
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         final FieldNode field = AsmUtil.findField(cn, "MAX_BLOCK_ID", true);

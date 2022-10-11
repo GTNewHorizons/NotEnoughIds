@@ -1,10 +1,9 @@
 package ru.fewizz.idextender.asm.transformer;
 
-import ru.fewizz.idextender.asm.*;
 import org.objectweb.asm.tree.*;
+import ru.fewizz.idextender.asm.*;
 
-public class VanillaWorld implements IClassNodeTransformer
-{
+public class VanillaWorld implements IClassNodeTransformer {
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         final MethodNode method = AsmUtil.findMethod(cn, Name.world_breakBlock);
