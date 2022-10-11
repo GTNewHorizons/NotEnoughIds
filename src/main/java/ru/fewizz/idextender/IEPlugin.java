@@ -1,12 +1,14 @@
 package ru.fewizz.idextender;
 
-import cpw.mods.fml.relauncher.*;
-import java.io.*;
-import java.util.*;
-import ru.fewizz.idextender.asm.*;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
+import java.io.File;
+import java.util.Map;
+import ru.fewizz.idextender.asm.IETransformer;
 
-@IFMLLoadingPlugin.MCVersion("1.7.10")
-@IFMLLoadingPlugin.TransformerExclusions({"ru.fewizz.idextender.asm"})
+@MCVersion("1.7.10")
+@TransformerExclusions({"ru.fewizz.idextender.asm"})
 public class IEPlugin implements IFMLLoadingPlugin {
     public String[] getASMTransformerClass() {
         return new String[] {IETransformer.class.getName()};
@@ -20,9 +22,9 @@ public class IEPlugin implements IFMLLoadingPlugin {
         return null;
     }
 
-    public void injectData(final Map<String, Object> data) {
-        IEConfig.init(data.get("coremodLocation"));
-        IETransformer.isObfuscated = data.get("runtimeDeobfuscationEnabled");
+    public void injectData(Map<String, Object> data) {
+        IEConfig.init((File) data.get("coremodLocation"));
+        IETransformer.isObfuscated = (Boolean) data.get("runtimeDeobfuscationEnabled");
     }
 
     public String getAccessTransformerClass() {
