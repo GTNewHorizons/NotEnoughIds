@@ -1,15 +1,14 @@
 package ru.fewizz.idextender.asm.transformer;
 
 import java.util.ListIterator;
-
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -19,161 +18,162 @@ import ru.fewizz.idextender.asm.IClassNodeTransformer;
 import ru.fewizz.idextender.asm.Name;
 
 public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
-	@Override
-	public void transform(ClassNode cn) {
-		cn.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "block16BArray", "[S", null, null));
+    @Override
+    public void transform(ClassNode cn) {
+        cn.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "block16BArray", "[S", null, null));
 
-		AsmUtil.makePublic(AsmUtil.findField(cn, Name.ebs_blockRefCount));
-		AsmUtil.makePublic(AsmUtil.findField(cn, Name.ebs_tickRefCount));
+        AsmUtil.makePublic(AsmUtil.findField(cn, Name.ebs_blockRefCount));
+        AsmUtil.makePublic(AsmUtil.findField(cn, Name.ebs_tickRefCount));
 
-		MethodNode method = AsmUtil.findMethod(cn, "<init>");
-		transformConstructor(cn, method);
+        MethodNode method = AsmUtil.findMethod(cn, "<init>");
+        transformConstructor(cn, method);
 
-		method = AsmUtil.findMethod(cn, Name.ebs_getBlock);
-		transformGetBlock(cn, method);
+        method = AsmUtil.findMethod(cn, Name.ebs_getBlock);
+        transformGetBlock(cn, method);
 
-		method = AsmUtil.findMethod(cn, Name.ebs_setBlock);
-		transformSetBlock(cn, method);
+        method = AsmUtil.findMethod(cn, Name.ebs_setBlock);
+        transformSetBlock(cn, method);
 
-		method = AsmUtil.findMethod(cn, Name.ebs_getBlockMSBArray);
-		transformGetBlockMSBArray(cn, method);
+        method = AsmUtil.findMethod(cn, Name.ebs_getBlockMSBArray);
+        transformGetBlockMSBArray(cn, method);
 
-		method = AsmUtil.findMethod(cn, Name.ebs_removeInvalidBlocks);
-		transformRemoveInvalidBlocks(cn, method);
-		
-		//cn.fields.remove(AsmUtil.findField(cn, Name.ebs_lsb));
-	}
+        method = AsmUtil.findMethod(cn, Name.ebs_removeInvalidBlocks);
+        transformRemoveInvalidBlocks(cn, method);
 
-	private void transformConstructor(ClassNode cn, MethodNode method) {
-		// add block16BArray initialization by forwarding to Hooks.create16BArray
-		InsnList code = method.instructions;
+        // cn.fields.remove(AsmUtil.findField(cn, Name.ebs_lsb));
+    }
 
-		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-			AbstractInsnNode insn = iterator.next();
+    private void transformConstructor(ClassNode cn, MethodNode method) {
+        // add block16BArray initialization by forwarding to Hooks.create16BArray
+        InsnList code = method.instructions;
 
-			insn = insn.getNext().getNext();
+        for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
+            AbstractInsnNode insn = iterator.next();
 
-			InsnList toInsert = new InsnList();
+            insn = insn.getNext().getNext();
 
-			toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
-			toInsert.add(Name.hooks_create16BArray.invokeStatic());
-			toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, cn.name, "block16BArray", "[S"));
+            InsnList toInsert = new InsnList();
 
-			method.instructions.insert(insn, toInsert);
+            toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
+            toInsert.add(Name.hooks_create16BArray.invokeStatic());
+            toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, cn.name, "block16BArray", "[S"));
 
-			break;
-		}
-		
-		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-			AbstractInsnNode insn = iterator.next();
+            method.instructions.insert(insn, toInsert);
 
-			if(insn instanceof IntInsnNode && ((IntInsnNode)insn).operand == 16*16*16) {
-  				((IntInsnNode)insn).operand = 0;
-	
-			}
-			if(insn instanceof InsnNode && ((InsnNode)insn).getOpcode() == Opcodes.DUP) {
-				iterator.next();
-				iterator.remove();
-				iterator.next();
-				iterator.remove();
-				iterator.next();
-				iterator.remove();
-				iterator.add(new IntInsnNode(Opcodes.SIPUSH, 16*16*16));
-			}
-		}
+            break;
+        }
 
-		method.maxStack = Math.max(method.maxStack, 2);
-	}
+        for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
+            AbstractInsnNode insn = iterator.next();
 
-	private void transformGetBlock(ClassNode cn, MethodNode method) {
-		// redirect to Hooks.getBlockById
-		InsnList code = method.instructions;
+            if (insn instanceof IntInsnNode && ((IntInsnNode) insn).operand == 16 * 16 * 16) {
+                ((IntInsnNode) insn).operand = 0;
+            }
+            if (insn instanceof InsnNode && ((InsnNode) insn).getOpcode() == Opcodes.DUP) {
+                iterator.next();
+                iterator.remove();
+                iterator.next();
+                iterator.remove();
+                iterator.next();
+                iterator.remove();
+                iterator.add(new IntInsnNode(Opcodes.SIPUSH, 16 * 16 * 16));
+            }
+        }
 
-		code.clear();
-		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
-		code.add(new VarInsnNode(Opcodes.ILOAD, 2));
-		code.add(new VarInsnNode(Opcodes.ILOAD, 3));
-		code.add(Name.hooks_getBlockById.invokeStatic());
-		code.add(new InsnNode(Opcodes.ARETURN));
+        method.maxStack = Math.max(method.maxStack, 2);
+    }
 
-		method.localVariables = null;
-		method.maxStack = 4;
-	}
+    private void transformGetBlock(ClassNode cn, MethodNode method) {
+        // redirect to Hooks.getBlockById
+        InsnList code = method.instructions;
 
-	private void transformSetBlock(ClassNode cn, MethodNode method) {
-		// this will remove everything but the ref count manipulation and delegate to Hooks.setBlock
-		InsnList code = method.instructions;
-		int part = 0;
+        code.clear();
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        code.add(new VarInsnNode(Opcodes.ILOAD, 1));
+        code.add(new VarInsnNode(Opcodes.ILOAD, 2));
+        code.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        code.add(Name.hooks_getBlockById.invokeStatic());
+        code.add(new InsnNode(Opcodes.ARETURN));
 
-		for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
-			AbstractInsnNode insn = iterator.next();
+        method.localVariables = null;
+        method.maxStack = 4;
+    }
 
-			if (part == 0) { // remove everything up to the Block.getBlockById call (inclusive)
-				iterator.remove();
+    private void transformSetBlock(ClassNode cn, MethodNode method) {
+        // this will remove everything but the ref count manipulation and delegate to Hooks.setBlock
+        InsnList code = method.instructions;
+        int part = 0;
 
-				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
-					part++;
+        for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
+            AbstractInsnNode insn = iterator.next();
 
-					iterator.add(new VarInsnNode(Opcodes.ALOAD, 0));
-					iterator.add(new VarInsnNode(Opcodes.ILOAD, 1));
-					iterator.add(new VarInsnNode(Opcodes.ILOAD, 2));
-					iterator.add(new VarInsnNode(Opcodes.ILOAD, 3));
-					iterator.add(Name.ebs_getBlock.invokeSpecial());
-				}
-			}
-			else if (part == 1) { // seek to the Block.getIdFromBlock call
-				if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
-					iterator.set(new VarInsnNode(Opcodes.ALOAD, 6));
-					iterator.add(Name.hooks_getIdFromBlockWithCheck.invokeStatic());
-					part++;
-				}
-			}
-			else { // remove the remainder
-				iterator.remove();
-			}
-		}
+            if (part == 0) { // remove everything up to the Block.getBlockById call (inclusive)
+                iterator.remove();
 
-		if (part != 2)
-			throw new AsmTransformException("no match for part " + part);
+                if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
+                    part++;
 
-		// the block id is still on the stack from the previous INVOKESTATIC (Block.getIdFromBlock)
-		code.add(new VarInsnNode(Opcodes.ISTORE, 5));
+                    iterator.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                    iterator.add(new VarInsnNode(Opcodes.ILOAD, 1));
+                    iterator.add(new VarInsnNode(Opcodes.ILOAD, 2));
+                    iterator.add(new VarInsnNode(Opcodes.ILOAD, 3));
+                    iterator.add(Name.ebs_getBlock.invokeSpecial());
+                }
+            } else if (part == 1) { // seek to the Block.getIdFromBlock call
+                if (insn.getOpcode() == Opcodes.INVOKESTATIC) {
+                    iterator.set(new VarInsnNode(Opcodes.ALOAD, 6));
+                    iterator.add(Name.hooks_getIdFromBlockWithCheck.invokeStatic());
+                    part++;
+                }
+            } else { // remove the remainder
+                iterator.remove();
+            }
+        }
 
-		code.add(new VarInsnNode(Opcodes.ALOAD, 0)); // ebs
-		code.add(new VarInsnNode(Opcodes.ILOAD, 1)); // x
-		code.add(new VarInsnNode(Opcodes.ILOAD, 2)); // y
-		code.add(new VarInsnNode(Opcodes.ILOAD, 3)); // z
-		code.add(new VarInsnNode(Opcodes.ILOAD, 5)); // block id
-		code.add(Name.hooks_setBlockId.invokeStatic());
-		code.add(new InsnNode(Opcodes.RETURN));
+        if (part != 2) throw new AsmTransformException("no match for part " + part);
 
-		method.localVariables = null;
-		method.maxLocals--; // var 7 is now unused
-		method.maxStack = Math.max(method.maxStack, 5);
-	}
+        // the block id is still on the stack from the previous INVOKESTATIC (Block.getIdFromBlock)
+        code.add(new VarInsnNode(Opcodes.ISTORE, 5));
 
-	private void transformGetBlockMSBArray(ClassNode cn, MethodNode method) {
-		// always return null
-		InsnList code = method.instructions;
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0)); // ebs
+        code.add(new VarInsnNode(Opcodes.ILOAD, 1)); // x
+        code.add(new VarInsnNode(Opcodes.ILOAD, 2)); // y
+        code.add(new VarInsnNode(Opcodes.ILOAD, 3)); // z
+        code.add(new VarInsnNode(Opcodes.ILOAD, 5)); // block id
+        code.add(Name.hooks_setBlockId.invokeStatic());
+        code.add(new InsnNode(Opcodes.RETURN));
 
-		code.clear();
-		code.add(new InsnNode(Opcodes.ACONST_NULL));
-		code.add(new InsnNode(Opcodes.ARETURN));
+        method.localVariables = null;
+        method.maxLocals--; // var 7 is now unused
+        method.maxStack = Math.max(method.maxStack, 5);
+    }
 
-		method.localVariables = null;
-		method.maxStack = 1;
-	}
+    private void transformGetBlockMSBArray(ClassNode cn, MethodNode method) {
+        // always return null
+        InsnList code = method.instructions;
 
-	private void transformRemoveInvalidBlocks(ClassNode cn, MethodNode method) {
-		InsnList code = method.instructions;
+        code.clear();
+        code.add(new InsnNode(Opcodes.ACONST_NULL));
+        code.add(new InsnNode(Opcodes.ARETURN));
 
-		code.clear();
-		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		code.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "ru/fewizz/idextender/Hooks", "removeInvalidBlocksHook", "(L" + cn.name + ";)V", false));
-		code.add(new InsnNode(Opcodes.RETURN));
+        method.localVariables = null;
+        method.maxStack = 1;
+    }
 
-		method.localVariables = null;
-		method.maxStack = 1;
-	}
+    private void transformRemoveInvalidBlocks(ClassNode cn, MethodNode method) {
+        InsnList code = method.instructions;
+
+        code.clear();
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        code.add(new MethodInsnNode(
+                Opcodes.INVOKESTATIC,
+                "ru/fewizz/idextender/Hooks",
+                "removeInvalidBlocksHook",
+                "(L" + cn.name + ";)V",
+                false));
+        code.add(new InsnNode(Opcodes.RETURN));
+
+        method.localVariables = null;
+        method.maxStack = 1;
+    }
 }

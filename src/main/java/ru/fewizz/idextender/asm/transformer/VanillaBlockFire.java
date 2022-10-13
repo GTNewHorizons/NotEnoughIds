@@ -8,16 +8,14 @@ import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
 
 public class VanillaBlockFire implements IClassNodeTransformer {
-	@Override
-	public void transform(ClassNode cn) {
-		boolean found = false;
+    @Override
+    public void transform(ClassNode cn) {
+        boolean found = false;
 
-		for (MethodNode method : cn.methods) {
-			if (AsmUtil.transformIntConst(cn, method, 4096, Constants.MAX_BLOCK_ID + 1, true))
-				found = true;
-		}
+        for (MethodNode method : cn.methods) {
+            if (AsmUtil.transformIntConst(cn, method, 4096, Constants.MAX_BLOCK_ID + 1, true)) found = true;
+        }
 
-		if (!found)
-			throw new AsmTransformException("can't find 4096 constant in any method");
-	}
+        if (!found) throw new AsmTransformException("can't find 4096 constant in any method");
+    }
 }

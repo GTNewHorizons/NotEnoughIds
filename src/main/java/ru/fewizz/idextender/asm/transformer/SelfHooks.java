@@ -13,54 +13,55 @@ import ru.fewizz.idextender.asm.IClassNodeTransformer;
 import ru.fewizz.idextender.asm.Name;
 
 public class SelfHooks implements IClassNodeTransformer {
-	@Override
-	public void transform(ClassNode cn) {
-		MethodNode method = AsmUtil.findMethod(cn, "get");
-		transformGet(cn, method);
+    @Override
+    public void transform(ClassNode cn) {
+        MethodNode method = AsmUtil.findMethod(cn, "get");
+        transformGet(cn, method);
 
-		method = AsmUtil.findMethod(cn, "setBlockRefCount");
-		transformSetBlockRefCount(cn, method);
+        method = AsmUtil.findMethod(cn, "setBlockRefCount");
+        transformSetBlockRefCount(cn, method);
 
-		method = AsmUtil.findMethod(cn, "setTickRefCount");
-		transformSetTickRefCount(cn, method);
-	}
+        method = AsmUtil.findMethod(cn, "setTickRefCount");
+        transformSetTickRefCount(cn, method);
+    }
 
-	private void transformGet(ClassNode cn, MethodNode method) {
-		// replace with "return ebs.block16BArray;"
-		InsnList code = method.instructions;
+    private void transformGet(ClassNode cn, MethodNode method) {
+        // replace with "return ebs.block16BArray;"
+        InsnList code = method.instructions;
 
-		code.clear();
-		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		code.add(new FieldInsnNode(Opcodes.GETFIELD, Type.getArgumentTypes(method.desc)[0].getInternalName(), "block16BArray", "[S"));
-		code.add(new InsnNode(Opcodes.ARETURN));
+        code.clear();
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        code.add(new FieldInsnNode(
+                Opcodes.GETFIELD, Type.getArgumentTypes(method.desc)[0].getInternalName(), "block16BArray", "[S"));
+        code.add(new InsnNode(Opcodes.ARETURN));
 
-		method.localVariables = null;
-		method.maxStack = 1;
-	}
+        method.localVariables = null;
+        method.maxStack = 1;
+    }
 
-	private void transformSetBlockRefCount(ClassNode cn, MethodNode method) {
-		InsnList code = method.instructions;
+    private void transformSetBlockRefCount(ClassNode cn, MethodNode method) {
+        InsnList code = method.instructions;
 
-		code.clear();
-		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
-		code.add(Name.ebs_blockRefCount.putField());
-		code.add(new InsnNode(Opcodes.RETURN));
+        code.clear();
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        code.add(new VarInsnNode(Opcodes.ILOAD, 1));
+        code.add(Name.ebs_blockRefCount.putField());
+        code.add(new InsnNode(Opcodes.RETURN));
 
-		method.localVariables = null;
-		method.maxStack = 2;
-	}
+        method.localVariables = null;
+        method.maxStack = 2;
+    }
 
-	private void transformSetTickRefCount(ClassNode cn, MethodNode method) {
-		InsnList code = method.instructions;
+    private void transformSetTickRefCount(ClassNode cn, MethodNode method) {
+        InsnList code = method.instructions;
 
-		code.clear();
-		code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		code.add(new VarInsnNode(Opcodes.ILOAD, 1));
-		code.add(Name.ebs_tickRefCount.putField());
-		code.add(new InsnNode(Opcodes.RETURN));
+        code.clear();
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        code.add(new VarInsnNode(Opcodes.ILOAD, 1));
+        code.add(Name.ebs_tickRefCount.putField());
+        code.add(new InsnNode(Opcodes.RETURN));
 
-		method.localVariables = null;
-		method.maxStack = 2;
-	}
+        method.localVariables = null;
+        method.maxStack = 2;
+    }
 }

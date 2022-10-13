@@ -7,9 +7,9 @@ import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
 
 public class VanillaStatList implements IClassNodeTransformer {
-	@Override
-	public void transform(ClassNode cn) {
-		MethodNode method = AsmUtil.findMethod(cn, "<clinit>");
-		AsmUtil.transformIntConst(cn, method, 4096, Constants.MAX_BLOCK_ID + 1);
-	}
+    @Override
+    public void transform(ClassNode cn) {
+        MethodNode method = AsmUtil.findMethod(cn, "<clinit>");
+        AsmUtil.transformIntConst(cn, method, 4096, Constants.MAX_BLOCK_ID + 1);
+    }
 }

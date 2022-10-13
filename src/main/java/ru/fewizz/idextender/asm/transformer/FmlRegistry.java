@@ -9,21 +9,17 @@ import ru.fewizz.idextender.asm.Constants;
 import ru.fewizz.idextender.asm.IClassNodeTransformer;
 
 public class FmlRegistry implements IClassNodeTransformer {
-	@Override
-	public void transform(ClassNode cn) {
-		FieldNode field = AsmUtil.findField(cn, "MAX_BLOCK_ID", true);
-		if (field != null)
-			field.value = Constants.MAX_BLOCK_ID;
-		
+    @Override
+    public void transform(ClassNode cn) {
+        FieldNode field = AsmUtil.findField(cn, "MAX_BLOCK_ID", true);
+        if (field != null) field.value = Constants.MAX_BLOCK_ID;
 
-		boolean found = false;
+        boolean found = false;
 
-		for (MethodNode method : cn.methods) {
-			if (AsmUtil.transformIntConst(cn, method, 4095, Constants.MAX_BLOCK_ID, true))
-				found = true;
-		}
+        for (MethodNode method : cn.methods) {
+            if (AsmUtil.transformIntConst(cn, method, 4095, Constants.MAX_BLOCK_ID, true)) found = true;
+        }
 
-		if (!found)
-			throw new AsmTransformException("can't find 4095 constant in any method");
-	}
+        if (!found) throw new AsmTransformException("can't find 4095 constant in any method");
+    }
 }
