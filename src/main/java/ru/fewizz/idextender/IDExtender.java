@@ -16,7 +16,7 @@ import net.minecraft.creativetab.CreativeTabs;
 @Mod(
 		modid = "notenoughIDs",
 		name = "NotEnoughIDs",
-		version = "1.4.3.5")
+		version = "GRADLETOKEN_VERSION")
 public class IDExtender {
 
 	static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("neid.debug", "false"));

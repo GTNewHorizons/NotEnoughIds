@@ -1,2 +1,0 @@
-FMLCorePlugin: ru.fewizz.idextender.IEPlugin
-FMLCorePluginContainsFMLMod: true

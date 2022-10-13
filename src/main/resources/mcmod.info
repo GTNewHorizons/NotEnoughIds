@@ -1,15 +1,21 @@
-[
-	{
-    "modid": "notenoughIDs",
-    "name": "NotEnoughIDs",
-    "description": "Extends hardcoded block ID limit.",
-    "version": "${version}",
-    "mcversion": "${mcversion}",
-    "updateUrl": "",
-    "authorList": ["fewizz","Player"],
-    "credits": "immibis for MinecraftForkage code, VikeStep and GloomyFolken for their coremod tutorials",
-    "logoFile": "logo.png",
-    "screenshots": [],
-    "dependencies": []
-	}
-]
+{
+	"modListVersion": 2,
+	"modList": [{
+		"modid": "${modId}",
+		"name": "${modName}",
+		"description": "Extends hardcoded block ID limit.",
+		"version": "${modVersion}",
+		"mcversion": "${minecraftVersion}",
+		"url": "https://github.com/SinTh0r4s/MyMod",
+		"updateUrl": "",
+		"authorList": ["fewizz","Player"],
+		"credits": "immibis for MinecraftForkage code, VikeStep and GloomyFolken for their coremod tutorials",
+		"logoFile": "logo.png",
+		"screenshots": [],
+		"parent": "",
+		"requiredMods": [],
+		"dependencies": [],
+		"dependants": [],
+		"useDependencyInformation": true
+	}]
+}
