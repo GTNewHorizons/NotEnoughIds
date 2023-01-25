@@ -25,7 +25,7 @@ public class IETransformer implements IClassTransformer {
         final ClassNode cn = new ClassNode(Opcodes.ASM5);
         final ClassReader reader = new ClassReader(bytes);
         final int readFlags = 0;
-        reader.accept(cn, 0);
+        reader.accept(cn, ClassReader.EXPAND_FRAMES);
         try {
             edit.getTransformer().transform(cn, IETransformer.isObfuscated);
         } catch (AsmTransformException t) {
@@ -37,7 +37,7 @@ public class IETransformer implements IClassTransformer {
                     "Error transforming {} with {}: {}", transformedName, edit.getName(), t2.getMessage());
             throw new RuntimeException(t2);
         }
-        final ClassWriter writer = new ClassWriter(0);
+        final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         try {
             final ClassVisitor check = new CheckClassAdapter(writer);
             cn.accept(check);

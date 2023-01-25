@@ -1,5 +1,6 @@
 package ru.fewizz.idextender.asm;
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
 public enum Name {
@@ -245,9 +246,9 @@ public enum Name {
     public FieldInsnNode virtualSet(final boolean obfuscated) {
         assert !this.desc.startsWith("(");
         if (obfuscated) {
-            return new FieldInsnNode(181, this.clazz.srg, this.srg, this.desc);
+            return new FieldInsnNode(Opcodes.PUTFIELD, this.clazz.srg, this.srg, this.desc);
         }
-        return new FieldInsnNode(181, this.clazz.deobf, this.deobf, this.desc);
+        return new FieldInsnNode(Opcodes.PUTFIELD, this.clazz.deobf, this.deobf, this.desc);
     }
 
     private static void translateDescs() {
