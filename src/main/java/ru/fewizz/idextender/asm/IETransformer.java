@@ -22,7 +22,7 @@ public class IETransformer implements IClassTransformer {
             return bytes;
         }
         IETransformer.logger.debug("Patching {} with {}...", new Object[] {transformedName, edit.getName()});
-        final ClassNode cn = new ClassNode(327680);
+        final ClassNode cn = new ClassNode(Opcodes.ASM5);
         final ClassReader reader = new ClassReader(bytes);
         final int readFlags = 0;
         reader.accept((ClassVisitor) cn, 0);
