@@ -10,14 +10,14 @@ public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
         final MethodNode method = AsmUtil.findMethod(cn, Name.s22_init_server);
         final InsnList code = method.instructions;
         int part = 0;
-        final ListIterator<AbstractInsnNode> iterator = (ListIterator<AbstractInsnNode>) code.iterator();
+        final ListIterator<AbstractInsnNode> iterator = code.iterator();
         while (iterator.hasNext()) {
             final AbstractInsnNode insn = iterator.next();
             if (part == 0) {
                 if (insn.getOpcode() != 7) {
                     continue;
                 }
-                iterator.set((AbstractInsnNode) new InsnNode(8));
+                iterator.set(new InsnNode(8));
                 ++part;
             } else if (part == 1) {
                 if (insn.getOpcode() != 184) {
@@ -27,8 +27,7 @@ public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
                 if (!Name.block_getIdFromBlock.matches(node, obfuscated)) {
                     continue;
                 }
-                iterator.add((AbstractInsnNode)
-                        new MethodInsnNode(182, "java/io/DataOutputStream", "writeShort", "(I)V", false));
+                iterator.add(new MethodInsnNode(182, "java/io/DataOutputStream", "writeShort", "(I)V", false));
                 ++part;
             } else if (part == 2) {
                 if (insn.getOpcode() == 25) {
@@ -40,10 +39,9 @@ public class VanillaS22PacketMultiBlockChange implements IClassNodeTransformer {
                 if (insn.getOpcode() != 182) {
                     continue;
                 }
-                iterator.add((AbstractInsnNode) new VarInsnNode(25, 6));
-                iterator.add((AbstractInsnNode) new InsnNode(95));
-                iterator.add((AbstractInsnNode)
-                        new MethodInsnNode(182, "java/io/DataOutputStream", "writeByte", "(I)V", false));
+                iterator.add(new VarInsnNode(25, 6));
+                iterator.add(new InsnNode(95));
+                iterator.add(new MethodInsnNode(182, "java/io/DataOutputStream", "writeByte", "(I)V", false));
                 ++part;
             } else {
                 iterator.remove();

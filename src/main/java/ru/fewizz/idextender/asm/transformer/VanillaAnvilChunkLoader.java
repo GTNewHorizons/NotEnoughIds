@@ -15,7 +15,7 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
 
     private void transformWriteChunkToNBT(final ClassNode cn, final MethodNode method, final boolean obfuscated) {
         final InsnList code = method.instructions;
-        final ListIterator<AbstractInsnNode> iterator = (ListIterator<AbstractInsnNode>) code.iterator();
+        final ListIterator<AbstractInsnNode> iterator = code.iterator();
         while (iterator.hasNext()) {
             final AbstractInsnNode insn = iterator.next();
             if (insn.getOpcode() == 18 && ((LdcInsnNode) insn).cst.equals("Blocks")) {
@@ -25,7 +25,7 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
                 iterator.remove();
                 iterator.next();
                 iterator.remove();
-                iterator.add((AbstractInsnNode) Name.hooks_writeChunkToNbt.staticInvocation(obfuscated));
+                iterator.add(Name.hooks_writeChunkToNbt.staticInvocation(obfuscated));
                 return;
             }
         }
@@ -35,14 +35,14 @@ public class VanillaAnvilChunkLoader implements IClassNodeTransformer {
     private void transformReadChunkFromNBT(final ClassNode cn, final MethodNode method, final boolean obfuscated) {
         final InsnList code = method.instructions;
         int part = 0;
-        final ListIterator<AbstractInsnNode> iterator = (ListIterator<AbstractInsnNode>) code.iterator();
+        final ListIterator<AbstractInsnNode> iterator = code.iterator();
         while (iterator.hasNext()) {
             final AbstractInsnNode insn = iterator.next();
             if (part == 0) {
                 if (insn.getOpcode() != 18 || !((LdcInsnNode) insn).cst.equals("Blocks")) {
                     continue;
                 }
-                iterator.set((AbstractInsnNode) Name.hooks_readChunkFromNbt.staticInvocation(obfuscated));
+                iterator.set(Name.hooks_readChunkFromNbt.staticInvocation(obfuscated));
                 ++part;
             } else if (part == 1) {
                 iterator.remove();

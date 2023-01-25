@@ -93,7 +93,7 @@ public class AsmUtil {
         boolean found = false;
         boolean foundOnce = false;
         final int i = 0;
-        final ListIterator<AbstractInsnNode> it = (ListIterator<AbstractInsnNode>) method.instructions.iterator();
+        final ListIterator<AbstractInsnNode> it = method.instructions.iterator();
         while (it.hasNext()) {
             final AbstractInsnNode insn = it.next();
             if (insn.getOpcode() == 3 && oldValue == 0) {
@@ -122,23 +122,23 @@ public class AsmUtil {
             if (found) {
                 foundOnce = true;
                 if (newValue == 0) {
-                    it.set((AbstractInsnNode) new InsnNode(3));
+                    it.set(new InsnNode(3));
                 } else if (newValue == 1) {
-                    it.set((AbstractInsnNode) new InsnNode(4));
+                    it.set(new InsnNode(4));
                 } else if (newValue == 2) {
-                    it.set((AbstractInsnNode) new InsnNode(5));
+                    it.set(new InsnNode(5));
                 } else if (newValue == 3) {
-                    it.set((AbstractInsnNode) new InsnNode(6));
+                    it.set(new InsnNode(6));
                 } else if (newValue == 4) {
-                    it.set((AbstractInsnNode) new InsnNode(7));
+                    it.set(new InsnNode(7));
                 } else if (newValue == 5) {
-                    it.set((AbstractInsnNode) new InsnNode(8));
+                    it.set(new InsnNode(8));
                 } else if (newValue >= -128 && newValue <= 127) {
-                    it.set((AbstractInsnNode) new IntInsnNode(16, newValue));
+                    it.set(new IntInsnNode(16, newValue));
                 } else if (newValue >= -32768 && newValue <= 32767) {
-                    it.set((AbstractInsnNode) new IntInsnNode(17, newValue));
+                    it.set(new IntInsnNode(17, newValue));
                 } else {
-                    it.set((AbstractInsnNode) new LdcInsnNode((Object) newValue));
+                    it.set(new LdcInsnNode(newValue));
                 }
                 found = false;
             }
@@ -151,8 +151,8 @@ public class AsmUtil {
 
     public static void dump(final InsnList list) {
         final Textifier textifier = new Textifier();
-        final TraceMethodVisitor visitor = new TraceMethodVisitor((Printer) textifier);
-        list.accept((MethodVisitor) visitor);
+        final TraceMethodVisitor visitor = new TraceMethodVisitor(textifier);
+        list.accept(visitor);
         final PrintWriter writer = new PrintWriter(System.out);
         textifier.print(writer);
         writer.flush();

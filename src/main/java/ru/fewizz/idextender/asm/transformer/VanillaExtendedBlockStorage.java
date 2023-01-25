@@ -7,7 +7,7 @@ import ru.fewizz.idextender.asm.*;
 public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
-        cn.fields.add(new FieldNode(1, "block16BArray", "[S", (String) null, (Object) null));
+        cn.fields.add(new FieldNode(1, "block16BArray", "[S", null, null));
         AsmUtil.makePublic(AsmUtil.findField(cn, Name.ebs_blockRefCount));
         AsmUtil.makePublic(AsmUtil.findField(cn, Name.ebs_tickRefCount));
         MethodNode method = AsmUtil.findMethod(cn, "<init>");
@@ -24,14 +24,14 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
 
     private void transformConstructor(final ClassNode cn, final MethodNode method, final boolean obfuscated) {
         final InsnList code = method.instructions;
-        final ListIterator<AbstractInsnNode> iterator = (ListIterator<AbstractInsnNode>) code.iterator();
+        final ListIterator<AbstractInsnNode> iterator = code.iterator();
         if (iterator.hasNext()) {
             AbstractInsnNode insn = iterator.next();
             insn = insn.getNext().getNext();
             final InsnList toInsert = new InsnList();
-            toInsert.add((AbstractInsnNode) new VarInsnNode(25, 0));
-            toInsert.add((AbstractInsnNode) Name.hooks_create16BArray.staticInvocation(obfuscated));
-            toInsert.add((AbstractInsnNode) new FieldInsnNode(181, cn.name, "block16BArray", "[S"));
+            toInsert.add(new VarInsnNode(25, 0));
+            toInsert.add(Name.hooks_create16BArray.staticInvocation(obfuscated));
+            toInsert.add(new FieldInsnNode(181, cn.name, "block16BArray", "[S"));
             method.instructions.insert(insn, toInsert);
         }
         method.maxStack = Math.max(method.maxStack, 2);
@@ -40,12 +40,12 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
     private void transformGetBlock(final ClassNode cn, final MethodNode method, final boolean obfuscated) {
         final InsnList code = method.instructions;
         code.clear();
-        code.add((AbstractInsnNode) new VarInsnNode(25, 0));
-        code.add((AbstractInsnNode) new VarInsnNode(21, 1));
-        code.add((AbstractInsnNode) new VarInsnNode(21, 2));
-        code.add((AbstractInsnNode) new VarInsnNode(21, 3));
-        code.add((AbstractInsnNode) Name.hooks_getBlockById.staticInvocation(obfuscated));
-        code.add((AbstractInsnNode) new InsnNode(176));
+        code.add(new VarInsnNode(25, 0));
+        code.add(new VarInsnNode(21, 1));
+        code.add(new VarInsnNode(21, 2));
+        code.add(new VarInsnNode(21, 3));
+        code.add(Name.hooks_getBlockById.staticInvocation(obfuscated));
+        code.add(new InsnNode(176));
         method.localVariables = null;
         method.maxStack = 4;
     }
@@ -53,7 +53,7 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
     private void transformSetBlock(final ClassNode cn, final MethodNode method, final boolean obfuscated) {
         final InsnList code = method.instructions;
         int part = 0;
-        final ListIterator<AbstractInsnNode> iterator = (ListIterator<AbstractInsnNode>) code.iterator();
+        final ListIterator<AbstractInsnNode> iterator = code.iterator();
         while (iterator.hasNext()) {
             final AbstractInsnNode insn = iterator.next();
             if (part == 0) {
@@ -62,17 +62,17 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
                     continue;
                 }
                 ++part;
-                iterator.add((AbstractInsnNode) new VarInsnNode(25, 0));
-                iterator.add((AbstractInsnNode) new VarInsnNode(21, 1));
-                iterator.add((AbstractInsnNode) new VarInsnNode(21, 2));
-                iterator.add((AbstractInsnNode) new VarInsnNode(21, 3));
-                iterator.add((AbstractInsnNode) Name.ebs_getBlock.virtualInvocation(obfuscated));
+                iterator.add(new VarInsnNode(25, 0));
+                iterator.add(new VarInsnNode(21, 1));
+                iterator.add(new VarInsnNode(21, 2));
+                iterator.add(new VarInsnNode(21, 3));
+                iterator.add(Name.ebs_getBlock.virtualInvocation(obfuscated));
             } else if (part == 1) {
                 if (insn.getOpcode() != 184) {
                     continue;
                 }
-                iterator.set((AbstractInsnNode) new VarInsnNode(25, 6));
-                iterator.add((AbstractInsnNode) Name.hooks_getIdFromBlockWithCheck.staticInvocation(obfuscated));
+                iterator.set(new VarInsnNode(25, 6));
+                iterator.add(Name.hooks_getIdFromBlockWithCheck.staticInvocation(obfuscated));
                 ++part;
             } else {
                 iterator.remove();
@@ -81,14 +81,14 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
         if (part != 2) {
             throw new AsmTransformException("no match for part " + part);
         }
-        code.add((AbstractInsnNode) new VarInsnNode(54, 5));
-        code.add((AbstractInsnNode) new VarInsnNode(25, 0));
-        code.add((AbstractInsnNode) new VarInsnNode(21, 1));
-        code.add((AbstractInsnNode) new VarInsnNode(21, 2));
-        code.add((AbstractInsnNode) new VarInsnNode(21, 3));
-        code.add((AbstractInsnNode) new VarInsnNode(21, 5));
-        code.add((AbstractInsnNode) Name.hooks_setBlockId.staticInvocation(obfuscated));
-        code.add((AbstractInsnNode) new InsnNode(177));
+        code.add(new VarInsnNode(54, 5));
+        code.add(new VarInsnNode(25, 0));
+        code.add(new VarInsnNode(21, 1));
+        code.add(new VarInsnNode(21, 2));
+        code.add(new VarInsnNode(21, 3));
+        code.add(new VarInsnNode(21, 5));
+        code.add(Name.hooks_setBlockId.staticInvocation(obfuscated));
+        code.add(new InsnNode(177));
         method.localVariables = null;
         --method.maxLocals;
         method.maxStack = Math.max(method.maxStack, 5);
@@ -97,8 +97,8 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
     private void transformGetBlockMSBArray(final ClassNode cn, final MethodNode method) {
         final InsnList code = method.instructions;
         code.clear();
-        code.add((AbstractInsnNode) new InsnNode(1));
-        code.add((AbstractInsnNode) new InsnNode(176));
+        code.add(new InsnNode(1));
+        code.add(new InsnNode(176));
         method.localVariables = null;
         method.maxStack = 1;
     }
@@ -106,10 +106,10 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
     private void transformRemoveInvalidBlocks(final ClassNode cn, final MethodNode method) {
         final InsnList code = method.instructions;
         code.clear();
-        code.add((AbstractInsnNode) new VarInsnNode(25, 0));
-        code.add((AbstractInsnNode) new MethodInsnNode(
+        code.add(new VarInsnNode(25, 0));
+        code.add(new MethodInsnNode(
                 184, "ru/fewizz/idextender/Hooks", "removeInvalidBlocksHook", "(L" + cn.name + ";)V", false));
-        code.add((AbstractInsnNode) new InsnNode(177));
+        code.add(new InsnNode(177));
         method.localVariables = null;
         method.maxStack = 1;
     }

@@ -15,11 +15,11 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
             AsmUtil.transformInlinedSizeMethod(cn, method, 31, 127);
             AsmUtil.transformInlinedSizeMethod(cn, method, 255, 1023);
             AsmUtil.transformInlinedSizeMethod(cn, method, 5, 7);
-            final ListIterator<AbstractInsnNode> it = (ListIterator<AbstractInsnNode>) method.instructions.iterator();
+            final ListIterator<AbstractInsnNode> it = method.instructions.iterator();
             while (it.hasNext()) {
                 final AbstractInsnNode insn = it.next();
                 if (insn.getOpcode() == 182 && ((MethodInsnNode) insn).name.equals("writeByte")) {
-                    it.set((AbstractInsnNode) new MethodInsnNode(
+                    it.set(new MethodInsnNode(
                             182,
                             "net/minecraft/network/PacketBuffer",
                             "writeShort",
@@ -34,15 +34,14 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
             AsmUtil.transformInlinedSizeMethod(cn, method, 31, 127);
             AsmUtil.transformInlinedSizeMethod(cn, method, 5, 7);
             int num = 0;
-            ListIterator<AbstractInsnNode> it2 = (ListIterator<AbstractInsnNode>) method.instructions.iterator();
+            ListIterator<AbstractInsnNode> it2 = method.instructions.iterator();
             while (it2.hasNext()) {
                 final AbstractInsnNode insn2 = it2.next();
                 if (insn2.getOpcode() == 182 && ((MethodInsnNode) insn2).name.equals("readByte")) {
                     if (++num == 2) {
                         continue;
                     }
-                    it2.set((AbstractInsnNode)
-                            new MethodInsnNode(182, "net/minecraft/network/PacketBuffer", "readShort", "()S", false));
+                    it2.set(new MethodInsnNode(182, "net/minecraft/network/PacketBuffer", "readShort", "()S", false));
                     if (num == 3) {
                         break;
                     }
@@ -51,11 +50,11 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
             }
             method = AsmUtil.findMethod(cn, Name.dataWatcher_writeWatchedListToPacketBuffer);
             AsmUtil.transformInlinedSizeMethod(cn, method, 127, 32767);
-            it2 = (ListIterator<AbstractInsnNode>) method.instructions.iterator();
+            it2 = method.instructions.iterator();
             while (it2.hasNext()) {
                 final AbstractInsnNode insn2 = it2.next();
                 if (insn2.getOpcode() == 182 && ((MethodInsnNode) insn2).name.equals("writeByte")) {
-                    it2.set((AbstractInsnNode) new MethodInsnNode(
+                    it2.set(new MethodInsnNode(
                             182,
                             "net/minecraft/network/PacketBuffer",
                             "writeShort",
@@ -66,11 +65,11 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
             }
             method = AsmUtil.findMethod(cn, Name.dataWatcher_func_151509_a);
             AsmUtil.transformInlinedSizeMethod(cn, method, 127, 32767);
-            it2 = (ListIterator<AbstractInsnNode>) method.instructions.iterator();
+            it2 = method.instructions.iterator();
             while (it2.hasNext()) {
                 final AbstractInsnNode insn2 = it2.next();
                 if (insn2.getOpcode() == 182 && ((MethodInsnNode) insn2).name.equals("writeByte")) {
-                    it2.set((AbstractInsnNode) new MethodInsnNode(
+                    it2.set(new MethodInsnNode(
                             182,
                             "net/minecraft/network/PacketBuffer",
                             "writeShort",

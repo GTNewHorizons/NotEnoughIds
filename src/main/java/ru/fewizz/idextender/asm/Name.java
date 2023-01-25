@@ -4,54 +4,38 @@ import org.objectweb.asm.tree.*;
 
 public enum Name {
     hooks("ru/fewizz/idextender/Hooks"),
-    hooks_create16BArray(Name.hooks, "create16BArray", (String) null, (String) null, "()[S"),
+    hooks_create16BArray(Name.hooks, "create16BArray", null, null, "()[S"),
     hooks_getBlockData(
-            Name.hooks,
-            "getBlockData",
-            (String) null,
-            (String) null,
-            "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)[B"),
+            Name.hooks, "getBlockData", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)[B"),
     hooks_setBlockData(
-            Name.hooks,
-            "setBlockData",
-            (String) null,
-            (String) null,
-            "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;[BI)V"),
+            Name.hooks, "setBlockData", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;[BI)V"),
     hooks_writeChunkToNbt(
             Name.hooks,
             "writeChunkToNbt",
-            (String) null,
-            (String) null,
+            null,
+            null,
             "(Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;)V"),
     hooks_readChunkFromNbt(
             Name.hooks,
             "readChunkFromNbt",
-            (String) null,
-            (String) null,
+            null,
+            null,
             "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;Lnet/minecraft/nbt/NBTTagCompound;)V"),
     hooks_getBlockId(
-            Name.hooks,
-            "getBlockId",
-            (String) null,
-            (String) null,
-            "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I"),
+            Name.hooks, "getBlockId", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)I"),
     hooks_getBlockById(
             Name.hooks,
             "getBlock",
-            (String) null,
-            (String) null,
+            null,
+            null,
             "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;III)Lnet/minecraft/block/Block;"),
     hooks_setBlockId(
-            Name.hooks,
-            "setBlockId",
-            (String) null,
-            (String) null,
-            "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;IIII)V"),
+            Name.hooks, "setBlockId", null, null, "(Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;IIII)V"),
     hooks_getIdFromBlockWithCheck(
             Name.hooks,
             "getIdFromBlockWithCheck",
-            (String) null,
-            (String) null,
+            null,
+            null,
             "(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)I"),
     acl("net/minecraft/world/chunk/storage/AnvilChunkLoader", "aqk"),
     block("net/minecraft/block/Block", "aji"),
@@ -75,7 +59,7 @@ public enum Name {
     entityPlayer("net/minecraft/entity/player/EntityPlayer", "yz"),
     ebs_getBlock(
             Name.extendedBlockStorage, "getBlockByExtId", "a", "func_150819_a", "(III)Lnet/minecraft/block/Block;"),
-    ebs_setBlock(Name.extendedBlockStorage, "func_150818_a", "a", (String) null, "(IIILnet/minecraft/block/Block;)V"),
+    ebs_setBlock(Name.extendedBlockStorage, "func_150818_a", "a", null, "(IIILnet/minecraft/block/Block;)V"),
     ebs_getBlockLSBArray(Name.extendedBlockStorage, "getBlockLSBArray", "g", "func_76658_g", "()[B"),
     ebs_getBlockMSBArray(
             Name.extendedBlockStorage,
@@ -138,36 +122,26 @@ public enum Name {
             "a",
             "func_147287_a",
             "(Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;)V"),
-    s22_init_server(Name.s22, "<init>", (String) null, (String) null, "(I[SLnet/minecraft/world/chunk/Chunk;)V"),
-    s21_undefined1(Name.s21, "func_149275_c", "c", (String) null, "()I"),
+    s22_init_server(Name.s22, "<init>", null, null, "(I[SLnet/minecraft/world/chunk/Chunk;)V"),
+    s21_undefined1(Name.s21, "func_149275_c", "c", null, "()I"),
     s21_undefined2(
             Name.s21,
             "func_149269_a",
             "a",
-            (String) null,
+            null,
             "(Lnet/minecraft/world/chunk/Chunk;ZI)Lnet/minecraft/network/play/server/S21PacketChunkData$Extracted;"),
     renderGlobal_playAuxSFX(
             Name.renderGlobal, "playAuxSFX", "a", "func_72706_a", "(Lnet/minecraft/entity/player/EntityPlayer;IIIII)V"),
     playerControllerMP_onPlayerDestroyBlock(
             Name.playerControllerMP, "onPlayerDestroyBlock", "a", "func_78751_a", "(IIII)Z"),
     itemInWorldManager_tryHarvestBlock(Name.itemInWorldManager, "tryHarvestBlock", "b", "func_73084_b", "(III)Z"),
-    world_breakBlock(Name.world, "func_147480_a", "a", (String) null, "(IIIZ)Z"),
+    world_breakBlock(Name.world, "func_147480_a", "a", null, "(IIIZ)Z"),
     ub_bud("exterminatorJeff/undergroundBiomes/worldGen/BiomeUndergroundDecorator"),
-    ub_bud_replaceChunkOres_world(
-            Name.ub_bud, "replaceChunkOres", (String) null, (String) null, "(IILnet/minecraft/world/World;)V"),
+    ub_bud_replaceChunkOres_world(Name.ub_bud, "replaceChunkOres", null, null, "(IILnet/minecraft/world/World;)V"),
     ub_bud_replaceChunkOres_iChunkProvider(
-            Name.ub_bud,
-            "replaceChunkOres",
-            (String) null,
-            (String) null,
-            "(Lnet/minecraft/world/chunk/IChunkProvider;II)V"),
+            Name.ub_bud, "replaceChunkOres", null, null, "(Lnet/minecraft/world/chunk/IChunkProvider;II)V"),
     MFQM("MoreFunQuicksandMod/main/MFQM"),
-    MFQM_preInit(
-            Name.MFQM,
-            "preInit",
-            (String) null,
-            (String) null,
-            "(Lcpw/mods/fml/common/event/FMLPreInitializationEvent;)V");
+    MFQM_preInit(Name.MFQM, "preInit", null, null, "(Lcpw/mods/fml/common/event/FMLPreInitializationEvent;)V");
 
     public final Name clazz;
     public final String deobf;
@@ -176,11 +150,11 @@ public enum Name {
     public final String desc;
     public String obfDesc;
 
-    private Name(final String deobf) {
+    Name(final String deobf) {
         this(deobf, deobf);
     }
 
-    private Name(final String deobf, final String obf) {
+    Name(final String deobf, final String obf) {
         this.clazz = null;
         this.deobf = deobf;
         this.obf = obf;
@@ -188,7 +162,7 @@ public enum Name {
         this.desc = null;
     }
 
-    private Name(final Name clazz, final String deobf, final String obf, final String srg, final String desc) {
+    Name(final Name clazz, final String deobf, final String obf, final String srg, final String desc) {
         this.clazz = clazz;
         this.deobf = deobf;
         this.obf = ((obf != null) ? obf : deobf);

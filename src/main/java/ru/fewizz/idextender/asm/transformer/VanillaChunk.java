@@ -13,22 +13,22 @@ public class VanillaChunk implements IClassNodeTransformer {
         }
         method.localVariables = null;
         int part = 0;
-        final ListIterator<AbstractInsnNode> it = (ListIterator<AbstractInsnNode>) method.instructions.iterator();
+        final ListIterator<AbstractInsnNode> it = method.instructions.iterator();
         while (it.hasNext()) {
             AbstractInsnNode insn = it.next();
             if (part == 0) {
                 if (insn.getOpcode() != 182 || !Name.ebs_getBlockLSBArray.matches((MethodInsnNode) insn, obfuscated)) {
                     continue;
                 }
-                it.set((AbstractInsnNode) new VarInsnNode(25, 1));
-                it.add((AbstractInsnNode) new VarInsnNode(21, 6));
-                it.add((AbstractInsnNode) Name.hooks_setBlockData.staticInvocation(obfuscated));
+                it.set(new VarInsnNode(25, 1));
+                it.add(new VarInsnNode(21, 6));
+                it.add(Name.hooks_setBlockData.staticInvocation(obfuscated));
                 ++part;
             } else if (part == 1) {
                 if (insn.getOpcode() == 96) {
-                    it.set((AbstractInsnNode) new VarInsnNode(21, 6));
-                    it.add((AbstractInsnNode) new LdcInsnNode((Object) 8192));
-                    it.add((AbstractInsnNode) new InsnNode(96));
+                    it.set(new VarInsnNode(21, 6));
+                    it.add(new LdcInsnNode(8192));
+                    it.add(new InsnNode(96));
                     ++part;
                 } else {
                     it.remove();
@@ -42,8 +42,7 @@ public class VanillaChunk implements IClassNodeTransformer {
                     do {
                         insn = it.next();
                     } while (insn.getOpcode() != 161 && insn.getOpcode() != 162);
-                    it.set((AbstractInsnNode)
-                            new JumpInsnNode((insn.getOpcode() == 161) ? 163 : 161, ((JumpInsnNode) insn).label));
+                    it.set(new JumpInsnNode((insn.getOpcode() == 161) ? 163 : 161, ((JumpInsnNode) insn).label));
                     return;
                 }
                 continue;
