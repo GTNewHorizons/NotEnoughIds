@@ -10,7 +10,7 @@ public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
         final MethodNode method = AsmUtil.findMethod(cn, Name.nhpc_handleMultiBlockChange);
         final InsnList code = method.instructions;
         int part = 0;
-        final ListIterator<AbstractInsnNode> iterator = (ListIterator<AbstractInsnNode>) code.iterator();
+        final ListIterator<AbstractInsnNode> iterator = code.iterator();
         while (iterator.hasNext()) {
             AbstractInsnNode insn = iterator.next();
             if (part == 0) {
@@ -24,15 +24,14 @@ public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
                 }
                 iterator.remove();
                 insn = iterator.next();
-                iterator.set((AbstractInsnNode) new InsnNode(3));
+                iterator.set(new InsnNode(3));
                 ++part;
             } else if (part == 2) {
                 if (insn.getOpcode() != 21 || ((VarInsnNode) insn).var != 7) {
                     continue;
                 }
-                iterator.set((AbstractInsnNode) new VarInsnNode(25, 4));
-                iterator.add((AbstractInsnNode)
-                        new MethodInsnNode(182, "java/io/DataInputStream", "readShort", "()S", false));
+                iterator.set(new VarInsnNode(25, 4));
+                iterator.add(new MethodInsnNode(182, "java/io/DataInputStream", "readShort", "()S", false));
                 ++part;
             } else if (part == 3) {
                 if (insn.getOpcode() == 54) {
@@ -44,11 +43,10 @@ public class VanillaNetHandlerPlayClient implements IClassNodeTransformer {
                 if (insn.getOpcode() != 21 || ((VarInsnNode) insn).var != 7) {
                     continue;
                 }
-                iterator.set((AbstractInsnNode) new VarInsnNode(25, 4));
-                iterator.add((AbstractInsnNode)
-                        new MethodInsnNode(182, "java/io/DataInputStream", "readByte", "()B", false));
-                iterator.add((AbstractInsnNode) new IntInsnNode(16, 15));
-                iterator.add((AbstractInsnNode) new InsnNode(126));
+                iterator.set(new VarInsnNode(25, 4));
+                iterator.add(new MethodInsnNode(182, "java/io/DataInputStream", "readByte", "()B", false));
+                iterator.add(new IntInsnNode(16, 15));
+                iterator.add(new InsnNode(126));
                 ++part;
             } else {
                 if (part != 5) {

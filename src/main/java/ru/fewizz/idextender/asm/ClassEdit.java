@@ -4,62 +4,51 @@ import java.util.*;
 import ru.fewizz.idextender.asm.transformer.*;
 
 public enum ClassEdit {
-    SelfHooks((IClassNodeTransformer) new SelfHooks(), new String[] {"ru.fewizz.idextender.Hooks"}),
-    VanillaBlockFire((IClassNodeTransformer) new VanillaBlockFire(), new String[] {"net.minecraft.block.BlockFire"}),
-    VanillaStatList((IClassNodeTransformer) new VanillaStatList(), new String[] {"net.minecraft.stats.StatList"}),
+    SelfHooks(new SelfHooks(), new String[] {"ru.fewizz.idextender.Hooks"}),
+    VanillaBlockFire(new VanillaBlockFire(), new String[] {"net.minecraft.block.BlockFire"}),
+    VanillaStatList(new VanillaStatList(), new String[] {"net.minecraft.stats.StatList"}),
     VanillaAnvilChunkLoader(
-            (IClassNodeTransformer) new VanillaAnvilChunkLoader(),
-            new String[] {"net.minecraft.world.chunk.storage.AnvilChunkLoader"}),
-    VanillaChunk((IClassNodeTransformer) new VanillaChunk(), new String[] {"net.minecraft.world.chunk.Chunk"}),
+            new VanillaAnvilChunkLoader(), new String[] {"net.minecraft.world.chunk.storage.AnvilChunkLoader"}),
+    VanillaChunk(new VanillaChunk(), new String[] {"net.minecraft.world.chunk.Chunk"}),
     VanillaExtendedBlockStorage(
-            (IClassNodeTransformer) new VanillaExtendedBlockStorage(),
-            new String[] {"net.minecraft.world.chunk.storage.ExtendedBlockStorage"}),
-    VanillaDataWatcher(
-            (IClassNodeTransformer) new VanillaDataWatcher(), new String[] {"net.minecraft.entity.DataWatcher"}),
+            new VanillaExtendedBlockStorage(), new String[] {"net.minecraft.world.chunk.storage.ExtendedBlockStorage"}),
+    VanillaDataWatcher(new VanillaDataWatcher(), new String[] {"net.minecraft.entity.DataWatcher"}),
     VanillaNetHandlerPlayClient(
-            (IClassNodeTransformer) new VanillaNetHandlerPlayClient(),
-            new String[] {"net.minecraft.client.network.NetHandlerPlayClient"}),
+            new VanillaNetHandlerPlayClient(), new String[] {"net.minecraft.client.network.NetHandlerPlayClient"}),
     VanillaS21PacketChunkData(
-            (IClassNodeTransformer) new VanillaS21PacketChunkData(),
-            new String[] {"net.minecraft.network.play.server.S21PacketChunkData"}),
+            new VanillaS21PacketChunkData(), new String[] {"net.minecraft.network.play.server.S21PacketChunkData"}),
     VanillaS22PacketMultiBlockChange(
-            (IClassNodeTransformer) new VanillaS22PacketMultiBlockChange(),
+            new VanillaS22PacketMultiBlockChange(),
             new String[] {"net.minecraft.network.play.server.S22PacketMultiBlockChange"}),
     VanillaS24PacketBlockActivation(
-            (IClassNodeTransformer) new VanillaS24PacketBlockActivation(),
+            new VanillaS24PacketBlockActivation(),
             new String[] {"net.minecraft.network.play.server.S24PacketBlockAction"}),
     VanillaS26PacketMapChunkBulk(
-            (IClassNodeTransformer) new VanillaS26PacketMapChunkBulk(),
+            new VanillaS26PacketMapChunkBulk(),
             new String[] {"net.minecraft.network.play.server.S26PacketMapChunkBulk"}),
-    VanillaRenderGlobal(
-            (IClassNodeTransformer) new VanillaRenderGlobal(),
-            new String[] {"net.minecraft.client.renderer.RenderGlobal"}),
+    VanillaRenderGlobal(new VanillaRenderGlobal(), new String[] {"net.minecraft.client.renderer.RenderGlobal"}),
     VanillaPlayerControllerMP(
-            (IClassNodeTransformer) new VanillaPlayerControllerMP(),
-            new String[] {"net.minecraft.client.multiplayer.PlayerControllerMP"}),
+            new VanillaPlayerControllerMP(), new String[] {"net.minecraft.client.multiplayer.PlayerControllerMP"}),
     VanillaItemInWorldManager(
-            (IClassNodeTransformer) new VanillaItemInWorldManager(),
-            new String[] {"net.minecraft.server.management.ItemInWorldManager"}),
-    VanillaWorld((IClassNodeTransformer) new VanillaWorld(), new String[] {"net.minecraft.world.World"}),
-    FmlRegistry((IClassNodeTransformer) new FmlRegistry(), new String[] {
+            new VanillaItemInWorldManager(), new String[] {"net.minecraft.server.management.ItemInWorldManager"}),
+    VanillaWorld(new VanillaWorld(), new String[] {"net.minecraft.world.World"}),
+    FmlRegistry(new FmlRegistry(), new String[] {
         "cpw.mods.fml.common.registry.GameData", "cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry"
     }),
-    CofhBlockHelper((IClassNodeTransformer) new CofhBlockHelper(), new String[] {"cofh.lib.util.helpers.BlockHelper"}),
+    CofhBlockHelper(new CofhBlockHelper(), new String[] {"cofh.lib.util.helpers.BlockHelper"}),
     UndergroundBiomesOreUBifier(
-            (IClassNodeTransformer) new UndergroundBiomesOreUBifier(),
-            new String[] {"exterminatorJeff.undergroundBiomes.worldGen.OreUBifier"}),
+            new UndergroundBiomesOreUBifier(), new String[] {"exterminatorJeff.undergroundBiomes.worldGen.OreUBifier"}),
     UndergroundBiomesBiomeUndergroundDecorator(
-            (IClassNodeTransformer) new UndergroundBiomesBiomeUndergroundDecorator(),
+            new UndergroundBiomesBiomeUndergroundDecorator(),
             new String[] {"exterminatorJeff.undergroundBiomes.worldGen.BiomeUndergroundDecorator"}),
-    MFQM((IClassNodeTransformer) new MFQM(), new String[] {"MoreFunQuicksandMod.main.MFQM"}),
-    WorldEditBaseBlock(
-            (IClassNodeTransformer) new WorldEditBaseBlock(), new String[] {"com.sk89q.worldedit.blocks.BaseBlock"});
+    MFQM(new MFQM(), new String[] {"MoreFunQuicksandMod.main.MFQM"}),
+    WorldEditBaseBlock(new WorldEditBaseBlock(), new String[] {"com.sk89q.worldedit.blocks.BaseBlock"});
 
     private static final Map<String, ClassEdit> editMap;
     private final IClassNodeTransformer transformer;
     private final String[] classNames;
 
-    private ClassEdit(final IClassNodeTransformer transformer, final String[] classNames) {
+    ClassEdit(final IClassNodeTransformer transformer, final String[] classNames) {
         this.transformer = transformer;
         this.classNames = classNames;
     }

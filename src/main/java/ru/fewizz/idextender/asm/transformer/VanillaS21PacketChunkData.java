@@ -19,13 +19,13 @@ public class VanillaS21PacketChunkData implements IClassNodeTransformer {
 
     private void transformCreateData(final ClassNode cn, final MethodNode method, final boolean obfuscated) {
         final InsnList code = method.instructions;
-        final ListIterator<AbstractInsnNode> iterator = (ListIterator<AbstractInsnNode>) code.iterator();
+        final ListIterator<AbstractInsnNode> iterator = code.iterator();
         while (iterator.hasNext()) {
             final AbstractInsnNode insn = iterator.next();
             if (insn.getOpcode() == 182) {
                 final MethodInsnNode node = (MethodInsnNode) insn;
                 if (Name.ebs_getBlockLSBArray.matches(node, obfuscated)) {
-                    iterator.set((AbstractInsnNode) Name.hooks_getBlockData.staticInvocation(obfuscated));
+                    iterator.set(Name.hooks_getBlockData.staticInvocation(obfuscated));
                     return;
                 }
                 continue;

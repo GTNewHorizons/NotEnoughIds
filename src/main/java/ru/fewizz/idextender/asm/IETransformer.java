@@ -21,35 +21,32 @@ public class IETransformer implements IClassTransformer {
         if (edit == null) {
             return bytes;
         }
-        IETransformer.logger.debug("Patching {} with {}...", new Object[] {transformedName, edit.getName()});
-        final ClassNode cn = new ClassNode(327680);
+        IETransformer.logger.debug("Patching {} with {}...", transformedName, edit.getName());
+        final ClassNode cn = new ClassNode(Opcodes.ASM5);
         final ClassReader reader = new ClassReader(bytes);
         final int readFlags = 0;
-        reader.accept((ClassVisitor) cn, 0);
+        reader.accept(cn, ClassReader.EXPAND_FRAMES);
         try {
             edit.getTransformer().transform(cn, IETransformer.isObfuscated);
         } catch (AsmTransformException t) {
             IETransformer.logger.error(
-                    "Error transforming {} with {}: {}",
-                    new Object[] {transformedName, edit.getName(), t.getMessage()});
+                    "Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
             throw t;
         } catch (Throwable t2) {
             IETransformer.logger.error(
-                    "Error transforming {} with {}: {}",
-                    new Object[] {transformedName, edit.getName(), t2.getMessage()});
+                    "Error transforming {} with {}: {}", transformedName, edit.getName(), t2.getMessage());
             throw new RuntimeException(t2);
         }
-        final ClassWriter writer = new ClassWriter(0);
+        final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         try {
-            final ClassVisitor check = (ClassVisitor) new CheckClassAdapter((ClassVisitor) writer);
+            final ClassVisitor check = new CheckClassAdapter(writer);
             cn.accept(check);
         } catch (Throwable t3) {
             IETransformer.logger.error(
-                    "Error verifying {} transformed with {}: {}",
-                    new Object[] {transformedName, edit.getName(), t3.getMessage()});
+                    "Error verifying {} transformed with {}: {}", transformedName, edit.getName(), t3.getMessage());
             throw new RuntimeException(t3);
         }
-        IETransformer.logger.debug("Patched {} successfully.", new Object[] {edit.getName()});
+        IETransformer.logger.debug("Patched {} successfully.", edit.getName());
         return writer.toByteArray();
     }
 

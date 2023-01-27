@@ -16,15 +16,15 @@ public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTra
     private void transformReplaceChunkOres(
             final ClassNode cn, final MethodNode method, final boolean obfuscated, final int varOffset) {
         final InsnList code = method.instructions;
-        final ListIterator<AbstractInsnNode> iterator = (ListIterator<AbstractInsnNode>) code.iterator();
+        final ListIterator<AbstractInsnNode> iterator = code.iterator();
         while (iterator.hasNext()) {
             final AbstractInsnNode insn = iterator.next();
             if (insn.getOpcode() == 182 && Name.ebs_getBlockLSBArray.matches((MethodInsnNode) insn, obfuscated)) {
                 iterator.remove();
-                iterator.add((AbstractInsnNode) new VarInsnNode(21, 9 + varOffset));
-                iterator.add((AbstractInsnNode) new VarInsnNode(21, 18 + varOffset));
-                iterator.add((AbstractInsnNode) new VarInsnNode(21, 10 + varOffset));
-                iterator.add((AbstractInsnNode) Name.hooks_getBlockId.staticInvocation(obfuscated));
+                iterator.add(new VarInsnNode(21, 9 + varOffset));
+                iterator.add(new VarInsnNode(21, 18 + varOffset));
+                iterator.add(new VarInsnNode(21, 10 + varOffset));
+                iterator.add(Name.hooks_getBlockId.staticInvocation(obfuscated));
                 while (iterator.next().getOpcode() != 54) {
                     iterator.remove();
                 }
