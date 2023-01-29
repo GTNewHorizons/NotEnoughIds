@@ -1,10 +1,13 @@
 package ru.fewizz.idextender.asm.transformer;
 
 import java.util.*;
+
 import org.objectweb.asm.tree.*;
+
 import ru.fewizz.idextender.asm.*;
 
 public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTransformer {
+
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         MethodNode method = AsmUtil.findMethod(cn, Name.ub_bud_replaceChunkOres_world);
@@ -13,8 +16,8 @@ public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTra
         this.transformReplaceChunkOres(cn, method, obfuscated, 0);
     }
 
-    private void transformReplaceChunkOres(
-            final ClassNode cn, final MethodNode method, final boolean obfuscated, final int varOffset) {
+    private void transformReplaceChunkOres(final ClassNode cn, final MethodNode method, final boolean obfuscated,
+            final int varOffset) {
         final InsnList code = method.instructions;
         final ListIterator<AbstractInsnNode> iterator = code.iterator();
         while (iterator.hasNext()) {

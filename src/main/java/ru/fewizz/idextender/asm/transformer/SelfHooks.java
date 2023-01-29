@@ -2,9 +2,11 @@ package ru.fewizz.idextender.asm.transformer;
 
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
+
 import ru.fewizz.idextender.asm.*;
 
 public class SelfHooks implements IClassNodeTransformer {
+
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         MethodNode method = AsmUtil.findMethod(cn, "get");
@@ -19,8 +21,12 @@ public class SelfHooks implements IClassNodeTransformer {
         final InsnList code = method.instructions;
         code.clear();
         code.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        code.add(new FieldInsnNode(
-                Opcodes.GETFIELD, Type.getArgumentTypes(method.desc)[0].getInternalName(), "block16BArray", "[S"));
+        code.add(
+                new FieldInsnNode(
+                        Opcodes.GETFIELD,
+                        Type.getArgumentTypes(method.desc)[0].getInternalName(),
+                        "block16BArray",
+                        "[S"));
         code.add(new InsnNode(Opcodes.ARETURN));
         method.localVariables = null;
         method.maxStack = 1;

@@ -2,11 +2,13 @@ package ru.fewizz.idextender.asm;
 
 import java.io.*;
 import java.util.*;
+
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 import org.objectweb.asm.util.*;
 
 public class AsmUtil {
+
     public static MethodNode findMethod(final ClassNode cn, final String name) {
         return findMethod(cn, name, false);
     }
@@ -79,17 +81,13 @@ public class AsmUtil {
         x.access = ((x.access & 0xFFFFFFF9) | 0x1);
     }
 
-    public static boolean transformInlinedSizeMethod(
-            final ClassNode cn, final MethodNode method, final int oldValue, final int newValue) {
+    public static boolean transformInlinedSizeMethod(final ClassNode cn, final MethodNode method, final int oldValue,
+            final int newValue) {
         return transformInlinedSizeMethod(cn, method, oldValue, newValue, false);
     }
 
-    public static boolean transformInlinedSizeMethod(
-            final ClassNode cn,
-            final MethodNode method,
-            final int oldValue,
-            final int newValue,
-            final boolean optional) {
+    public static boolean transformInlinedSizeMethod(final ClassNode cn, final MethodNode method, final int oldValue,
+            final int newValue, final boolean optional) {
         boolean found = false;
         boolean foundOnce = false;
         final int i = 0;

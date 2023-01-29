@@ -1,9 +1,11 @@
 package ru.fewizz.idextender;
 
 import java.io.*;
+
 import net.minecraftforge.common.config.*;
 
 public class IEConfig {
+
     static Configuration config;
     public static boolean catchUnregisteredBlocks;
     public static boolean removeInvalidBlocks;
@@ -19,15 +21,18 @@ public class IEConfig {
         }
         IEConfig.config = new Configuration(newFile);
         IEConfig.catchUnregisteredBlocks = IEConfig.config.getBoolean("CatchUnregisteredBlocks", "NEID", false, "");
-        IEConfig.removeInvalidBlocks = IEConfig.config.getBoolean(
-                "RemoveInvalidBlocks", "NEID", false, "Remove invalid (corrupted) blocks from the game.");
+        IEConfig.removeInvalidBlocks = IEConfig.config
+                .getBoolean("RemoveInvalidBlocks", "NEID", false, "Remove invalid (corrupted) blocks from the game.");
         IEConfig.postNeidWorldsSupport = IEConfig.config.getBoolean(
                 "PostNeidWorldsSupport",
                 "NEID",
                 true,
                 "If true, only blocks with IDs > 4095 will disappear after removing NEID.");
         IEConfig.extendDataWatcher = IEConfig.config.getBoolean(
-                "ExtendDataWatcher", "NEID", false, "Extend DataWatcher IDs. Vanilla limit is 31, new limit is 127.");
+                "ExtendDataWatcher",
+                "NEID",
+                false,
+                "Extend DataWatcher IDs. Vanilla limit is 31, new limit is 127.");
         IEConfig.config.save();
     }
 

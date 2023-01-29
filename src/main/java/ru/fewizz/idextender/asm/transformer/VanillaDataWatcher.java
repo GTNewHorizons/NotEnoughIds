@@ -1,11 +1,14 @@
 package ru.fewizz.idextender.asm.transformer;
 
 import java.util.*;
+
 import org.objectweb.asm.tree.*;
+
 import ru.fewizz.idextender.*;
 import ru.fewizz.idextender.asm.*;
 
 public class VanillaDataWatcher implements IClassNodeTransformer {
+
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         if (IEConfig.extendDataWatcher) {
@@ -19,12 +22,13 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
             while (it.hasNext()) {
                 final AbstractInsnNode insn = it.next();
                 if (insn.getOpcode() == 182 && ((MethodInsnNode) insn).name.equals("writeByte")) {
-                    it.set(new MethodInsnNode(
-                            182,
-                            "net/minecraft/network/PacketBuffer",
-                            "writeShort",
-                            "(I)Lio/netty/buffer/ByteBuf;",
-                            false));
+                    it.set(
+                            new MethodInsnNode(
+                                    182,
+                                    "net/minecraft/network/PacketBuffer",
+                                    "writeShort",
+                                    "(I)Lio/netty/buffer/ByteBuf;",
+                                    false));
                     break;
                 }
             }
@@ -54,12 +58,13 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
             while (it2.hasNext()) {
                 final AbstractInsnNode insn2 = it2.next();
                 if (insn2.getOpcode() == 182 && ((MethodInsnNode) insn2).name.equals("writeByte")) {
-                    it2.set(new MethodInsnNode(
-                            182,
-                            "net/minecraft/network/PacketBuffer",
-                            "writeShort",
-                            "(I)Lio/netty/buffer/ByteBuf;",
-                            false));
+                    it2.set(
+                            new MethodInsnNode(
+                                    182,
+                                    "net/minecraft/network/PacketBuffer",
+                                    "writeShort",
+                                    "(I)Lio/netty/buffer/ByteBuf;",
+                                    false));
                     break;
                 }
             }
@@ -69,12 +74,13 @@ public class VanillaDataWatcher implements IClassNodeTransformer {
             while (it2.hasNext()) {
                 final AbstractInsnNode insn2 = it2.next();
                 if (insn2.getOpcode() == 182 && ((MethodInsnNode) insn2).name.equals("writeByte")) {
-                    it2.set(new MethodInsnNode(
-                            182,
-                            "net/minecraft/network/PacketBuffer",
-                            "writeShort",
-                            "(I)Lio/netty/buffer/ByteBuf;",
-                            false));
+                    it2.set(
+                            new MethodInsnNode(
+                                    182,
+                                    "net/minecraft/network/PacketBuffer",
+                                    "writeShort",
+                                    "(I)Lio/netty/buffer/ByteBuf;",
+                                    false));
                     break;
                 }
             }

@@ -1,10 +1,13 @@
 package ru.fewizz.idextender.asm.transformer;
 
 import java.util.*;
+
 import org.objectweb.asm.tree.*;
+
 import ru.fewizz.idextender.asm.*;
 
 public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
+
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         cn.fields.add(new FieldNode(1, "block16BArray", "[S", null, null));
@@ -107,8 +110,13 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
         final InsnList code = method.instructions;
         code.clear();
         code.add(new VarInsnNode(25, 0));
-        code.add(new MethodInsnNode(
-                184, "ru/fewizz/idextender/Hooks", "removeInvalidBlocksHook", "(L" + cn.name + ";)V", false));
+        code.add(
+                new MethodInsnNode(
+                        184,
+                        "ru/fewizz/idextender/Hooks",
+                        "removeInvalidBlocksHook",
+                        "(L" + cn.name + ";)V",
+                        false));
         code.add(new InsnNode(177));
         method.localVariables = null;
         method.maxStack = 1;

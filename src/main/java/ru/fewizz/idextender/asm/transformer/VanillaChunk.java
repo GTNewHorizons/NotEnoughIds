@@ -1,10 +1,13 @@
 package ru.fewizz.idextender.asm.transformer;
 
 import java.util.*;
+
 import org.objectweb.asm.tree.*;
+
 import ru.fewizz.idextender.asm.*;
 
 public class VanillaChunk implements IClassNodeTransformer {
+
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         final MethodNode method = AsmUtil.findMethod(cn, Name.chunk_fillChunk, true);
@@ -34,8 +37,7 @@ public class VanillaChunk implements IClassNodeTransformer {
                     it.remove();
                 }
             } else {
-                if (part == 2
-                        && insn.getOpcode() == 182
+                if (part == 2 && insn.getOpcode() == 182
                         && Name.ebs_getBlockMSBArray.matches((MethodInsnNode) insn, obfuscated)) {
                     while (it.previous().getOpcode() != 3) {}
                     while (it.previous().getType() != 8) {}

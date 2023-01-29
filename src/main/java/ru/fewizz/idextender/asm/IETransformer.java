@@ -1,12 +1,14 @@
 package ru.fewizz.idextender.asm;
 
 import net.minecraft.launchwrapper.*;
+
 import org.apache.logging.log4j.*;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 import org.objectweb.asm.util.*;
 
 public class IETransformer implements IClassTransformer {
+
     private static final boolean enablePreVerification = false;
     private static final boolean enablePostVerification = true;
     public static final Logger logger;
@@ -29,12 +31,12 @@ public class IETransformer implements IClassTransformer {
         try {
             edit.getTransformer().transform(cn, IETransformer.isObfuscated);
         } catch (AsmTransformException t) {
-            IETransformer.logger.error(
-                    "Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
+            IETransformer.logger
+                    .error("Error transforming {} with {}: {}", transformedName, edit.getName(), t.getMessage());
             throw t;
         } catch (Throwable t2) {
-            IETransformer.logger.error(
-                    "Error transforming {} with {}: {}", transformedName, edit.getName(), t2.getMessage());
+            IETransformer.logger
+                    .error("Error transforming {} with {}: {}", transformedName, edit.getName(), t2.getMessage());
             throw new RuntimeException(t2);
         }
         final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
@@ -43,7 +45,10 @@ public class IETransformer implements IClassTransformer {
             cn.accept(check);
         } catch (Throwable t3) {
             IETransformer.logger.error(
-                    "Error verifying {} transformed with {}: {}", transformedName, edit.getName(), t3.getMessage());
+                    "Error verifying {} transformed with {}: {}",
+                    transformedName,
+                    edit.getName(),
+                    t3.getMessage());
             throw new RuntimeException(t3);
         }
         IETransformer.logger.debug("Patched {} successfully.", edit.getName());
