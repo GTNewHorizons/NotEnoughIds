@@ -3,10 +3,10 @@ package ru.fewizz.idextender;
 import java.io.File;
 import java.util.Map;
 
-import ru.fewizz.idextender.asm.IETransformer;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
+import ru.fewizz.idextender.asm.IETransformer;
 
 @MCVersion("1.7.10")
 @TransformerExclusions({ "ru.fewizz.idextender.asm" })
