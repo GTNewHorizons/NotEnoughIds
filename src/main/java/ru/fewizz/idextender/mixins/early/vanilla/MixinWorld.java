@@ -12,6 +12,7 @@ public class MixinWorld {
     /**
      * Overrides an argument within World.breakBlock which bit-shifts the metadata by 12 bits to shift by 16 bits to
      * accommodate resized block IDs.
+     * 
      * @param i The block ID + bit-shifted metadata received from the original MC argument
      * @return The newly bit-shifted by 16 value
      */
@@ -21,8 +22,8 @@ public class MixinWorld {
             index = 4)
     private int notenoughIDs$injectedWorldBreakBlock(int i) {
         /*
-        TODO: This could be changed to @ModifyConstant probably. All we really need to do is bit-shift by 16 instead of 12.
-            Doing some backwards math to accomplish it this way.
+         * TODO: This could be changed to @ModifyConstant probably. All we really need to do is bit-shift by 16 instead
+         * of 12. Doing some backwards math to accomplish it this way.
          */
         int blockId = i & 4095;
         int blockMeta = (i - blockId) >> 12;

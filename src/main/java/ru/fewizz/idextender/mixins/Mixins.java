@@ -11,12 +11,13 @@ import cpw.mods.fml.relauncher.FMLLaunchHandler;
 
 public enum Mixins {
 
+    // spotless:off
     VANILLA_STARTUP(new Builder("Start Vanilla").addTargetedMod(TargetedMod.VANILLA).setSide(Side.BOTH)
-            .setPhase(Phase.EARLY).addMixinClasses(
-                "vanilla.MixinWorld",
-                "vanilla.MixinExtendedBlockStorage"
+        .setPhase(Phase.EARLY).addMixinClasses(
+            "vanilla.MixinWorld",
+            "vanilla.MixinExtendedBlockStorage"
         ).setApplyIf(() -> true));
-
+    // spotless:on
     private final List<String> mixinClasses;
     private final List<TargetedMod> targetedMods;
     private final List<TargetedMod> excludedMods;

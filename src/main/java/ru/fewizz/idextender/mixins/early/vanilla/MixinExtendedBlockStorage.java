@@ -7,9 +7,6 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import ru.fewizz.idextender.Hooks;
 import ru.fewizz.idextender.IEConfig;
@@ -35,9 +32,8 @@ public class MixinExtendedBlockStorage {
 
     /**
      * @author Cleptomania
-     * @reason
-     * Shims our block16BArray short array in place of built-in blockLSBArray. Original ASM was a complete overwrite as
-     * well. Likely no collision here.
+     * @reason Shims our block16BArray short array in place of built-in blockLSBArray. Original ASM was a complete
+     *         overwrite as well. Likely no collision here.
      */
     @Overwrite
     public Block getBlockByExtId(int x, int y, int z) {
@@ -46,9 +42,8 @@ public class MixinExtendedBlockStorage {
 
     /**
      * @author Cleptomania
-     * @reason
-     * This is for setExtBlockID but the function isn't deobf'd. Original ASM was not a complete overwrite, but was
-     * pretty close to it Extreme doubt that anything would conflict with this one.
+     * @reason This is for setExtBlockID but the function isn't deobf'd. Original ASM was not a complete overwrite, but
+     *         was pretty close to it Extreme doubt that anything would conflict with this one.
      */
     @Overwrite
     public void func_150818_a(int x, int y, int z, Block b) {
@@ -73,10 +68,9 @@ public class MixinExtendedBlockStorage {
 
     /**
      * @author Cleptomania
-     * @reason
-     * Original ASM was a complete overwrite to redirect to Hooks.removeInvalidBlocksHook which accepted the
-     * ExtendedBlockStorage class as a parameter. That method has been re-implemented here and modified to use the new
-     * block16BArray provided by the mixin, as opposed to getting the data from ExtendedBlockStorage.
+     * @reason Original ASM was a complete overwrite to redirect to Hooks.removeInvalidBlocksHook which accepted the
+     *         ExtendedBlockStorage class as a parameter. That method has been re-implemented here and modified to use
+     *         the new block16BArray provided by the mixin, as opposed to getting the data from ExtendedBlockStorage.
      */
     @Overwrite
     public void removeInvalidBlocks() {

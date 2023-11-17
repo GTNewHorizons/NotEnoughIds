@@ -6,6 +6,7 @@ import java.util.Map;
 import ru.fewizz.idextender.asm.transformer.CofhBlockHelper;
 import ru.fewizz.idextender.asm.transformer.FmlRegistry;
 import ru.fewizz.idextender.asm.transformer.MFQM;
+import ru.fewizz.idextender.asm.transformer.SelfHooks;
 import ru.fewizz.idextender.asm.transformer.UndergroundBiomesBiomeUndergroundDecorator;
 import ru.fewizz.idextender.asm.transformer.UndergroundBiomesOreUBifier;
 import ru.fewizz.idextender.asm.transformer.VanillaAnvilChunkLoader;
