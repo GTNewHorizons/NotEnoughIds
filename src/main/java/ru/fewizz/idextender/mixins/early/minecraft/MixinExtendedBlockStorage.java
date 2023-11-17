@@ -1,5 +1,7 @@
 package ru.fewizz.idextender.mixins.early.minecraft;
 
+import java.nio.ByteBuffer;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -10,9 +12,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import ru.fewizz.idextender.Hooks;
 import ru.fewizz.idextender.IEConfig;
+import ru.fewizz.idextender.mixins.IExtendedBlockStorageMixin;
 
 @Mixin(ExtendedBlockStorage.class)
-public class MixinExtendedBlockStorage {
+public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
 
     @Shadow
     private int blockRefCount;
@@ -20,7 +23,24 @@ public class MixinExtendedBlockStorage {
     @Shadow
     private int tickRefCount;
 
+    // TODO: This can be made private after more of the ASM is removed.
+    // currently a get function is being ASM'd into the Hooks class which
+    // returns this variable. Easier to leave it public than modify the temporary
+    // ASM to use the getter function. New mixins should use the getter function
+    // so that we can make this private later though.
     public short[] block16BArray = new short[4096];
+
+    @Override
+    public short[] getBlock16BArray() {
+        return this.block16BArray;
+    }
+
+    @Override
+    public byte[] getBlockData() {
+        final byte[] ret = new byte[this.block16BArray.length * 2];
+        ByteBuffer.wrap(ret).asShortBuffer().put(this.block16BArray);
+        return ret;
+    }
 
     private int getBlockId(int x, int y, int z) {
         return block16BArray[y << 8 | z << 4 | x] & 0xFFFF;
