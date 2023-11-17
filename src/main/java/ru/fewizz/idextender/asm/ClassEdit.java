@@ -6,14 +6,12 @@ import java.util.Map;
 import ru.fewizz.idextender.asm.transformer.CofhBlockHelper;
 import ru.fewizz.idextender.asm.transformer.FmlRegistry;
 import ru.fewizz.idextender.asm.transformer.MFQM;
-import ru.fewizz.idextender.asm.transformer.SelfHooks;
 import ru.fewizz.idextender.asm.transformer.UndergroundBiomesBiomeUndergroundDecorator;
 import ru.fewizz.idextender.asm.transformer.UndergroundBiomesOreUBifier;
 import ru.fewizz.idextender.asm.transformer.VanillaAnvilChunkLoader;
 import ru.fewizz.idextender.asm.transformer.VanillaBlockFire;
 import ru.fewizz.idextender.asm.transformer.VanillaChunk;
 import ru.fewizz.idextender.asm.transformer.VanillaDataWatcher;
-import ru.fewizz.idextender.asm.transformer.VanillaExtendedBlockStorage;
 import ru.fewizz.idextender.asm.transformer.VanillaItemInWorldManager;
 import ru.fewizz.idextender.asm.transformer.VanillaNetHandlerPlayClient;
 import ru.fewizz.idextender.asm.transformer.VanillaPlayerControllerMP;
@@ -27,14 +25,11 @@ import ru.fewizz.idextender.asm.transformer.WorldEditBaseBlock;
 
 public enum ClassEdit {
 
-    SelfHooks(new SelfHooks(), new String[] { "ru.fewizz.idextender.Hooks" }),
     VanillaBlockFire(new VanillaBlockFire(), new String[] { "net.minecraft.block.BlockFire" }),
     VanillaStatList(new VanillaStatList(), new String[] { "net.minecraft.stats.StatList" }),
     VanillaAnvilChunkLoader(new VanillaAnvilChunkLoader(),
             new String[] { "net.minecraft.world.chunk.storage.AnvilChunkLoader" }),
     VanillaChunk(new VanillaChunk(), new String[] { "net.minecraft.world.chunk.Chunk" }),
-    VanillaExtendedBlockStorage(new VanillaExtendedBlockStorage(),
-            new String[] { "net.minecraft.world.chunk.storage.ExtendedBlockStorage" }),
     VanillaDataWatcher(new VanillaDataWatcher(), new String[] { "net.minecraft.entity.DataWatcher" }),
     VanillaNetHandlerPlayClient(new VanillaNetHandlerPlayClient(),
             new String[] { "net.minecraft.client.network.NetHandlerPlayClient" }),

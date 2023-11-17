@@ -20,7 +20,7 @@ public class MixinWorld {
             method = "func_147480_a(IIIZ)Z",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playAuxSFX(IIIII)V"),
             index = 4)
-    private int injected(int i) {
+    private int notenoughIDs$injectedWorldBreakBlock(int i) {
         int blockId = i & 4095;
         int blockMeta = (i - blockId) >> 12;
         return blockId + (blockMeta << 16);

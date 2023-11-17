@@ -12,7 +12,10 @@ import cpw.mods.fml.relauncher.FMLLaunchHandler;
 public enum Mixins {
 
     VANILLA_STARTUP(new Builder("Start Vanilla").addTargetedMod(TargetedMod.VANILLA).setSide(Side.BOTH)
-            .setPhase(Phase.EARLY).addMixinClasses("vanilla.MixinWorld").setApplyIf(() -> true));
+            .setPhase(Phase.EARLY).addMixinClasses(
+                "vanilla.MixinWorld",
+                "vanilla.MixinExtendedBlockStorage"
+        ).setApplyIf(() -> true));
 
     private final List<String> mixinClasses;
     private final List<TargetedMod> targetedMods;
