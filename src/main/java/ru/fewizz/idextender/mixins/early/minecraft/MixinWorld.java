@@ -1,4 +1,4 @@
-package ru.fewizz.idextender.mixins.early.vanilla;
+package ru.fewizz.idextender.mixins.early.minecraft;
 
 import net.minecraft.world.World;
 
@@ -12,7 +12,7 @@ public class MixinWorld {
     /**
      * Overrides an argument within World.breakBlock which bit-shifts the metadata by 12 bits to shift by 16 bits to
      * accommodate resized block IDs.
-     * 
+     *
      * @param i The block ID + bit-shifted metadata received from the original MC argument
      * @return The newly bit-shifted by 16 value
      */

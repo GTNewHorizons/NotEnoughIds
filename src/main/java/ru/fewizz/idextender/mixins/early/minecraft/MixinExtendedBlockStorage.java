@@ -1,4 +1,4 @@
-package ru.fewizz.idextender.mixins.early.vanilla;
+package ru.fewizz.idextender.mixins.early.minecraft;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
