@@ -1,9 +1,17 @@
 package ru.fewizz.idextender.asm.transformer;
 
-import org.objectweb.asm.*;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
-import ru.fewizz.idextender.asm.*;
+import ru.fewizz.idextender.asm.AsmUtil;
+import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.Name;
 
 public class SelfHooks implements IClassNodeTransformer {
 

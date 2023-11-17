@@ -1,11 +1,12 @@
 package ru.fewizz.idextender;
 
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.ShortBuffer;
 
-import net.minecraft.block.*;
-import net.minecraft.init.*;
-import net.minecraft.nbt.*;
-import net.minecraft.world.chunk.storage.*;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 public class Hooks {
 

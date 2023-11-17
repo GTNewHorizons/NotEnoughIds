@@ -1,10 +1,11 @@
 package ru.fewizz.idextender.asm.transformer;
 
-import java.util.*;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
-import org.objectweb.asm.tree.*;
-
-import ru.fewizz.idextender.asm.*;
+import ru.fewizz.idextender.asm.AsmTransformException;
+import ru.fewizz.idextender.asm.AsmUtil;
+import ru.fewizz.idextender.asm.IClassNodeTransformer;
 
 public class VanillaBlockFire implements IClassNodeTransformer {
 

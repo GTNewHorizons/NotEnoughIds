@@ -1,7 +1,7 @@
 package ru.fewizz.idextender;
 
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = IDExtender.MODID, name = IDExtender.NAME, version = IDExtender.VERSION)
 public class IDExtender {

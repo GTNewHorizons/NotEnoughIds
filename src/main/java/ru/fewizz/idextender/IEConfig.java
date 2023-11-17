@@ -1,8 +1,8 @@
 package ru.fewizz.idextender;
 
-import java.io.*;
+import java.io.File;
 
-import net.minecraftforge.common.config.*;
+import net.minecraftforge.common.config.Configuration;
 
 public class IEConfig {
 

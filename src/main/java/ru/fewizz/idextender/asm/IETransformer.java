@@ -1,11 +1,15 @@
 package ru.fewizz.idextender.asm;
 
-import net.minecraft.launchwrapper.*;
+import net.minecraft.launchwrapper.IClassTransformer;
 
-import org.apache.logging.log4j.*;
-import org.objectweb.asm.*;
-import org.objectweb.asm.tree.*;
-import org.objectweb.asm.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.util.CheckClassAdapter;
 
 public class IETransformer implements IClassTransformer {
 

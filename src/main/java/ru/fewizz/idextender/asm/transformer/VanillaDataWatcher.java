@@ -1,11 +1,16 @@
 package ru.fewizz.idextender.asm.transformer;
 
-import java.util.*;
+import java.util.ListIterator;
 
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 
-import ru.fewizz.idextender.*;
-import ru.fewizz.idextender.asm.*;
+import ru.fewizz.idextender.IEConfig;
+import ru.fewizz.idextender.asm.AsmUtil;
+import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.Name;
 
 public class VanillaDataWatcher implements IClassNodeTransformer {
 

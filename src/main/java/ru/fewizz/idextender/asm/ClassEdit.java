@@ -1,8 +1,29 @@
 package ru.fewizz.idextender.asm;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import ru.fewizz.idextender.asm.transformer.*;
+import ru.fewizz.idextender.asm.transformer.CofhBlockHelper;
+import ru.fewizz.idextender.asm.transformer.FmlRegistry;
+import ru.fewizz.idextender.asm.transformer.MFQM;
+import ru.fewizz.idextender.asm.transformer.SelfHooks;
+import ru.fewizz.idextender.asm.transformer.UndergroundBiomesBiomeUndergroundDecorator;
+import ru.fewizz.idextender.asm.transformer.UndergroundBiomesOreUBifier;
+import ru.fewizz.idextender.asm.transformer.VanillaAnvilChunkLoader;
+import ru.fewizz.idextender.asm.transformer.VanillaBlockFire;
+import ru.fewizz.idextender.asm.transformer.VanillaChunk;
+import ru.fewizz.idextender.asm.transformer.VanillaDataWatcher;
+import ru.fewizz.idextender.asm.transformer.VanillaExtendedBlockStorage;
+import ru.fewizz.idextender.asm.transformer.VanillaItemInWorldManager;
+import ru.fewizz.idextender.asm.transformer.VanillaNetHandlerPlayClient;
+import ru.fewizz.idextender.asm.transformer.VanillaPlayerControllerMP;
+import ru.fewizz.idextender.asm.transformer.VanillaRenderGlobal;
+import ru.fewizz.idextender.asm.transformer.VanillaS21PacketChunkData;
+import ru.fewizz.idextender.asm.transformer.VanillaS22PacketMultiBlockChange;
+import ru.fewizz.idextender.asm.transformer.VanillaS24PacketBlockActivation;
+import ru.fewizz.idextender.asm.transformer.VanillaS26PacketMapChunkBulk;
+import ru.fewizz.idextender.asm.transformer.VanillaStatList;
+import ru.fewizz.idextender.asm.transformer.WorldEditBaseBlock;
 
 public enum ClassEdit {
 

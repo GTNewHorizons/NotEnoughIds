@@ -1,8 +1,11 @@
 package ru.fewizz.idextender.asm.transformer;
 
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
-import ru.fewizz.idextender.asm.*;
+import ru.fewizz.idextender.asm.AsmUtil;
+import ru.fewizz.idextender.asm.IClassNodeTransformer;
+import ru.fewizz.idextender.asm.Name;
 
 public class VanillaItemInWorldManager implements IClassNodeTransformer {
 

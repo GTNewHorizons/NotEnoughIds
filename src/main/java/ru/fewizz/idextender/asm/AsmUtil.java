@@ -1,11 +1,18 @@
 package ru.fewizz.idextender.asm;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintWriter;
+import java.util.ListIterator;
 
-import org.objectweb.asm.*;
-import org.objectweb.asm.tree.*;
-import org.objectweb.asm.util.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.util.TraceMethodVisitor;
 
 public class AsmUtil {
 
