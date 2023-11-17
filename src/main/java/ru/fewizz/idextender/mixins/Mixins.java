@@ -17,7 +17,8 @@ public enum Mixins {
             "minecraft.MixinWorld",
             "minecraft.MixinExtendedBlockStorage",
             "minecraft.MixinStatList",
-            "minecraft.MixinBlockFire"
+            "minecraft.MixinBlockFire",
+            "minecraft.MixinS21PacketChunkData"
         ).setApplyIf(() -> true));
     // spotless:on
     private final List<String> mixinClasses;

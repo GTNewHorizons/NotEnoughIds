@@ -16,7 +16,6 @@ import ru.fewizz.idextender.asm.transformer.VanillaItemInWorldManager;
 import ru.fewizz.idextender.asm.transformer.VanillaNetHandlerPlayClient;
 import ru.fewizz.idextender.asm.transformer.VanillaPlayerControllerMP;
 import ru.fewizz.idextender.asm.transformer.VanillaRenderGlobal;
-import ru.fewizz.idextender.asm.transformer.VanillaS21PacketChunkData;
 import ru.fewizz.idextender.asm.transformer.VanillaS22PacketMultiBlockChange;
 import ru.fewizz.idextender.asm.transformer.VanillaS24PacketBlockActivation;
 import ru.fewizz.idextender.asm.transformer.VanillaS26PacketMapChunkBulk;
@@ -31,8 +30,6 @@ public enum ClassEdit {
     VanillaDataWatcher(new VanillaDataWatcher(), new String[] { "net.minecraft.entity.DataWatcher" }),
     VanillaNetHandlerPlayClient(new VanillaNetHandlerPlayClient(),
             new String[] { "net.minecraft.client.network.NetHandlerPlayClient" }),
-    VanillaS21PacketChunkData(new VanillaS21PacketChunkData(),
-            new String[] { "net.minecraft.network.play.server.S21PacketChunkData" }),
     VanillaS22PacketMultiBlockChange(new VanillaS22PacketMultiBlockChange(),
             new String[] { "net.minecraft.network.play.server.S22PacketMultiBlockChange" }),
     VanillaS24PacketBlockActivation(new VanillaS24PacketBlockActivation(),
