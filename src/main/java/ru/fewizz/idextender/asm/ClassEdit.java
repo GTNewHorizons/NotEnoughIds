@@ -25,6 +25,7 @@ import ru.fewizz.idextender.asm.transformer.WorldEditBaseBlock;
 
 public enum ClassEdit {
 
+    SelfHooks(new SelfHooks(), new String[] { "ru.fewizz.idextender.Hooks" }),
     VanillaBlockFire(new VanillaBlockFire(), new String[] { "net.minecraft.block.BlockFire" }),
     VanillaStatList(new VanillaStatList(), new String[] { "net.minecraft.stats.StatList" }),
     VanillaAnvilChunkLoader(new VanillaAnvilChunkLoader(),
