@@ -43,7 +43,7 @@ public class IETransformer implements IClassTransformer {
                     .error("Error transforming {} with {}: {}", transformedName, edit.getName(), t2.getMessage());
             throw new RuntimeException(t2);
         }
-        final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         try {
             final ClassVisitor check = new CheckClassAdapter(writer);
             cn.accept(check);
