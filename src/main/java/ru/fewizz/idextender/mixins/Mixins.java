@@ -16,7 +16,8 @@ public enum Mixins {
         .setPhase(Phase.EARLY).addMixinClasses(
             "minecraft.MixinWorld",
             "minecraft.MixinExtendedBlockStorage",
-            "minecraft.MixinStatList"
+            "minecraft.MixinStatList",
+            "minecraft.MixinBlockFire"
         ).setApplyIf(() -> true));
     // spotless:on
     private final List<String> mixinClasses;
