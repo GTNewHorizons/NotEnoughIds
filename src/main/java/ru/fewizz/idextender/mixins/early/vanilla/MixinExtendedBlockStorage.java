@@ -38,11 +38,20 @@ public class MixinExtendedBlockStorage {
         block16BArray[y << 8 | z << 4 | x] = (short) id;
     }
 
+    /**
+     * Shims our block16BArray short array in place of built-in blockLSBArray.
+     * Original ASM was a complete overwrite as well. Likely no collision here.
+     */
     @Overwrite
     public Block getBlockByExtId(int x, int y, int z) {
         return Block.getBlockById(getBlockId(x, y, z));
     }
 
+    /**
+     * This is for setExtBlockID but the function isn't deobf'd.
+     * Original ASM was not a complete overwrite, but was pretty close to it
+     * Extreme doubt that anything would conflict with this one.
+     */
     @Overwrite
     public void func_150818_a(int x, int y, int z, Block b) {
         Block old = this.getBlockByExtId(x, y, z);
@@ -64,6 +73,12 @@ public class MixinExtendedBlockStorage {
         this.setBlockId(x, y, z, newId);
     }
 
+    /**
+     * Original ASM was a complete overwrite to redirect to
+     * Hooks.removeInvalidBlocksHook which accepted the ExtendedBlockStorage class as a parameter.
+     * That method has been re-implemented here and modified to use the new block16BArray
+     * provided by the mixin, as opposed to getting the data from ExtendedBlockStorage.
+     */
     @Overwrite
     public void removeInvalidBlocks() {
         for (int off = 0; off < block16BArray.length; ++off) {
