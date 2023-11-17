@@ -3,8 +3,8 @@ package ru.fewizz.idextender.mixins.early.minecraft;
 import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(World.class)
 public class MixinWorld {
@@ -13,21 +13,12 @@ public class MixinWorld {
      * Overrides an argument within World.breakBlock which bit-shifts the metadata by 12 bits to shift by 16 bits to
      * accommodate resized block IDs.
      *
-     * @param i The block ID + bit-shifted metadata received from the original MC argument
-     * @return The newly bit-shifted by 16 value
+     * @param original The original bit shift amount
+     * @return Bit shift amount to account for increased size
      */
-    @ModifyArg(
-            method = "func_147480_a(IIIZ)Z",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playAuxSFX(IIIII)V"),
-            index = 4)
-    private int notenoughIDs$injectedWorldBreakBlock(int i) {
-        /*
-         * TODO: This could be changed to @ModifyConstant probably. All we really need to do is bit-shift by 16 instead
-         * of 12. Doing some backwards math to accomplish it this way.
-         */
-        int blockId = i & 4095;
-        int blockMeta = (i - blockId) >> 12;
-        return blockId + (blockMeta << 16);
+    @ModifyConstant(method = "func_147480_a(IIIZ)Z", constant = @Constant(intValue = 12))
+    private int notenoughIDs$injectedWorldBreakBlock(int original) {
+        return 16;
     }
 
 }
