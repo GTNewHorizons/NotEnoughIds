@@ -824,7 +824,9 @@ ext.java17JvmArgs = [
     "--add-modules", "jdk.dynalink",
     "--add-opens", "jdk.dynalink/jdk.dynalink.beans=ALL-UNNAMED",
     "--add-modules", "java.sql.rowset",
-    "--add-opens", "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED"
+    "--add-opens", "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED",
+    "-Dorg.apache.logging.log4j.level=DEBUG",
+    "-Dfml.debugAccessTransformer=true", "-Dlegacy.debugClassLoading=true", "-Dlegacy.debugClassLoadingFiner=true", "-Dlegacy.debugClassLoadingSave=true"
 ]
 
 ext.hotswapJvmArgs = [

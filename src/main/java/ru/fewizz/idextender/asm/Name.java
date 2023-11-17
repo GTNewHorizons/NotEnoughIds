@@ -86,7 +86,6 @@ public enum Name {
     playerControllerMP_onPlayerDestroyBlock(Name.playerControllerMP, "onPlayerDestroyBlock", "a", "func_78751_a",
             "(IIII)Z"),
     itemInWorldManager_tryHarvestBlock(Name.itemInWorldManager, "tryHarvestBlock", "b", "func_73084_b", "(III)Z"),
-    world_breakBlock(Name.world, "func_147480_a", "a", null, "(IIIZ)Z"),
     ub_bud("exterminatorJeff/undergroundBiomes/worldGen/BiomeUndergroundDecorator"),
     ub_bud_replaceChunkOres_world(Name.ub_bud, "replaceChunkOres", null, null, "(IILnet/minecraft/world/World;)V"),
     ub_bud_replaceChunkOres_iChunkProvider(Name.ub_bud, "replaceChunkOres", null, null,
