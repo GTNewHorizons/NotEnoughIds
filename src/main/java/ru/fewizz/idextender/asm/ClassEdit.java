@@ -21,14 +21,12 @@ import ru.fewizz.idextender.asm.transformer.VanillaS21PacketChunkData;
 import ru.fewizz.idextender.asm.transformer.VanillaS22PacketMultiBlockChange;
 import ru.fewizz.idextender.asm.transformer.VanillaS24PacketBlockActivation;
 import ru.fewizz.idextender.asm.transformer.VanillaS26PacketMapChunkBulk;
-import ru.fewizz.idextender.asm.transformer.VanillaStatList;
 import ru.fewizz.idextender.asm.transformer.WorldEditBaseBlock;
 
 public enum ClassEdit {
 
     SelfHooks(new SelfHooks(), new String[] { "ru.fewizz.idextender.Hooks" }),
     VanillaBlockFire(new VanillaBlockFire(), new String[] { "net.minecraft.block.BlockFire" }),
-    VanillaStatList(new VanillaStatList(), new String[] { "net.minecraft.stats.StatList" }),
     VanillaAnvilChunkLoader(new VanillaAnvilChunkLoader(),
             new String[] { "net.minecraft.world.chunk.storage.AnvilChunkLoader" }),
     VanillaChunk(new VanillaChunk(), new String[] { "net.minecraft.world.chunk.Chunk" }),

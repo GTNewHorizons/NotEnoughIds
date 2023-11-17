@@ -15,7 +15,8 @@ public enum Mixins {
     VANILLA_STARTUP(new Builder("Start Vanilla").addTargetedMod(TargetedMod.VANILLA).setSide(Side.BOTH)
         .setPhase(Phase.EARLY).addMixinClasses(
             "minecraft.MixinWorld",
-            "minecraft.MixinExtendedBlockStorage"
+            "minecraft.MixinExtendedBlockStorage",
+            "minecraft.MixinStatList"
         ).setApplyIf(() -> true));
     // spotless:on
     private final List<String> mixinClasses;
