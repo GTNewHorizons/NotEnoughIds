@@ -49,7 +49,6 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
             toInsert.add(new FieldInsnNode(181, cn.name, "block16BArray", "[S"));
             method.instructions.insert(insn, toInsert);
         }
-        method.maxStack = Math.max(method.maxStack, 2);
     }
 
     private void transformGetBlock(final ClassNode cn, final MethodNode method, final boolean obfuscated) {
@@ -62,7 +61,6 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
         code.add(Name.hooks_getBlockById.staticInvocation(obfuscated));
         code.add(new InsnNode(176));
         method.localVariables = null;
-        method.maxStack = 4;
     }
 
     private void transformSetBlock(final ClassNode cn, final MethodNode method, final boolean obfuscated) {
@@ -73,20 +71,20 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
             final AbstractInsnNode insn = iterator.next();
             if (part == 0) {
                 iterator.remove();
-                if (insn.getOpcode() != 184) {
+                if (insn.getOpcode() != Opcodes.INVOKESTATIC) {
                     continue;
                 }
                 ++part;
-                iterator.add(new VarInsnNode(25, 0));
-                iterator.add(new VarInsnNode(21, 1));
-                iterator.add(new VarInsnNode(21, 2));
-                iterator.add(new VarInsnNode(21, 3));
+                iterator.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                iterator.add(new VarInsnNode(Opcodes.ILOAD, 1));
+                iterator.add(new VarInsnNode(Opcodes.ILOAD, 2));
+                iterator.add(new VarInsnNode(Opcodes.ILOAD, 3));
                 iterator.add(Name.ebs_getBlock.virtualInvocation(obfuscated));
             } else if (part == 1) {
-                if (insn.getOpcode() != 184) {
+                if (insn.getOpcode() != Opcodes.INVOKESTATIC) {
                     continue;
                 }
-                iterator.set(new VarInsnNode(25, 6));
+                iterator.set(new VarInsnNode(Opcodes.ALOAD, 6));
                 iterator.add(Name.hooks_getIdFromBlockWithCheck.staticInvocation(obfuscated));
                 ++part;
             } else {
@@ -96,17 +94,16 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
         if (part != 2) {
             throw new AsmTransformException("no match for part " + part);
         }
-        code.add(new VarInsnNode(54, 5));
-        code.add(new VarInsnNode(25, 0));
-        code.add(new VarInsnNode(21, 1));
-        code.add(new VarInsnNode(21, 2));
-        code.add(new VarInsnNode(21, 3));
-        code.add(new VarInsnNode(21, 5));
+        code.add(new VarInsnNode(Opcodes.ISTORE, 5));
+        code.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        code.add(new VarInsnNode(Opcodes.ILOAD, 1));
+        code.add(new VarInsnNode(Opcodes.ILOAD, 2));
+        code.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        code.add(new VarInsnNode(Opcodes.ILOAD, 5));
         code.add(Name.hooks_setBlockId.staticInvocation(obfuscated));
-        code.add(new InsnNode(177));
+        code.add(new InsnNode(Opcodes.RETURN));
         method.localVariables = null;
         --method.maxLocals;
-        method.maxStack = Math.max(method.maxStack, 5);
     }
 
     private void transformGetBlockMSBArray(final ClassNode cn, final MethodNode method) {
@@ -115,7 +112,6 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
         code.add(new InsnNode(1));
         code.add(new InsnNode(176));
         method.localVariables = null;
-        method.maxStack = 1;
     }
 
     private void transformRemoveInvalidBlocks(final ClassNode cn, final MethodNode method) {
@@ -131,6 +127,5 @@ public class VanillaExtendedBlockStorage implements IClassNodeTransformer {
                         false));
         code.add(new InsnNode(177));
         method.localVariables = null;
-        method.maxStack = 1;
     }
 }
