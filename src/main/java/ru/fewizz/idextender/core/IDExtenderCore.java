@@ -45,7 +45,7 @@ public class IDExtenderCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
     @Override
     public void injectData(Map<String, Object> data) {
         IEConfig.init((File) data.get("coremodLocation"));
-        IETransformer.isObfuscated = false;
+        IETransformer.isObfuscated = true;
     }
 
     @Override
