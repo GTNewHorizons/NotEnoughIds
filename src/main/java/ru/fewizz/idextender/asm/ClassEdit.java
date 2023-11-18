@@ -16,7 +16,6 @@ import ru.fewizz.idextender.asm.transformer.VanillaItemInWorldManager;
 import ru.fewizz.idextender.asm.transformer.VanillaNetHandlerPlayClient;
 import ru.fewizz.idextender.asm.transformer.VanillaPlayerControllerMP;
 import ru.fewizz.idextender.asm.transformer.VanillaRenderGlobal;
-import ru.fewizz.idextender.asm.transformer.VanillaS24PacketBlockActivation;
 import ru.fewizz.idextender.asm.transformer.VanillaS26PacketMapChunkBulk;
 import ru.fewizz.idextender.asm.transformer.WorldEditBaseBlock;
 
@@ -29,8 +28,6 @@ public enum ClassEdit {
     VanillaDataWatcher(new VanillaDataWatcher(), new String[] { "net.minecraft.entity.DataWatcher" }),
     VanillaNetHandlerPlayClient(new VanillaNetHandlerPlayClient(),
             new String[] { "net.minecraft.client.network.NetHandlerPlayClient" }),
-    VanillaS24PacketBlockActivation(new VanillaS24PacketBlockActivation(),
-            new String[] { "net.minecraft.network.play.server.S24PacketBlockAction" }),
     VanillaS26PacketMapChunkBulk(new VanillaS26PacketMapChunkBulk(),
             new String[] { "net.minecraft.network.play.server.S26PacketMapChunkBulk" }),
     VanillaRenderGlobal(new VanillaRenderGlobal(), new String[] { "net.minecraft.client.renderer.RenderGlobal" }),
