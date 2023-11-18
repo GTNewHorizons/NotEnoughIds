@@ -20,7 +20,8 @@ public enum Mixins {
             "minecraft.MixinBlockFire",
             "minecraft.MixinS21PacketChunkData",
             "minecraft.MixinS22PacketMultiBlockChange",
-            "minecraft.MixinS24PacketBlockAction"
+            "minecraft.MixinS24PacketBlockAction",
+            "minecraft.MixinS26PacketMapChunkBulk"
         ).setApplyIf(() -> true));
     // spotless:on
     private final List<String> mixinClasses;
