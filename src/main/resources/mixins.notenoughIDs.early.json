@@ -1,8 +1,0 @@
-{
-  "required": true,
-  "minVersion": "0.8.5-GTNH",
-  "package": "ru.fewizz.idextender.mixins.early",
-  "refmap": "mixins.notenoughIDs.refmap.json",
-  "target": "@env(DEFAULT)",
-  "compatibilityLevel": "JAVA_8"
-}
