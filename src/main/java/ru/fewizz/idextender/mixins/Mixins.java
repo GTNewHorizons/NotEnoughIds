@@ -12,8 +12,8 @@ import cpw.mods.fml.relauncher.FMLLaunchHandler;
 public enum Mixins {
 
     // spotless:off
-    VANILLA_STARTUP(new Builder("Start Vanilla").addTargetedMod(TargetedMod.VANILLA).setSide(Side.BOTH)
-        .setPhase(Phase.EARLY).addMixinClasses(
+    VANILLA_STARTUP(new Builder("Start Vanilla").addTargetedMod(TargetedMod.VANILLA)
+        .setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(
             "minecraft.MixinWorld",
             "minecraft.MixinExtendedBlockStorage",
             "minecraft.MixinStatList",
@@ -22,6 +22,10 @@ public enum Mixins {
             "minecraft.MixinS22PacketMultiBlockChange",
             "minecraft.MixinS24PacketBlockAction",
             "minecraft.MixinS26PacketMapChunkBulk"
+        ).setApplyIf(() -> true)),
+    VANILLA_STARTUP_CLIENT(new Builder("Start Vanilla Client").addTargetedMod(TargetedMod.VANILLA)
+        .setSide(Side.CLIENT).setPhase(Phase.EARLY).addMixinClasses(
+            "minecraft.client.MixinRenderGlobal"
         ).setApplyIf(() -> true));
     // spotless:on
     private final List<String> mixinClasses;

@@ -15,7 +15,6 @@ import ru.fewizz.idextender.asm.transformer.VanillaDataWatcher;
 import ru.fewizz.idextender.asm.transformer.VanillaItemInWorldManager;
 import ru.fewizz.idextender.asm.transformer.VanillaNetHandlerPlayClient;
 import ru.fewizz.idextender.asm.transformer.VanillaPlayerControllerMP;
-import ru.fewizz.idextender.asm.transformer.VanillaRenderGlobal;
 import ru.fewizz.idextender.asm.transformer.WorldEditBaseBlock;
 
 public enum ClassEdit {
@@ -27,7 +26,6 @@ public enum ClassEdit {
     VanillaDataWatcher(new VanillaDataWatcher(), new String[] { "net.minecraft.entity.DataWatcher" }),
     VanillaNetHandlerPlayClient(new VanillaNetHandlerPlayClient(),
             new String[] { "net.minecraft.client.network.NetHandlerPlayClient" }),
-    VanillaRenderGlobal(new VanillaRenderGlobal(), new String[] { "net.minecraft.client.renderer.RenderGlobal" }),
     VanillaPlayerControllerMP(new VanillaPlayerControllerMP(),
             new String[] { "net.minecraft.client.multiplayer.PlayerControllerMP" }),
     VanillaItemInWorldManager(new VanillaItemInWorldManager(),
