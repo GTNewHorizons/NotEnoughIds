@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import ru.fewizz.idextender.mixins.IExtendedBlockStorageMixin;
+import ru.fewizz.idextender.mixins.interfaces.IExtendedBlockStorageMixin;
 
 @Mixin(S21PacketChunkData.class)
 public class MixinS21PacketChunkData {

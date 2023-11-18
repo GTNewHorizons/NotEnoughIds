@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import ru.fewizz.idextender.Hooks;
 import ru.fewizz.idextender.IEConfig;
-import ru.fewizz.idextender.mixins.IExtendedBlockStorageMixin;
+import ru.fewizz.idextender.mixins.interfaces.IExtendedBlockStorageMixin;
 
 @Mixin(ExtendedBlockStorage.class)
 public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {

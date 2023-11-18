@@ -1,4 +1,4 @@
-package ru.fewizz.idextender.mixins;
+package ru.fewizz.idextender.mixins.interfaces;
 
 public interface IExtendedBlockStorageMixin {
 
