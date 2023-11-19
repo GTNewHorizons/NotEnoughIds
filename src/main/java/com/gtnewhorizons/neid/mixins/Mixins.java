@@ -21,7 +21,8 @@ public enum Mixins {
             "minecraft.MixinS21PacketChunkData",
             "minecraft.MixinS22PacketMultiBlockChange",
             "minecraft.MixinS24PacketBlockAction",
-            "minecraft.MixinS26PacketMapChunkBulk"
+            "minecraft.MixinS26PacketMapChunkBulk",
+            "minecraft.MixinItemInWorldManager"
         ).setApplyIf(() -> true)),
     VANILLA_STARTUP_CLIENT(new Builder("Start Vanilla Client").addTargetedMod(TargetedMod.VANILLA)
         .setSide(Side.CLIENT).setPhase(Phase.EARLY).addMixinClasses(
