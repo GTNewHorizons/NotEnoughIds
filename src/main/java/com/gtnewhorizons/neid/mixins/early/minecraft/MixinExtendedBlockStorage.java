@@ -1,6 +1,7 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft;
 
 import java.nio.ByteBuffer;
+import java.nio.ShortBuffer;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -40,6 +41,11 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
         final byte[] ret = new byte[this.block16BArray.length * 2];
         ByteBuffer.wrap(ret).asShortBuffer().put(this.block16BArray);
         return ret;
+    }
+
+    @Override
+    public void setBlockData(byte[] data, int offset) {
+        ShortBuffer.wrap(this.block16BArray).put(ByteBuffer.wrap(data, offset, 8192).asShortBuffer());
     }
 
     private int getBlockId(int x, int y, int z) {

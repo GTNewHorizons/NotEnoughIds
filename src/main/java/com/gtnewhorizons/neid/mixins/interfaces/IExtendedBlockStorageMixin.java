@@ -6,4 +6,6 @@ public interface IExtendedBlockStorageMixin {
 
     byte[] getBlockData();
 
+    void setBlockData(byte[] data, int offset);
+
 }
