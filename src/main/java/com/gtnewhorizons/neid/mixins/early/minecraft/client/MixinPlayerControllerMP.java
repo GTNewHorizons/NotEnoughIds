@@ -1,10 +1,12 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft.client;
 
-import com.gtnewhorizons.neid.Constants;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+
+import com.gtnewhorizons.neid.Constants;
 
 @Mixin(PlayerControllerMP.class)
 public class MixinPlayerControllerMP {
