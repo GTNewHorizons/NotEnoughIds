@@ -13,7 +13,6 @@ import com.gtnewhorizons.neid.asm.transformer.VanillaAnvilChunkLoader;
 import com.gtnewhorizons.neid.asm.transformer.VanillaChunk;
 import com.gtnewhorizons.neid.asm.transformer.VanillaDataWatcher;
 import com.gtnewhorizons.neid.asm.transformer.VanillaItemInWorldManager;
-import com.gtnewhorizons.neid.asm.transformer.VanillaNetHandlerPlayClient;
 import com.gtnewhorizons.neid.asm.transformer.VanillaPlayerControllerMP;
 import com.gtnewhorizons.neid.asm.transformer.WorldEditBaseBlock;
 
@@ -24,8 +23,6 @@ public enum ClassEdit {
             new String[] { "net.minecraft.world.chunk.storage.AnvilChunkLoader" }),
     VanillaChunk(new VanillaChunk(), new String[] { "net.minecraft.world.chunk.Chunk" }),
     VanillaDataWatcher(new VanillaDataWatcher(), new String[] { "net.minecraft.entity.DataWatcher" }),
-    VanillaNetHandlerPlayClient(new VanillaNetHandlerPlayClient(),
-            new String[] { "net.minecraft.client.network.NetHandlerPlayClient" }),
     VanillaPlayerControllerMP(new VanillaPlayerControllerMP(),
             new String[] { "net.minecraft.client.multiplayer.PlayerControllerMP" }),
     VanillaItemInWorldManager(new VanillaItemInWorldManager(),

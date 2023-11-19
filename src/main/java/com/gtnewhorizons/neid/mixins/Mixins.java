@@ -25,7 +25,8 @@ public enum Mixins {
         ).setApplyIf(() -> true)),
     VANILLA_STARTUP_CLIENT(new Builder("Start Vanilla Client").addTargetedMod(TargetedMod.VANILLA)
         .setSide(Side.CLIENT).setPhase(Phase.EARLY).addMixinClasses(
-            "minecraft.client.MixinRenderGlobal"
+            "minecraft.client.MixinRenderGlobal",
+            "minecraft.client.MixinNetHandlerPlayClient"
         ).setApplyIf(() -> true));
     // spotless:on
     private final List<String> mixinClasses;
