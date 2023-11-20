@@ -2,6 +2,7 @@ package com.gtnewhorizons.neid;
 
 import java.io.File;
 
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.Configuration;
 
 public class NEIDConfig {
@@ -13,13 +14,7 @@ public class NEIDConfig {
     public static boolean extendDataWatcher;
 
     public static void init(final File file) {
-        File newFile;
-        if (file.getPath().contains("bin")) {
-            newFile = new File(file.getParent() + "/eclipse/config", "NEID.cfg");
-        } else {
-            newFile = new File(file.getParentFile().getParent() + "/config", "NEID.cfg");
-        }
-        NEIDConfig.config = new Configuration(newFile);
+        NEIDConfig.config = new Configuration(file);
         NEIDConfig.catchUnregisteredBlocks = NEIDConfig.config.getBoolean("CatchUnregisteredBlocks", "NEID", false, "");
         NEIDConfig.removeInvalidBlocks = NEIDConfig.config
                 .getBoolean("RemoveInvalidBlocks", "NEID", false, "Remove invalid (corrupted) blocks from the game.");
@@ -37,9 +32,6 @@ public class NEIDConfig {
     }
 
     static {
-        NEIDConfig.catchUnregisteredBlocks = false;
-        NEIDConfig.removeInvalidBlocks = false;
-        NEIDConfig.postNeidWorldsSupport = true;
-        NEIDConfig.extendDataWatcher = false;
+        NEIDConfig.init(new File(Launch.minecraftHome, "config/NEID.cfg"));
     }
 }

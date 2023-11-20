@@ -46,7 +46,6 @@ public class NEIDCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public void injectData(Map<String, Object> data) {
-        NEIDConfig.init((File) data.get("coremodLocation"));
         IETransformer.isObfuscated = !((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));;
     }
 
