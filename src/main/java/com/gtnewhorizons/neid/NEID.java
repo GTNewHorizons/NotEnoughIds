@@ -1,7 +1,6 @@
 package com.gtnewhorizons.neid;
 
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = NEID.MODID, name = NEID.NAME, version = NEID.VERSION)
 public class NEID {
