@@ -1,6 +1,5 @@
 package com.gtnewhorizons.neid.core;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,7 +7,6 @@ import java.util.Set;
 import net.minecraft.launchwrapper.Launch;
 
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
-import com.gtnewhorizons.neid.NEIDConfig;
 import com.gtnewhorizons.neid.asm.IETransformer;
 import com.gtnewhorizons.neid.mixins.Mixins;
 

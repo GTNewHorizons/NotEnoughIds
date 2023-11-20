@@ -90,8 +90,8 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
         int newId = Block.getIdFromBlock(b);
         if (NEIDConfig.catchUnregisteredBlocks && newId == -1) {
             throw new IllegalArgumentException(
-                "Block " + b
-                    + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
+                    "Block " + b
+                            + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
         }
         if ((newId < 0 || newId > 32767) && (newId != -1)) {
             throw new IllegalArgumentException("id out of range: " + newId);
