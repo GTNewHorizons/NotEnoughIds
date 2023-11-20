@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import com.gtnewhorizons.neid.NEIDConfig;
+
 import cpw.mods.fml.relauncher.FMLLaunchHandler;
 
 public enum Mixins {
@@ -31,7 +33,11 @@ public enum Mixins {
             "minecraft.client.MixinNetHandlerPlayClient",
             "minecraft.client.MixinPlayerControllerMP",
             "minecraft.client.MixinChunk"
-        ).setApplyIf(() -> true));
+        ).setApplyIf(() -> true)),
+    VANILLA_STARTUP_DATAWATCHER(new Builder("Start Vanilla DataWatcher").addTargetedMod(TargetedMod.VANILLA)
+        .setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(
+            "minecraft.MixinDataWatcher"
+    ).setApplyIf(() -> NEIDConfig.extendDataWatcher));
     // spotless:on
     private final List<String> mixinClasses;
     private final List<TargetedMod> targetedMods;
