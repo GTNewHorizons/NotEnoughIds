@@ -29,7 +29,8 @@ public enum Mixins {
         .setSide(Side.CLIENT).setPhase(Phase.EARLY).addMixinClasses(
             "minecraft.client.MixinRenderGlobal",
             "minecraft.client.MixinNetHandlerPlayClient",
-            "minecraft.client.MixinPlayerControllerMP"
+            "minecraft.client.MixinPlayerControllerMP",
+            "minecraft.client.MixinChunk"
         ).setApplyIf(() -> true));
     // spotless:on
     private final List<String> mixinClasses;

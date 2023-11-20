@@ -9,14 +9,12 @@ import com.gtnewhorizons.neid.asm.transformer.MFQM;
 import com.gtnewhorizons.neid.asm.transformer.SelfHooks;
 import com.gtnewhorizons.neid.asm.transformer.UndergroundBiomesBiomeUndergroundDecorator;
 import com.gtnewhorizons.neid.asm.transformer.UndergroundBiomesOreUBifier;
-import com.gtnewhorizons.neid.asm.transformer.VanillaChunk;
 import com.gtnewhorizons.neid.asm.transformer.VanillaDataWatcher;
 import com.gtnewhorizons.neid.asm.transformer.WorldEditBaseBlock;
 
 public enum ClassEdit {
 
     SelfHooks(new SelfHooks(), new String[] { "com.gtnewhorizons.neid.Hooks" }),
-    VanillaChunk(new VanillaChunk(), new String[] { "net.minecraft.world.chunk.Chunk" }),
     VanillaDataWatcher(new VanillaDataWatcher(), new String[] { "net.minecraft.entity.DataWatcher" }),
     FmlRegistry(new FmlRegistry(),
             new String[] { "cpw.mods.fml.common.registry.GameData",

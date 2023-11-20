@@ -1,24 +1,10 @@
 package com.gtnewhorizons.neid;
 
-import java.nio.ByteBuffer;
-import java.nio.ShortBuffer;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 public class Hooks {
-
-    public static byte[] getBlockData(final ExtendedBlockStorage ebs) {
-        final short[] data = get(ebs);
-        final byte[] ret = new byte[data.length * 2];
-        ByteBuffer.wrap(ret).asShortBuffer().put(data);
-        return ret;
-    }
-
-    public static void setBlockData(final ExtendedBlockStorage ebs, final byte[] data, final int offset) {
-        ShortBuffer.wrap(get(ebs)).put(ByteBuffer.wrap(data, offset, 8192).asShortBuffer());
-    }
 
     public static int getBlockId(final ExtendedBlockStorage ebs, final int x, final int y, final int z) {
         return get(ebs)[y << 8 | z << 4 | x] & 0xFFFF;
