@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import com.gtnewhorizons.neid.Hooks;
 import com.gtnewhorizons.neid.NEIDConfig;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
 
@@ -29,7 +28,7 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
     // returns this variable. Easier to leave it public than modify the temporary
     // ASM to use the getter function. New mixins should use the getter function
     // so that we can make this private later though.
-    public short[] block16BArray = new short[4096];
+    private short[] block16BArray = new short[4096];
 
     @Override
     public short[] getBlock16BArray() {
@@ -88,7 +87,19 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
             }
         }
 
-        int newId = Hooks.getIdFromBlockWithCheck(b, old);
+        int newId = Block.getIdFromBlock(b);
+        if (NEIDConfig.catchUnregisteredBlocks && newId == -1) {
+            throw new IllegalArgumentException(
+                "Block " + b
+                    + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
+        }
+        if ((newId < 0 || newId > 32767) && (newId != -1)) {
+            throw new IllegalArgumentException("id out of range: " + newId);
+        }
+        if (newId == -1) {
+            newId = Block.getIdFromBlock(old);
+        }
+
         this.setBlockId(x, y, z, newId);
     }
 
