@@ -10,6 +10,4 @@ public class NEID {
     public static final String VERSION = "GRADLETOKEN_VERSION";
     public static final String NAME = "GRADLETOKEN_MODNAME";
 
-    @Mod.EventHandler
-    public void test(final FMLPreInitializationEvent event) {}
 }
