@@ -28,7 +28,7 @@ public class MixinChunk {
             method = "fillChunk",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getBlockLSBArray()[B"))
+                    target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getBlockLSBArray()[B"), require = 1)
     private byte[] neid$injectNewDataCopy(ExtendedBlockStorage ebs, @Local(ordinal = 0) byte[] thebytes,
             @Local(ordinal = 3) int forIndex, @Local(ordinal = 2) int offset) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
@@ -41,17 +41,17 @@ public class MixinChunk {
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V",
-                    ordinal = 0))
+                    ordinal = 0), require = 1)
     private boolean neid$cancelArrayCopy(Object a, int i, Object b, int j, int k) {
         return false;
     }
 
-    @ModifyVariable(method = "fillChunk", at = @At(value = "STORE", ordinal = 1), ordinal = 2)
+    @ModifyVariable(method = "fillChunk", at = @At(value = "STORE", ordinal = 1), ordinal = 2, require = 1)
     private int neid$cancelOffsetIncrement(int i, @Local(ordinal = 2) int old) {
         return old + 8192;
     }
 
-    @ModifyConstant(method = "fillChunk", constant = @Constant(intValue = 0, ordinal = 10))
+    @ModifyConstant(method = "fillChunk", constant = @Constant(intValue = 0, ordinal = 10), require = 1)
     private int neid$NukeMSBForLoop(int i) {
         return this.storageArrays.length + 1;
     }

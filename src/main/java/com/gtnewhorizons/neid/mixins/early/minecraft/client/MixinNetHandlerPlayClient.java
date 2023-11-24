@@ -20,7 +20,7 @@ public class MixinNetHandlerPlayClient {
             method = "handleMultiBlockChange",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/block/Block;getBlockById(I)Lnet/minecraft/block/Block;"))
+                    target = "Lnet/minecraft/block/Block;getBlockById(I)Lnet/minecraft/block/Block;"), require = 1)
     private Block neid$ReadShortOverride(int i, @Local(ordinal = 1) short short2) {
         return Block.getBlockById(short2);
     }
@@ -30,7 +30,7 @@ public class MixinNetHandlerPlayClient {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/multiplayer/WorldClient;func_147492_c(IIILnet/minecraft/block/Block;I)Z"),
-            index = 4)
+            index = 4, require = 1)
     private int test(int i, @Local DataInputStream datainputstream) throws IOException {
         return datainputstream.readByte() & 15;
     }

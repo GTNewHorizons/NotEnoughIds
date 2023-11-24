@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(S26PacketMapChunkBulk.class)
 public class MixinS26PacketMapChunkBulk {
 
-    @ModifyConstant(method = "readPacketData", constant = @Constant(intValue = 8192))
+    @ModifyConstant(method = "readPacketData", constant = @Constant(intValue = 8192), require = 1)
     private static int notenoughIDs$S26PacketReadPacketConstantUpdate(int i) {
         return 12288;
     }

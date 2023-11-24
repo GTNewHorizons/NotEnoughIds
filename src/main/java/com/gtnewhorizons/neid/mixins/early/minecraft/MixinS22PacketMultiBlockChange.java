@@ -18,7 +18,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 @Mixin(S22PacketMultiBlockChange.class)
 public class MixinS22PacketMultiBlockChange {
 
-    @ModifyConstant(method = "<init>(I[SLnet/minecraft/world/chunk/Chunk;)V", constant = @Constant(intValue = 4))
+    @ModifyConstant(method = "<init>(I[SLnet/minecraft/world/chunk/Chunk;)V", constant = @Constant(intValue = 4), require = 1)
     private static int notenoughIDs$overrideJinPacketMultiBlockChangeConstructor(int i) {
         return 5;
     }

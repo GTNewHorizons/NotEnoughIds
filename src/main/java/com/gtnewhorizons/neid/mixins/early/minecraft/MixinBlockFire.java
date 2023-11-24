@@ -18,7 +18,7 @@ public class MixinBlockFire {
             method = { "rebuildFireInfo()V", "getFlammability(Lnet/minecraft/block/Block;)I",
                     "getEncouragement(Lnet/minecraft/block/Block;)I" },
             constant = @Constant(intValue = 4096),
-            remap = false)
+            remap = false, require = 1)
     private int notenoughIDs$increaseBlockSize(int original) {
         return Constants.MAX_BLOCK_ID;
     }

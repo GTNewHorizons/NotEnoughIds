@@ -20,17 +20,17 @@ public class MixinS21PacketChunkData {
     @Shadow
     private static byte[] field_149286_i;
 
-    @Inject(method = "<init>()V", at = @At(value = "RETURN"))
+    @Inject(method = "<init>()V", at = @At(value = "RETURN"), require = 1)
     private void notenoughIDs$S21PacketChunkDataConstructorAddition(CallbackInfo CI) {
         field_149286_i = new byte[229632];
     }
 
-    @ModifyConstant(method = "func_149275_c()I", constant = @Constant(intValue = 196864))
+    @ModifyConstant(method = "func_149275_c()I", constant = @Constant(intValue = 196864), require = 1)
     private static int notenoughIDs$S21PacketChunkDataOverride1(int i) {
         return 229632;
     }
 
-    @ModifyConstant(method = "readPacketData", constant = @Constant(intValue = 12288))
+    @ModifyConstant(method = "readPacketData", constant = @Constant(intValue = 12288), require = 1)
     private static int notenoughIDs$S21PacketChunkDataOverride2(int i) {
         return 14336;
     }

@@ -11,7 +11,7 @@ import com.gtnewhorizons.neid.Constants;
 @Mixin(ItemInWorldManager.class)
 public class MixinItemInWorldManager {
 
-    @ModifyConstant(method = "tryHarvestBlock", constant = @Constant(intValue = 12))
+    @ModifyConstant(method = "tryHarvestBlock", constant = @Constant(intValue = 12), require = 1)
     private static int neid$newBitsPerID(int i) {
         return Constants.BITS_PER_ID;
     }
