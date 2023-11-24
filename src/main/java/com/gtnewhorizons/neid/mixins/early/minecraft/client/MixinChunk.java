@@ -28,7 +28,8 @@ public class MixinChunk {
             method = "fillChunk",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getBlockLSBArray()[B"), require = 1)
+                    target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getBlockLSBArray()[B"),
+            require = 1)
     private byte[] neid$injectNewDataCopy(ExtendedBlockStorage ebs, @Local(ordinal = 0) byte[] thebytes,
             @Local(ordinal = 3) int forIndex, @Local(ordinal = 2) int offset) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
@@ -41,7 +42,8 @@ public class MixinChunk {
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V",
-                    ordinal = 0), require = 1)
+                    ordinal = 0),
+            require = 1)
     private boolean neid$cancelArrayCopy(Object a, int i, Object b, int j, int k) {
         return false;
     }

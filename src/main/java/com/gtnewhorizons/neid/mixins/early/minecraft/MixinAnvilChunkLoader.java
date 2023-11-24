@@ -19,7 +19,8 @@ public class MixinAnvilChunkLoader {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/nbt/NBTTagCompound;setByteArray(Ljava/lang/String;[B)V",
-                    ordinal = 0), require = 1)
+                    ordinal = 0),
+            require = 1)
     private void neid$overrideSetByteArray(NBTTagCompound nbt, String s, byte[] oldbrokenbytes,
             @Local(ordinal = 0) ExtendedBlockStorage ebs) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
@@ -59,7 +60,8 @@ public class MixinAnvilChunkLoader {
             method = "readChunkFromNBT",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;setBlockLSBArray([B)V"), require = 1)
+                    target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;setBlockLSBArray([B)V"),
+            require = 1)
     private void neid$overrideSetLSBArray(ExtendedBlockStorage ebs, byte[] oldbrokenbytes,
             @Local(ordinal = 1) NBTTagCompound nbt) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
@@ -90,7 +92,8 @@ public class MixinAnvilChunkLoader {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/nbt/NBTTagCompound;hasKey(Ljava/lang/String;I)Z",
-                    ordinal = 0), require = 1)
+                    ordinal = 0),
+            require = 1)
     private boolean neid$nukeMSBCheck(NBTTagCompound nbttagcompound1, String s, int i) {
         return false;
     }

@@ -28,7 +28,8 @@ public class MixinDataWatcher {
             method = "func_151509_a",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/network/PacketBuffer;writeByte(I)Lio/netty/buffer/ByteBuf;"), require = 1)
+                    target = "Lnet/minecraft/network/PacketBuffer;writeByte(I)Lio/netty/buffer/ByteBuf;"),
+            require = 1)
     private ByteBuf neid$func_151509_a_ReadByte_To_Short(PacketBuffer instance, int p_writeByte_1_) {
         return instance.writeShort(Constants.MAX_BLOCK_ID);
     }
@@ -45,7 +46,8 @@ public class MixinDataWatcher {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/network/PacketBuffer;writeByte(I)Lio/netty/buffer/ByteBuf;",
-                    ordinal = 0), require = 1)
+                    ordinal = 0),
+            require = 1)
     private static ByteBuf neid$writeWatchableObjectToPacketBuffer_ReadByte_To_Short(PacketBuffer instance,
             int p_writeByte_1_) {
         return instance.writeShort(Constants.MAX_BLOCK_ID);
@@ -55,7 +57,8 @@ public class MixinDataWatcher {
             method = "writeWatchedListToPacketBuffer",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/network/PacketBuffer;writeByte(I)Lio/netty/buffer/ByteBuf;"), require = 1)
+                    target = "Lnet/minecraft/network/PacketBuffer;writeByte(I)Lio/netty/buffer/ByteBuf;"),
+            require = 1)
     private static ByteBuf neid$writeWatchedListToPacketBuffer_ReadByte_To_Short(PacketBuffer instance,
             int p_writeByte_1_) {
         return instance.writeShort(Constants.MAX_BLOCK_ID);
@@ -64,7 +67,8 @@ public class MixinDataWatcher {
     @Redirect(
             method = "readWatchedListFromPacketBuffer",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketBuffer;readByte()B"),
-            slice = @Slice(from = @At("HEAD"), to = @At(value = "INVOKE", target = "Ljava/util/ArrayList;<init>()V")), require = 1)
+            slice = @Slice(from = @At("HEAD"), to = @At(value = "INVOKE", target = "Ljava/util/ArrayList;<init>()V")),
+            require = 1)
     private static byte neid$readWatchedListFromPacketBuffer_ReadByte_To_Short(PacketBuffer instance) {
         return (byte) instance.readShort();
     }
