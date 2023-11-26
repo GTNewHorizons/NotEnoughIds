@@ -1,6 +1,5 @@
 // Add your dependencies here
 
 dependencies {
-    //api('com.github.GTNewHorizons:CodeChickenLib:1.1.8:dev')
-    //api('com.github.GTNewHorizons:CodeChickenCore:1.1.11:dev')
+
 }
