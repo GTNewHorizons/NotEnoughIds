@@ -13,8 +13,8 @@ public class NEIDConfig {
     public static boolean postNeidWorldsSupport;
     public static boolean extendDataWatcher;
 
-    public static void init(final File file) {
-        NEIDConfig.config = new Configuration(file);
+    static {
+        NEIDConfig.config = new Configuration(new File(Launch.minecraftHome, "config/NEID.cfg"));
         NEIDConfig.catchUnregisteredBlocks = NEIDConfig.config.getBoolean("CatchUnregisteredBlocks", "NEID", false, "");
         NEIDConfig.removeInvalidBlocks = NEIDConfig.config
                 .getBoolean("RemoveInvalidBlocks", "NEID", false, "Remove invalid (corrupted) blocks from the game.");
@@ -29,9 +29,5 @@ public class NEIDConfig {
                 false,
                 "Extend DataWatcher IDs. Vanilla limit is 31, new limit is 127.");
         NEIDConfig.config.save();
-    }
-
-    static {
-        NEIDConfig.init(new File(Launch.minecraftHome, "config/NEID.cfg"));
     }
 }
