@@ -14,6 +14,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
 @IFMLLoadingPlugin.TransformerExclusions({ "com.gtnewhorizons.neid.asm" })
+@IFMLLoadingPlugin.Name("NotEnoughIDs Core")
 public class NEIDCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
@@ -43,7 +44,7 @@ public class NEIDCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public void injectData(Map<String, Object> data) {
-        NEIDTransformer.isObfuscated = !((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));;
+        NEIDTransformer.isObfuscated = !((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
     }
 
     @Override
