@@ -12,7 +12,7 @@ import com.gtnewhorizons.neid.Constants;
 public class MixinStatList {
 
     @ModifyConstant(method = "<clinit>", constant = @Constant(intValue = 4096), require = 1)
-    private static int notenoughIDs$increaseBlockSize(int original) {
+    private static int neid$increaseBlockSize(int original) {
         return Constants.MAX_BLOCK_ID;
     }
 }

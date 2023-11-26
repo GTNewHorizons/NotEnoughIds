@@ -1,6 +1,7 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +12,7 @@ import com.gtnewhorizons.neid.NEIDConfig;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
 import com.llamalad7.mixinextras.sugar.Local;
 
-@Mixin(net.minecraft.world.chunk.storage.AnvilChunkLoader.class)
+@Mixin(AnvilChunkLoader.class)
 public class MixinAnvilChunkLoader {
 
     @Redirect(

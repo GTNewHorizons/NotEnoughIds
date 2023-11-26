@@ -21,17 +21,17 @@ public class MixinS21PacketChunkData {
     private static byte[] field_149286_i;
 
     @Inject(method = "<init>()V", at = @At(value = "RETURN"), require = 1)
-    private void notenoughIDs$S21PacketChunkDataConstructorAddition(CallbackInfo CI) {
+    private void neid$ConstructorAddition(CallbackInfo CI) {
         field_149286_i = new byte[229632];
     }
 
     @ModifyConstant(method = "func_149275_c()I", constant = @Constant(intValue = 196864), require = 1)
-    private static int notenoughIDs$S21PacketChunkDataOverride1(int i) {
+    private static int neid$readPacketData_Constant1(int i) {
         return 229632;
     }
 
     @ModifyConstant(method = "readPacketData", constant = @Constant(intValue = 12288), require = 1)
-    private static int notenoughIDs$S21PacketChunkDataOverride2(int i) {
+    private static int neid$readPacketData_Constant2(int i) {
         return 14336;
     }
 
@@ -41,7 +41,7 @@ public class MixinS21PacketChunkData {
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getBlockLSBArray()[B"),
             require = 1)
-    private static byte[] notenoughIDs$S21PacketChunkDataRedirectGetLSB(ExtendedBlockStorage ebs) {
+    private static byte[] neid$func_149269_a_GetLSB(ExtendedBlockStorage ebs) {
         return ((IExtendedBlockStorageMixin) ebs).getBlockData();
     }
 }

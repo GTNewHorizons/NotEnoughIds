@@ -22,7 +22,7 @@ public class MixinS22PacketMultiBlockChange {
             method = "<init>(I[SLnet/minecraft/world/chunk/Chunk;)V",
             constant = @Constant(intValue = 4),
             require = 1)
-    private static int notenoughIDs$overrideJinPacketMultiBlockChangeConstructor(int i) {
+    private static int neid$overrideJinPacketMultiBlockChangeConstructor(int i) {
         return 5;
     }
 
@@ -30,7 +30,7 @@ public class MixinS22PacketMultiBlockChange {
             method = "<init>(I[SLnet/minecraft/world/chunk/Chunk;)V",
             at = @At(value = "INVOKE", target = "Ljava/io/DataOutputStream;writeShort(I)V", ordinal = 1),
             require = 1)
-    private void notenoughIDs$S22PacketWriteShortRedirectInConstructor(DataOutputStream dataOutputStream, int i,
+    private void neid$writeShortRedirectInConstructor(DataOutputStream dataOutputStream, int i,
             @Local Chunk p_i45181_3_, @Local(ordinal = 3) int l, @Local(ordinal = 4) int i1, @Local(ordinal = 5) int j1)
             throws IOException {
         dataOutputStream.writeShort(Block.getIdFromBlock(p_i45181_3_.getBlock(l, j1, i1)));

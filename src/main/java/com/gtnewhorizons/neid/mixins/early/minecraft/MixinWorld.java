@@ -19,7 +19,7 @@ public class MixinWorld {
      * @return Bit shift amount to account for increased size
      */
     @ModifyConstant(method = "func_147480_a(IIIZ)Z", constant = @Constant(intValue = 12), require = 1)
-    private static int notenoughIDs$injectedWorldBreakBlock(int original) {
+    private static int neid$injectedWorldBreakBlock(int original) {
         return Constants.BITS_PER_ID;
     }
 

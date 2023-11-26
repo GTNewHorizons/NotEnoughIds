@@ -11,11 +11,11 @@ public class Constants {
     // being a 12 bit value, it is stored in a 16-bit short.
     public static final int MAX_BLOCK_ID = (1 << (BITS_PER_ID - 1)) - 1;
     public static final int BLOCK_ID_MASK = (1 << BITS_PER_ID) - 1;
-    public static final int ebsIdArrayLength = 4096;
-    public static final int ebsIdArraySize = 8192;
-    public static final int vanillaEbsSize = 12288;
-    public static final int vanillaSize = 196864;
-    public static final int newEbsSize = 14336;
-    public static final int newSize = 229632;
-    public static final int maxDataWatcherId = 127;
+    public static final int EBS_ID_ARRAY_LENGTH = 4096;
+    public static final int EBS_ID_ARRAY_SIZE = 8192;
+    public static final int VANILLA_EBS_SIZE = 12288;
+    public static final int VANILLA_SIZE = 196864;
+    public static final int NEW_EBS_SIZE = 14336;
+    public static final int NEW_SIZE = 229632;
+    public static final int MAX_DATA_WATCHER_ID = 127;
 }

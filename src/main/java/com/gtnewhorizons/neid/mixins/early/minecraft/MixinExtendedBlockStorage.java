@@ -23,11 +23,6 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
     @Shadow
     private int tickRefCount;
 
-    // TODO: This can be made private after more of the ASM is removed.
-    // currently a get function is being ASM'd into the Hooks class which
-    // returns this variable. Easier to leave it public than modify the temporary
-    // ASM to use the getter function. New mixins should use the getter function
-    // so that we can make this private later though.
     private short[] block16BArray = new short[4096];
 
     @Override

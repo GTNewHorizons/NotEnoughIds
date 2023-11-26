@@ -21,7 +21,7 @@ public class MixinDataWatcher {
 
     @ModifyConstant(method = "addObject", constant = @Constant(intValue = 31), require = 1)
     private int neid$addObject_constant(int constant) {
-        return Constants.maxDataWatcherId;
+        return Constants.MAX_DATA_WATCHER_ID;
     }
 
     @Redirect(
@@ -38,7 +38,7 @@ public class MixinDataWatcher {
     @ModifyVariable(method = "writeWatchableObjectToPacketBuffer", at = @At(value = "STORE"), name = "i", require = 1)
     private static int neid$writeWatchableObjectToPacketBuffer_variable_i(int i,
             @Local DataWatcher.WatchableObject p_151510_1_) {
-        return (p_151510_1_.getObjectType() << 7 | p_151510_1_.getDataValueId() & Constants.maxDataWatcherId) & 1023;
+        return (p_151510_1_.getObjectType() << 7 | p_151510_1_.getDataValueId() & Constants.MAX_DATA_WATCHER_ID) & 1023;
     }
 
     @Redirect(
@@ -85,6 +85,6 @@ public class MixinDataWatcher {
 
     @ModifyVariable(method = "readWatchedListFromPacketBuffer", at = @At("STORE"), name = "j", require = 1)
     private static int neid$readWatchedListFromPacketBuffer_variable_j(int j, @Local byte b0) {
-        return b0 & Constants.maxDataWatcherId;
+        return b0 & Constants.MAX_DATA_WATCHER_ID;
     }
 }

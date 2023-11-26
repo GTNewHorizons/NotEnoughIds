@@ -20,7 +20,7 @@ public class MixinBlockFire {
             constant = @Constant(intValue = 4096),
             remap = false,
             require = 1)
-    private int notenoughIDs$increaseBlockSize(int original) {
+    private int neid$increaseBlockSize(int original) {
         return Constants.MAX_BLOCK_ID;
     }
 }

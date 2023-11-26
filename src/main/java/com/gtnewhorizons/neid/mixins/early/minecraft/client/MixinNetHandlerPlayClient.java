@@ -22,7 +22,7 @@ public class MixinNetHandlerPlayClient {
                     value = "INVOKE",
                     target = "Lnet/minecraft/block/Block;getBlockById(I)Lnet/minecraft/block/Block;"),
             require = 1)
-    private Block neid$ReadShortOverride(int i, @Local(ordinal = 1) short short2) {
+    private Block neid$handleMultiBlockChangeRedirect(int i, @Local(ordinal = 1) short short2) {
         return Block.getBlockById(short2);
     }
 
@@ -33,7 +33,7 @@ public class MixinNetHandlerPlayClient {
                     target = "Lnet/minecraft/client/multiplayer/WorldClient;func_147492_c(IIILnet/minecraft/block/Block;I)Z"),
             index = 4,
             require = 1)
-    private int test(int i, @Local DataInputStream datainputstream) throws IOException {
+    private int neid$handleMultiBlockChangeRedirect2(int i, @Local DataInputStream datainputstream) throws IOException {
         return datainputstream.readByte() & 15;
     }
 

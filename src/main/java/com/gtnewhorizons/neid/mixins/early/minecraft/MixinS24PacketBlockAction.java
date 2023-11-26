@@ -12,12 +12,12 @@ import com.gtnewhorizons.neid.Constants;
 public class MixinS24PacketBlockAction {
 
     @ModifyConstant(method = "readPacketData", constant = @Constant(intValue = 4095), require = 1)
-    private static int notenoughIDs$S24PacketReadPacketConstantUpdate(int i) {
+    private static int neid$readPacketConstantUpdate(int i) {
         return Constants.BLOCK_ID_MASK;
     }
 
     @ModifyConstant(method = "writePacketData", constant = @Constant(intValue = 4095), require = 1)
-    private static int notenoughIDs$S24PacketWritePacketConstantUpdate(int i) {
+    private static int neid$writePacketConstantUpdate(int i) {
         return Constants.BLOCK_ID_MASK;
     }
 
