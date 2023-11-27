@@ -16,7 +16,7 @@ public class IEPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {};
+        return null;
     }
 
     @Override
