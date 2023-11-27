@@ -18,6 +18,14 @@ import com.llamalad7.mixinextras.sugar.Local;
 @Mixin(S22PacketMultiBlockChange.class)
 public class MixinS22PacketMultiBlockChange {
 
+    /**
+     * These values are the number of bytes per block. These are not necessarily the same as within the other
+     * calculations. The equation for this number is: BYTES_PER_ID + BYTES_PER_METADATA + BYTES_PER_SKYLIGHT +
+     * BYTES_PER_BLOCKLIGHT In vanilla: 1 + 1(half of this byte is also block ID data) + 1 + 1 = 4 Our equation: 2 + 1 +
+     * 1 + 1 = 5. This is not necessarily the same as the calculation in other EBS/Chunk datas, as technically the
+     * skylight and blocklight data only needs 0.5 bytes, but for the purposes of this packet, they need to take an
+     * entire byte.
+     */
     @ModifyConstant(
             method = "<init>(I[SLnet/minecraft/world/chunk/Chunk;)V",
             constant = @Constant(intValue = 4),

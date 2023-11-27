@@ -11,7 +11,10 @@ import com.gtnewhorizons.neid.Constants;
 @Mixin(PlayerControllerMP.class)
 public class MixinPlayerControllerMP {
 
-    @ModifyConstant(method = "onPlayerDestroyBlock", constant = @Constant(intValue = 12), require = 1)
+    @ModifyConstant(
+            method = "onPlayerDestroyBlock",
+            constant = @Constant(intValue = Constants.VANILLA_BITS_PER_ID),
+            require = 1)
     private static int neid$newBitsPerID(int i) {
         return Constants.BITS_PER_ID;
     }

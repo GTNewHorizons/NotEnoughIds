@@ -11,12 +11,15 @@ import com.gtnewhorizons.neid.Constants;
 @Mixin(RenderGlobal.class)
 public class MixinRenderGlobal {
 
-    @ModifyConstant(method = "playAuxSFX", constant = @Constant(intValue = 4095), require = 1)
+    @ModifyConstant(
+            method = "playAuxSFX",
+            constant = @Constant(intValue = Constants.VANILLA_BLOCK_ID_MASK),
+            require = 1)
     private static int neid$RenderGlobalplayAuxSFXConstant1(int i) {
         return Constants.BLOCK_ID_MASK;
     }
 
-    @ModifyConstant(method = "playAuxSFX", constant = @Constant(intValue = 12), require = 1)
+    @ModifyConstant(method = "playAuxSFX", constant = @Constant(intValue = Constants.VANILLA_BITS_PER_ID), require = 1)
     private static int neid$RenderGlobalplayAuxSFXConstant2(int i) {
         return Constants.BITS_PER_ID;
     }

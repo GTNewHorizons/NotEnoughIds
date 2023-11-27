@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
 
 @Mixin(S21PacketChunkData.class)
@@ -22,17 +23,23 @@ public class MixinS21PacketChunkData {
 
     @Inject(method = "<init>()V", at = @At(value = "RETURN"), require = 1)
     private void neid$ConstructorAddition(CallbackInfo CI) {
-        field_149286_i = new byte[229632];
+        field_149286_i = new byte[Constants.BYTES_PER_CHUNK];
     }
 
-    @ModifyConstant(method = "func_149275_c()I", constant = @Constant(intValue = 196864), require = 1)
+    @ModifyConstant(
+            method = "func_149275_c()I",
+            constant = @Constant(intValue = Constants.VANILLA_BYTES_PER_CHUNK),
+            require = 1)
     private static int neid$readPacketData_Constant1(int i) {
-        return 229632;
+        return Constants.BYTES_PER_CHUNK;
     }
 
-    @ModifyConstant(method = "readPacketData", constant = @Constant(intValue = 12288), require = 1)
+    @ModifyConstant(
+            method = "readPacketData",
+            constant = @Constant(intValue = Constants.VANILLA_BYTES_PER_EBS),
+            require = 1)
     private static int neid$readPacketData_Constant2(int i) {
-        return 14336;
+        return Constants.BYTES_PER_EBS;
     }
 
     @Redirect(

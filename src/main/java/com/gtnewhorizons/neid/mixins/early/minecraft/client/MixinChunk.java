@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -33,7 +34,8 @@ public class MixinChunk {
     private byte[] neid$injectNewDataCopy(ExtendedBlockStorage ebs, @Local(ordinal = 0) byte[] thebytes,
             @Local(ordinal = 3) int forIndex, @Local(ordinal = 2) int offset) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
-        ShortBuffer.wrap(ebsMixin.getBlock16BArray()).put(ByteBuffer.wrap(thebytes, offset, 8192).asShortBuffer());
+        ShortBuffer.wrap(ebsMixin.getBlock16BArray())
+                .put(ByteBuffer.wrap(thebytes, offset, Constants.BLOCKS_PER_EBS * 2).asShortBuffer());
         return new byte[0];
     }
 

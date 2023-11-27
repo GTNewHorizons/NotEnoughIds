@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
+import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.NEIDConfig;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
 
@@ -23,7 +24,7 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
     @Shadow
     private int tickRefCount;
 
-    private short[] block16BArray = new short[4096];
+    private short[] block16BArray = new short[Constants.BLOCKS_PER_EBS];
 
     @Override
     public short[] getBlock16BArray() {
@@ -39,7 +40,8 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
 
     @Override
     public void setBlockData(byte[] data, int offset) {
-        ShortBuffer.wrap(this.block16BArray).put(ByteBuffer.wrap(data, offset, 8192).asShortBuffer());
+        ShortBuffer.wrap(this.block16BArray)
+                .put(ByteBuffer.wrap(data, offset, Constants.BLOCKS_PER_EBS * 2).asShortBuffer());
     }
 
     private int getBlockId(int x, int y, int z) {
@@ -88,7 +90,7 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
                     "Block " + b
                             + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
         }
-        if ((newId < 0 || newId > 32767) && (newId != -1)) {
+        if ((newId < 0 || newId > Constants.MAX_BLOCK_ID) && (newId != -1)) {
             throw new IllegalArgumentException("id out of range: " + newId);
         }
         if (newId == -1) {

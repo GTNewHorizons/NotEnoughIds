@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.NEIDConfig;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -34,7 +35,7 @@ public class MixinAnvilChunkLoader {
                 final int id = data[i] & 0xFFFF;
                 if (id <= 255) {
                     lsbData[i] = (byte) id;
-                } else if (id <= 4095) {
+                } else if (id <= Constants.VANILLA_MAX_BLOCK_ID) {
                     if (msbData == null) {
                         msbData = new byte[data.length / 2];
                     }
