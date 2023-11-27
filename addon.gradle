@@ -1,9 +1,0 @@
-minecraft {
-    extraRunJvmArguments.addAll([
-        "-Dfml.debugAccessTransformer=true",
-        "-Dlegacy.debugClassLoading=true",
-        "-Dlegacy.debugClassLoadingFiner=true",
-        "-Dlegacy.debugClassLoadingSave=true",
-        "-noverify"
-    ])
-}
