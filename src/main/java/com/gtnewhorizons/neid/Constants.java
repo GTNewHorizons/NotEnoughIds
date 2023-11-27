@@ -14,6 +14,9 @@ public class Constants {
     public static final int BITS_PER_METADATA = 16;
     public static final int VANILLA_BITS_PER_METADATA = 4;
 
+    public static final int METADATA_COUNT = 1 << BITS_PER_METADATA;
+    public static final int VANILLA_METADATA_COUNT = 1 << VANILLA_BITS_PER_METADATA;
+
     /**
      * MAX_BLOCK_ID is calculated to 1 less bit than the total bits per ID to accomodate signed values. The value is
      * stored as 16 bits, but it is signed so the maximum ID we can actually use is 1 bit less. Vanilla minecraft

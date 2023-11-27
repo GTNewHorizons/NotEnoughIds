@@ -84,7 +84,7 @@ public class MixinAnvilChunkLoader {
                     meta2 = 0;
                 }
 
-                metaData[i / 2] = (byte) (meta2 << 4| meta1);
+                metaData[i / 2] = (byte) (meta2 << 4 | meta1);
                 final int meta = data[i];
             }
             nbt.setByteArray("Data", metaData);
