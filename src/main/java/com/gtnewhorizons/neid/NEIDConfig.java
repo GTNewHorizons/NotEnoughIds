@@ -22,7 +22,7 @@ public class NEIDConfig {
                 "PostNeidWorldsSupport",
                 "NEID",
                 true,
-                "If true, only blocks with IDs > 4095 will disappear after removing NEID.");
+                "If true, only blocks with IDs > 4095 will disappear after removing NEID. Metadatas outside of the range 0-15 will be set to 0.");
         NEIDConfig.extendDataWatcher = NEIDConfig.config.getBoolean(
                 "ExtendDataWatcher",
                 "NEID",

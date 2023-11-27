@@ -1,6 +1,7 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
@@ -23,7 +24,7 @@ public class MixinAnvilChunkLoader {
                     target = "Lnet/minecraft/nbt/NBTTagCompound;setByteArray(Ljava/lang/String;[B)V",
                     ordinal = 0),
             require = 1)
-    private void neid$overrideSetByteArray(NBTTagCompound nbt, String s, byte[] oldbrokenbytes,
+    private void neid$overrideWriteLSBArray(NBTTagCompound nbt, String s, byte[] oldbrokenbytes,
             @Local(ordinal = 0) ExtendedBlockStorage ebs) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
         nbt.setByteArray("Blocks16", ebsMixin.getBlockData());
@@ -59,12 +60,44 @@ public class MixinAnvilChunkLoader {
     }
 
     @Redirect(
+            method = "writeChunkToNBT",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/nbt/NBTTagCompound;setByteArray(Ljava/lang/String;[B)V",
+                    ordinal = 2),
+            require = 1)
+    private void neid$overrideWriteMetadataArray(NBTTagCompound nbt, String s, byte[] oldbrokenbytes,
+            @Local(ordinal = 0) ExtendedBlockStorage ebs) {
+        IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
+        nbt.setByteArray("Data16", ebsMixin.getBlockMeta());
+        if (NEIDConfig.postNeidWorldsSupport) {
+            final short[] data = ebsMixin.getBlock16BMetaArray();
+            final byte[] metaData = new byte[data.length / 2];
+            for (int i = 0; i < data.length; i += 2) {
+                int meta1 = data[i];
+                int meta2 = data[i + 1];
+
+                if (meta1 < 0 || meta1 > 15) {
+                    meta1 = 0;
+                }
+                if (meta2 < 0 || meta2 > 15) {
+                    meta2 = 0;
+                }
+
+                metaData[i / 2] = (byte) (meta2 << 4| meta1);
+                final int meta = data[i];
+            }
+            nbt.setByteArray("Data", metaData);
+        }
+    }
+
+    @Redirect(
             method = "readChunkFromNBT",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;setBlockLSBArray([B)V"),
             require = 1)
-    private void neid$overrideSetLSBArray(ExtendedBlockStorage ebs, byte[] oldbrokenbytes,
+    private void neid$overrideReadLSBArray(ExtendedBlockStorage ebs, byte[] oldbrokenbytes,
             @Local(ordinal = 1) NBTTagCompound nbt) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
         if (nbt.hasKey("Blocks16")) {
@@ -96,7 +129,31 @@ public class MixinAnvilChunkLoader {
                     target = "Lnet/minecraft/nbt/NBTTagCompound;hasKey(Ljava/lang/String;I)Z",
                     ordinal = 0),
             require = 1)
-    private boolean neid$nukeMSBCheck(NBTTagCompound nbttagcompound1, String s, int i) {
+    private boolean neid$overrideReadMSBArray(NBTTagCompound nbttagcompound1, String s, int i) {
         return false;
+    }
+
+    @Redirect(
+            method = "readChunkFromNBT",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;setBlockMetadataArray(Lnet/minecraft/world/chunk/NibbleArray;)V"),
+            require = 1)
+    private void neid$overrideReadMetadataArray(ExtendedBlockStorage ebs, NibbleArray oldBrokenNibbleArray,
+            @Local(ordinal = 1) NBTTagCompound nbt) {
+        IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
+        if (nbt.hasKey("Data16")) {
+            ebsMixin.setBlockMeta(nbt.getByteArray("Data16"), 0);
+        } else if (nbt.hasKey("Data")) {
+            final short[] out = ebsMixin.getBlock16BMetaArray();
+            final byte[] metaData = nbt.getByteArray("Data");
+            for (int i = 0; i < out.length; i += 2) {
+                final byte meta = metaData[i / 2];
+                out[i] = (short) (meta & 0xF);
+                out[i + 1] = (short) ((meta >> 4) & 0xF);
+            }
+        } else {
+            assert false;
+        }
     }
 }
