@@ -16,6 +16,11 @@ import com.gtnewhorizons.neid.asm.Name;
 public class UndergroundBiomesBiomeUndergroundDecorator implements IClassNodeTransformer {
 
     @Override
+    public String[] getTargetClass() {
+        return new String[] { "exterminatorJeff.undergroundBiomes.worldGen.BiomeUndergroundDecorator" };
+    }
+
+    @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         MethodNode method = AsmUtil.findMethod(cn, Name.ub_bud_replaceChunkOres_world);
         this.transformReplaceChunkOres(cn, method, obfuscated, 1);

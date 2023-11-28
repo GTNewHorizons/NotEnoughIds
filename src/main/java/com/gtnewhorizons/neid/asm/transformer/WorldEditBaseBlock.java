@@ -14,6 +14,11 @@ import com.gtnewhorizons.neid.asm.IClassNodeTransformer;
 
 public class WorldEditBaseBlock implements IClassNodeTransformer {
 
+    @Override
+    public String[] getTargetClass() {
+        return new String[] { "com.sk89q.worldedit.blocks.BaseBlock" };
+    }
+
     public void transform(ClassNode cn, boolean obfuscated) {
         MethodNode method = AsmUtil.findMethod(cn, "internalSetId", true);
         if (method == null) return;

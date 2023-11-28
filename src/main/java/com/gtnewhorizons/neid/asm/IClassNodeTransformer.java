@@ -4,5 +4,14 @@ import org.objectweb.asm.tree.ClassNode;
 
 public interface IClassNodeTransformer {
 
-    void transform(final ClassNode p0, final boolean p1);
+    /**
+     * Returns the de-obfuscated names of the classes targeted by this transformer Example :
+     * "net.minecraft.client.Minecraft"
+     */
+    String[] getTargetClass();
+
+    /**
+     * Performs the transformations on the ClassNode
+     */
+    void transform(final ClassNode cn, final boolean obfuscated);
 }

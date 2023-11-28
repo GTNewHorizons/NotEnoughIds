@@ -9,6 +9,11 @@ import com.gtnewhorizons.neid.asm.IClassNodeTransformer;
 public class CofhBlockHelper implements IClassNodeTransformer {
 
     @Override
+    public String[] getTargetClass() {
+        return new String[] { "cofh.lib.util.helpers.BlockHelper" };
+    }
+
+    @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         final MethodNode method = AsmUtil.findMethod(cn, "<clinit>");
         if (!AsmUtil.transformInlinedSizeMethod(cn, method, 4096, 32768, true)) {

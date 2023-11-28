@@ -12,6 +12,12 @@ import com.gtnewhorizons.neid.asm.IClassNodeTransformer;
 public class FmlRegistry implements IClassNodeTransformer {
 
     @Override
+    public String[] getTargetClass() {
+        return new String[] { "cpw.mods.fml.common.registry.GameData",
+                "cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry" };
+    }
+
+    @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         final FieldNode field = AsmUtil.findField(cn, "MAX_BLOCK_ID", true);
         if (field != null) {
