@@ -1,7 +1,14 @@
 package com.gtnewhorizons.neid.asm;
 
-import net.minecraft.launchwrapper.IClassTransformer;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 
+import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -15,6 +22,7 @@ import com.gtnewhorizons.neid.core.NEIDCore;
 
 public class NEIDTransformer implements IClassTransformer {
 
+    private static final boolean DUMP_CLASSES = Boolean.parseBoolean(System.getProperty("neid.dumpClass", "false"));
     private static final Logger logger = LogManager.getLogger("NEID");
 
     public byte[] transform(final String name, final String transformedName, final byte[] bytes) {
@@ -56,7 +64,43 @@ public class NEIDTransformer implements IClassTransformer {
             throw new RuntimeException(t3);
         }
         NEIDTransformer.logger.debug("Patched {} successfully.", transformer.getName());
-        return cw.toByteArray();
+        final byte[] transformedBytes = cw.toByteArray();
+        saveTransformedClass(transformedBytes, transformedName);
+        return transformedBytes;
+    }
+
+    private File outputDir = null;
+
+    private void saveTransformedClass(final byte[] data, final String transformedName) {
+        if (!DUMP_CLASSES) {
+            return;
+        }
+        if (outputDir == null) {
+            outputDir = new File(Launch.minecraftHome, "ASM_NEID");
+            try {
+                FileUtils.deleteDirectory(outputDir);
+            } catch (IOException ignored) {}
+            if (!outputDir.exists()) {
+                // noinspection ResultOfMethodCallIgnored
+                outputDir.mkdirs();
+            }
+        }
+        final String fileName = transformedName.replace('.', File.separatorChar);
+        final File classFile = new File(outputDir, fileName + ".class");
+        final File outDir = classFile.getParentFile();
+        if (!outDir.exists()) {
+            // noinspection ResultOfMethodCallIgnored
+            outDir.mkdirs();
+        }
+        if (classFile.exists()) {
+            // noinspection ResultOfMethodCallIgnored
+            classFile.delete();
+        }
+        try (final OutputStream output = Files.newOutputStream(classFile.toPath())) {
+            output.write(data);
+        } catch (IOException e) {
+            logger.error("Could not save transformed class (byte[]) " + transformedName, e);
+        }
     }
 
 }
