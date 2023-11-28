@@ -12,11 +12,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.util.CheckClassAdapter;
 
 import com.gtnewhorizons.neid.core.NEIDCore;
 
@@ -36,7 +34,7 @@ public class NEIDTransformer implements IClassTransformer {
         NEIDTransformer.logger.debug("Patching {} with {}...", transformedName, transformer.getName());
         final ClassNode cn = new ClassNode(Opcodes.ASM5);
         final ClassReader cr = new ClassReader(bytes);
-        cr.accept(cn, ClassReader.EXPAND_FRAMES);
+        cr.accept(cn, 0);
         try {
             transformer.transform(cn, NEIDCore.isObfuscated());
         } catch (AsmTransformException t) {
@@ -51,20 +49,10 @@ public class NEIDTransformer implements IClassTransformer {
                     t2.getMessage());
             throw new RuntimeException(t2);
         }
-        final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        try {
-            final ClassVisitor check = new CheckClassAdapter(cw);
-            cn.accept(check);
-        } catch (Throwable t3) {
-            NEIDTransformer.logger.error(
-                    "Error verifying {} transformed with {}: {}",
-                    transformedName,
-                    transformer.getName(),
-                    t3.getMessage());
-            throw new RuntimeException(t3);
-        }
-        NEIDTransformer.logger.debug("Patched {} successfully.", transformer.getName());
+        final ClassWriter cw = new ClassWriter(0);
+        cn.accept(cw);
         final byte[] transformedBytes = cw.toByteArray();
+        NEIDTransformer.logger.debug("Patched {} successfully.", transformer.getName());
         saveTransformedClass(transformedBytes, transformedName);
         return transformedBytes;
     }

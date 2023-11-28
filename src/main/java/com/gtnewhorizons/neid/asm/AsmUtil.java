@@ -18,9 +18,9 @@ public class AsmUtil implements Opcodes {
     }
 
     public static MethodNode findMethod(final ClassNode cn, final String name, final boolean optional) {
-        for (final MethodNode ret : cn.methods) {
-            if (ret.name.equals(name)) {
-                return ret;
+        for (final MethodNode methodNode : cn.methods) {
+            if (methodNode.name.equals(name)) {
+                return methodNode;
             }
         }
         if (optional) {
@@ -34,9 +34,9 @@ public class AsmUtil implements Opcodes {
     }
 
     public static MethodNode findMethod(final ClassNode cn, final Name name, final boolean optional) {
-        for (final MethodNode ret : cn.methods) {
-            if (name.matches(ret)) {
-                return ret;
+        for (final MethodNode methodNode : cn.methods) {
+            if (name.matches(methodNode)) {
+                return methodNode;
             }
         }
         if (optional) {
@@ -46,9 +46,9 @@ public class AsmUtil implements Opcodes {
     }
 
     public static FieldNode findField(final ClassNode cn, final String name, final boolean optional) {
-        for (final FieldNode ret : cn.fields) {
-            if (name.equals(ret.name)) {
-                return ret;
+        for (final FieldNode fieldNode : cn.fields) {
+            if (name.equals(fieldNode.name)) {
+                return fieldNode;
             }
         }
         if (optional) {
@@ -57,11 +57,11 @@ public class AsmUtil implements Opcodes {
         throw new FieldNotFoundException(name);
     }
 
-    public static boolean transformInlinedSizeMethod(final MethodNode method, final int oldValue, final int newValue) {
-        return transformInlinedSizeMethod(method, oldValue, newValue, false);
+    public static void modifyIntConstantInMethod(final MethodNode method, final int oldValue, final int newValue) {
+        modifyIntConstantInMethod(method, oldValue, newValue, false);
     }
 
-    public static boolean transformInlinedSizeMethod(final MethodNode method, final int oldValue, final int newValue,
+    public static boolean modifyIntConstantInMethod(final MethodNode method, final int oldValue, final int newValue,
             final boolean optional) {
         boolean found = false;
         boolean foundOnce = false;

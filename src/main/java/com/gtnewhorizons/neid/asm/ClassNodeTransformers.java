@@ -14,11 +14,11 @@ import com.gtnewhorizons.neid.asm.transformer.WorldEditBaseBlock;
 
 public enum ClassNodeTransformers {
 
-    FmlRegistry(new FmlRegistry()),
     CofhBlockHelper(new CofhBlockHelper()),
-    UndergroundBiomesOreUBifier(new UndergroundBiomesOreUBifier()),
-    UndergroundBiomesBiomeUndergroundDecorator(new UndergroundBiomesBiomeUndergroundDecorator()),
+    FmlRegistry(new FmlRegistry()),
     MFQM(new MFQM()),
+    UndergroundBiomesBiomeUndergroundDecorator(new UndergroundBiomesBiomeUndergroundDecorator()),
+    UndergroundBiomesOreUBifier(new UndergroundBiomesOreUBifier()),
     WorldEditBaseBlock(new WorldEditBaseBlock());
 
     private static final Map<String, ClassNodeTransformers> transformers = new HashMap<>();

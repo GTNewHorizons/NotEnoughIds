@@ -19,7 +19,7 @@ public class MFQM implements IClassNodeTransformer {
     public void transform(final ClassNode cn, final boolean obfuscated) {
         if (NEIDConfig.extendDataWatcher) {
             final MethodNode method = AsmUtil.findMethod(cn, Name.MFQM_preInit);
-            AsmUtil.transformInlinedSizeMethod(method, 31, 127);
+            AsmUtil.modifyIntConstantInMethod(method, 31, 127);
         }
     }
 }
