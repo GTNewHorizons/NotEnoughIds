@@ -30,7 +30,7 @@ public class MixinS22PacketMultiBlockChange {
             method = "<init>(I[SLnet/minecraft/world/chunk/Chunk;)V",
             constant = @Constant(intValue = 4),
             require = 1)
-    private static int neid$overrideJinPacketMultiBlockChangeConstructor(int i) {
+    private static int neid$overrideInConstructor(int i) {
         return 5;
     }
 
