@@ -2,6 +2,7 @@ package com.gtnewhorizons.neid.asm;
 
 import java.util.ListIterator;
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -10,7 +11,7 @@ import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class AsmUtil {
+public class AsmUtil implements Opcodes {
 
     public static MethodNode findMethod(final ClassNode cn, final String name) {
         return findMethod(cn, name, false);
@@ -64,28 +65,27 @@ public class AsmUtil {
             final boolean optional) {
         boolean found = false;
         boolean foundOnce = false;
-        final int i = 0;
         final ListIterator<AbstractInsnNode> it = method.instructions.iterator();
         while (it.hasNext()) {
             final AbstractInsnNode insn = it.next();
-            if (insn.getOpcode() == 3 && oldValue == 0) {
+            if (insn.getOpcode() == ICONST_0 && oldValue == 0) {
                 found = true;
-            } else if (insn.getOpcode() == 4 && oldValue == 1) {
+            } else if (insn.getOpcode() == ICONST_1 && oldValue == 1) {
                 found = true;
-            } else if (insn.getOpcode() == 5 && oldValue == 2) {
+            } else if (insn.getOpcode() == ICONST_2 && oldValue == 2) {
                 found = true;
-            } else if (insn.getOpcode() == 6 && oldValue == 3) {
+            } else if (insn.getOpcode() == ICONST_3 && oldValue == 3) {
                 found = true;
-            } else if (insn.getOpcode() == 7 && oldValue == 4) {
+            } else if (insn.getOpcode() == ICONST_4 && oldValue == 4) {
                 found = true;
-            } else if (insn.getOpcode() == 8 && oldValue == 5) {
+            } else if (insn.getOpcode() == ICONST_5 && oldValue == 5) {
                 found = true;
-            } else if (insn.getOpcode() == 18) {
+            } else if (insn.getOpcode() == LDC) {
                 final LdcInsnNode node = (LdcInsnNode) insn;
                 if (node.cst instanceof Integer && (int) node.cst == oldValue) {
                     found = true;
                 }
-            } else if (insn.getOpcode() == 17 || insn.getOpcode() == 16) {
+            } else if (insn.getOpcode() == SIPUSH || insn.getOpcode() == BIPUSH) {
                 final IntInsnNode node2 = (IntInsnNode) insn;
                 if (node2.operand == oldValue) {
                     found = true;
@@ -94,21 +94,21 @@ public class AsmUtil {
             if (found) {
                 foundOnce = true;
                 if (newValue == 0) {
-                    it.set(new InsnNode(3));
+                    it.set(new InsnNode(ICONST_0));
                 } else if (newValue == 1) {
-                    it.set(new InsnNode(4));
+                    it.set(new InsnNode(ICONST_1));
                 } else if (newValue == 2) {
-                    it.set(new InsnNode(5));
+                    it.set(new InsnNode(ICONST_2));
                 } else if (newValue == 3) {
-                    it.set(new InsnNode(6));
+                    it.set(new InsnNode(ICONST_3));
                 } else if (newValue == 4) {
-                    it.set(new InsnNode(7));
+                    it.set(new InsnNode(ICONST_4));
                 } else if (newValue == 5) {
-                    it.set(new InsnNode(8));
+                    it.set(new InsnNode(ICONST_5));
                 } else if (newValue >= -128 && newValue <= 127) {
-                    it.set(new IntInsnNode(16, newValue));
+                    it.set(new IntInsnNode(BIPUSH, newValue));
                 } else if (newValue >= -32768 && newValue <= 32767) {
-                    it.set(new IntInsnNode(17, newValue));
+                    it.set(new IntInsnNode(SIPUSH, newValue));
                 } else {
                     it.set(new LdcInsnNode(newValue));
                 }
