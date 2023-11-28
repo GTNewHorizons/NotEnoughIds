@@ -1,18 +1,14 @@
 package com.gtnewhorizons.neid.asm;
 
-import java.io.PrintWriter;
 import java.util.ListIterator;
 
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.util.Textifier;
-import org.objectweb.asm.util.TraceMethodVisitor;
 
 public class AsmUtil {
 
@@ -48,10 +44,6 @@ public class AsmUtil {
         throw new MethodNotFoundException(name.deobf);
     }
 
-    public static FieldNode findField(final ClassNode cn, final String name) {
-        return findField(cn, name, false);
-    }
-
     public static FieldNode findField(final ClassNode cn, final String name, final boolean optional) {
         for (final FieldNode ret : cn.fields) {
             if (name.equals(ret.name)) {
@@ -64,37 +56,12 @@ public class AsmUtil {
         throw new FieldNotFoundException(name);
     }
 
-    public static FieldNode findField(final ClassNode cn, final Name name) {
-        return findField(cn, name, false);
+    public static boolean transformInlinedSizeMethod(final MethodNode method, final int oldValue, final int newValue) {
+        return transformInlinedSizeMethod(method, oldValue, newValue, false);
     }
 
-    public static FieldNode findField(final ClassNode cn, final Name name, final boolean optional) {
-        for (final FieldNode ret : cn.fields) {
-            if (name.matches(ret)) {
-                return ret;
-            }
-        }
-        if (optional) {
-            return null;
-        }
-        throw new FieldNotFoundException(name.deobf);
-    }
-
-    public static void makePublic(final MethodNode x) {
-        x.access = ((x.access & 0xFFFFFFF9) | 0x1);
-    }
-
-    public static void makePublic(final FieldNode x) {
-        x.access = ((x.access & 0xFFFFFFF9) | 0x1);
-    }
-
-    public static boolean transformInlinedSizeMethod(final ClassNode cn, final MethodNode method, final int oldValue,
-            final int newValue) {
-        return transformInlinedSizeMethod(cn, method, oldValue, newValue, false);
-    }
-
-    public static boolean transformInlinedSizeMethod(final ClassNode cn, final MethodNode method, final int oldValue,
-            final int newValue, final boolean optional) {
+    public static boolean transformInlinedSizeMethod(final MethodNode method, final int oldValue, final int newValue,
+            final boolean optional) {
         boolean found = false;
         boolean foundOnce = false;
         final int i = 0;
@@ -154,12 +121,4 @@ public class AsmUtil {
         return foundOnce;
     }
 
-    public static void dump(final InsnList list) {
-        final Textifier textifier = new Textifier();
-        final TraceMethodVisitor visitor = new TraceMethodVisitor(textifier);
-        list.accept(visitor);
-        final PrintWriter writer = new PrintWriter(System.out);
-        textifier.print(writer);
-        writer.flush();
-    }
 }

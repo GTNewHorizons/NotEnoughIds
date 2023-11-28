@@ -22,7 +22,7 @@ public class WorldEditBaseBlock implements IClassNodeTransformer {
     public void transform(ClassNode cn, boolean obfuscated) {
         MethodNode method = AsmUtil.findMethod(cn, "internalSetId", true);
         if (method == null) return;
-        AsmUtil.transformInlinedSizeMethod(cn, method, Constants.VANILLA_MAX_BLOCK_ID, Constants.MAX_BLOCK_ID);
+        AsmUtil.transformInlinedSizeMethod(method, Constants.VANILLA_MAX_BLOCK_ID, Constants.MAX_BLOCK_ID);
         InsnList code = method.instructions;
         for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
             AbstractInsnNode insn = iterator.next();

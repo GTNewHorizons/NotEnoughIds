@@ -25,12 +25,8 @@ public class FmlRegistry implements IClassNodeTransformer {
         }
         boolean found = false;
         for (final MethodNode method : cn.methods) {
-            if (AsmUtil.transformInlinedSizeMethod(
-                    cn,
-                    method,
-                    Constants.VANILLA_MAX_BLOCK_ID,
-                    Constants.MAX_BLOCK_ID,
-                    true)) {
+            if (AsmUtil
+                    .transformInlinedSizeMethod(method, Constants.VANILLA_MAX_BLOCK_ID, Constants.MAX_BLOCK_ID, true)) {
                 found = true;
             }
         }
