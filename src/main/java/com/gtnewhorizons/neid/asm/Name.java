@@ -1,8 +1,5 @@
 package com.gtnewhorizons.neid.asm;
 
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -130,24 +127,8 @@ public enum Name {
                 || (this.deobf.equals(x.name) && this.desc.equals(x.desc));
     }
 
-    public boolean matches(final FieldNode x) {
-        assert !this.desc.startsWith("(");
-        return (this.obf.equals(x.name) && this.obfDesc.equals(x.desc))
-                || (this.srg.equals(x.name) && this.desc.equals(x.desc))
-                || (this.deobf.equals(x.name) && this.desc.equals(x.desc));
-    }
-
     public boolean matches(final MethodInsnNode x, final boolean obfuscated) {
         assert this.desc.startsWith("(");
-        if (obfuscated) {
-            return (this.clazz.obf.equals(x.owner) && this.obf.equals(x.name) && this.obfDesc.equals(x.desc))
-                    || (this.clazz.srg.equals(x.owner) && this.srg.equals(x.name) && this.desc.equals(x.desc));
-        }
-        return this.clazz.deobf.equals(x.owner) && this.deobf.equals(x.name) && this.desc.equals(x.desc);
-    }
-
-    public boolean matches(final FieldInsnNode x, final boolean obfuscated) {
-        assert !this.desc.startsWith("(");
         if (obfuscated) {
             return (this.clazz.obf.equals(x.owner) && this.obf.equals(x.name) && this.obfDesc.equals(x.desc))
                     || (this.clazz.srg.equals(x.owner) && this.srg.equals(x.name) && this.desc.equals(x.desc));
@@ -163,57 +144,19 @@ public enum Name {
         return new MethodInsnNode(184, this.clazz.deobf, this.deobf, this.desc, false);
     }
 
-    public MethodInsnNode virtualInvocation(final boolean obfuscated) {
-        assert this.desc.startsWith("(");
-        if (obfuscated) {
-            return new MethodInsnNode(182, this.clazz.srg, this.srg, this.desc, false);
-        }
-        return new MethodInsnNode(182, this.clazz.deobf, this.deobf, this.desc, false);
-    }
-
-    public FieldInsnNode staticGet(final boolean obfuscated) {
-        assert !this.desc.startsWith("(");
-        if (obfuscated) {
-            return new FieldInsnNode(178, this.clazz.srg, this.srg, this.desc);
-        }
-        return new FieldInsnNode(178, this.clazz.deobf, this.deobf, this.desc);
-    }
-
-    public FieldInsnNode virtualGet(final boolean obfuscated) {
-        assert !this.desc.startsWith("(");
-        if (obfuscated) {
-            return new FieldInsnNode(180, this.clazz.srg, this.srg, this.desc);
-        }
-        return new FieldInsnNode(180, this.clazz.deobf, this.deobf, this.desc);
-    }
-
-    public FieldInsnNode staticSet(final boolean obfuscated) {
-        assert !this.desc.startsWith("(");
-        if (obfuscated) {
-            return new FieldInsnNode(179, this.clazz.srg, this.srg, this.desc);
-        }
-        return new FieldInsnNode(179, this.clazz.deobf, this.deobf, this.desc);
-    }
-
-    public FieldInsnNode virtualSet(final boolean obfuscated) {
-        assert !this.desc.startsWith("(");
-        if (obfuscated) {
-            return new FieldInsnNode(Opcodes.PUTFIELD, this.clazz.srg, this.srg, this.desc);
-        }
-        return new FieldInsnNode(Opcodes.PUTFIELD, this.clazz.deobf, this.deobf, this.desc);
-    }
-
-    private static void translateDescs() {
+    static {
+        // This generates the obfuscated descriptors
         final StringBuilder sb = new StringBuilder();
-        for (final Name name : values()) {
+        final Name[] VALUES = values();
+        for (final Name name : VALUES) {
             if (name.desc != null) {
                 int pos;
                 int endPos;
-                for (pos = 0, endPos = -1; (pos = name.desc.indexOf(76, pos)) != -1; pos = endPos + 1) {
+                for (pos = 0, endPos = -1; (pos = name.desc.indexOf('L', pos)) != -1; pos = endPos + 1) {
                     sb.append(name.desc, endPos + 1, pos);
-                    endPos = name.desc.indexOf(59, pos + 1);
+                    endPos = name.desc.indexOf(';', pos + 1);
                     String cName = name.desc.substring(pos + 1, endPos);
-                    for (final Name name2 : values()) {
+                    for (final Name name2 : VALUES) {
                         if (name2.deobf.equals(cName)) {
                             cName = name2.obf;
                             break;
@@ -228,9 +171,5 @@ public enum Name {
                 sb.setLength(0);
             }
         }
-    }
-
-    static {
-        translateDescs();
     }
 }
