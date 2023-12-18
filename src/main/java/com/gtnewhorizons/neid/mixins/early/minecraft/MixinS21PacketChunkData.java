@@ -1,5 +1,9 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft;
 
+import net.minecraft.network.play.server.S21PacketChunkData;
+import net.minecraft.world.chunk.NibbleArray;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -8,10 +12,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
-
-import net.minecraft.network.play.server.S21PacketChunkData;
-import net.minecraft.world.chunk.NibbleArray;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 @Mixin(S21PacketChunkData.class)
 public class MixinS21PacketChunkData {
