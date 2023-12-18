@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.launchwrapper.Launch;
-
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 import com.gtnewhorizons.neid.asm.NEIDTransformer;
 import com.gtnewhorizons.neid.mixins.Mixins;
@@ -16,6 +14,8 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 @IFMLLoadingPlugin.TransformerExclusions({ "com.gtnewhorizons.neid.asm" })
 @IFMLLoadingPlugin.Name("NotEnoughIDs Core")
 public class NEIDCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
+
+    private static boolean isObfuscated;
 
     @Override
     public String getMixinConfig() {
@@ -44,11 +44,15 @@ public class NEIDCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public void injectData(Map<String, Object> data) {
-        NEIDTransformer.isObfuscated = !((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+        isObfuscated = (boolean) data.get("runtimeDeobfuscationEnabled");
     }
 
     @Override
     public String getAccessTransformerClass() {
         return null;
+    }
+
+    public static boolean isObfuscated() {
+        return isObfuscated;
     }
 }

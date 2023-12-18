@@ -11,10 +11,15 @@ import com.gtnewhorizons.neid.asm.Name;
 public class MFQM implements IClassNodeTransformer {
 
     @Override
+    public String[] getTargetClass() {
+        return new String[] { "MoreFunQuicksandMod.main.MFQM" };
+    }
+
+    @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
         if (NEIDConfig.extendDataWatcher) {
             final MethodNode method = AsmUtil.findMethod(cn, Name.MFQM_preInit);
-            AsmUtil.transformInlinedSizeMethod(cn, method, 31, 127);
+            AsmUtil.modifyIntConstantInMethod(method, 31, 127);
         }
     }
 }

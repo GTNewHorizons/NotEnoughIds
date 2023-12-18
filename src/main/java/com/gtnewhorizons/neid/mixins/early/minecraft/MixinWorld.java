@@ -22,7 +22,7 @@ public class MixinWorld {
             method = "func_147480_a(IIIZ)Z",
             constant = @Constant(intValue = Constants.VANILLA_BITS_PER_ID),
             require = 1)
-    private static int neid$injectedWorldBreakBlock(int original) {
+    private static int neid$injectedBreakBlock(int original) {
         return Constants.BITS_PER_ID;
     }
 

@@ -1,9 +1,5 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft;
 
-import net.minecraft.network.play.server.S21PacketChunkData;
-import net.minecraft.world.chunk.NibbleArray;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -13,6 +9,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
 
+import net.minecraft.network.play.server.S21PacketChunkData;
+import net.minecraft.world.chunk.NibbleArray;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
+
 @Mixin(S21PacketChunkData.class)
 public class MixinS21PacketChunkData {
 
@@ -20,7 +20,7 @@ public class MixinS21PacketChunkData {
             method = "<clinit>",
             constant = @Constant(intValue = Constants.VANILLA_BYTES_PER_CHUNK),
             require = 1)
-    private static int neid$OverrideBytesPerChunk1(int i) {
+    private static int neid$OverrideBytesPerChunk1(int old) {
         return Constants.BYTES_PER_CHUNK;
     }
 

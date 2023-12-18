@@ -15,12 +15,12 @@ public class MixinRenderGlobal {
             method = "playAuxSFX",
             constant = @Constant(intValue = Constants.VANILLA_BLOCK_ID_MASK),
             require = 1)
-    private static int neid$RenderGlobalplayAuxSFXConstant1(int i) {
+    private static int neid$playAuxSFXConstant1(int i) {
         return Constants.BLOCK_ID_MASK;
     }
 
     @ModifyConstant(method = "playAuxSFX", constant = @Constant(intValue = Constants.VANILLA_BITS_PER_ID), require = 1)
-    private static int neid$RenderGlobalplayAuxSFXConstant2(int i) {
+    private static int neid$playAuxSFXConstant2(int i) {
         return Constants.BITS_PER_ID;
     }
 
