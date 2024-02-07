@@ -14,14 +14,20 @@ import com.gtnewhorizons.neid.asm.IClassNodeTransformer;
 
 public class WorldEditBaseBlock implements IClassNodeTransformer {
 
+    @Override
+    public String[] getTargetClass() {
+        return new String[] { "com.sk89q.worldedit.blocks.BaseBlock" };
+    }
+
+    @Override
     public void transform(ClassNode cn, boolean obfuscated) {
         MethodNode method = AsmUtil.findMethod(cn, "internalSetId", true);
         if (method == null) return;
-        AsmUtil.transformInlinedSizeMethod(cn, method, Constants.VANILLA_MAX_BLOCK_ID, Constants.MAX_BLOCK_ID);
+        AsmUtil.modifyIntConstantInMethod(method, Constants.VANILLA_MAX_BLOCK_ID, Constants.MAX_BLOCK_ID);
         InsnList code = method.instructions;
         for (ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext();) {
             AbstractInsnNode insn = iterator.next();
-            if (insn.getType() == 9 && ((LdcInsnNode) insn).cst instanceof String) {
+            if (insn.getType() == AbstractInsnNode.LDC_INSN && ((LdcInsnNode) insn).cst instanceof String) {
                 String string = (String) ((LdcInsnNode) insn).cst;
                 if (string.contains(Integer.toString(Constants.VANILLA_MAX_BLOCK_ID))) {
                     ((LdcInsnNode) insn).cst = string.replace(
