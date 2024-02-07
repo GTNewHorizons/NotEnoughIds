@@ -1,6 +1,7 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft;
 
 import net.minecraft.network.play.server.S21PacketChunkData;
+import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +36,7 @@ public class MixinS21PacketChunkData {
             method = "readPacketData",
             constant = @Constant(intValue = Constants.VANILLA_BYTES_PER_EBS),
             require = 1)
-    private static int neid$readPacketData_Constant2(int i) {
+    private static int neid$OverrideBytesPerEBS(int i) {
         return Constants.BYTES_PER_EBS;
     }
 
@@ -45,7 +46,17 @@ public class MixinS21PacketChunkData {
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getBlockLSBArray()[B"),
             require = 1)
-    private static byte[] neid$func_149269_a_GetLSB(ExtendedBlockStorage ebs) {
+    private static byte[] neid$RedirectGetLSB(ExtendedBlockStorage ebs) {
         return ((IExtendedBlockStorageMixin) ebs).getBlockData();
+    }
+
+    @Redirect(
+            method = "func_149269_a",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getMetadataArray()Lnet/minecraft/world/chunk/NibbleArray;"),
+            require = 1)
+    private static NibbleArray neid$RedirectGetMetadata(ExtendedBlockStorage ebs) {
+        return ((IExtendedBlockStorageMixin) ebs).getBlockMetaNibble();
     }
 }

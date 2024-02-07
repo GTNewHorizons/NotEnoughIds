@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import com.gtnewhorizons.neid.Constants;
 import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(NetHandlerPlayClient.class)
@@ -34,7 +35,7 @@ public class MixinNetHandlerPlayClient {
             index = 4,
             require = 1)
     private int neid$handleMultiBlockChangeRedirect2(int i, @Local DataInputStream datainputstream) throws IOException {
-        return datainputstream.readByte() & 15;
+        return datainputstream.readShort() & Constants.METADATA_MASK;
     }
 
 }

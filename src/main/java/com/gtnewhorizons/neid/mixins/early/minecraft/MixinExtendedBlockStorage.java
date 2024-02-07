@@ -5,6 +5,7 @@ import java.nio.ShortBuffer;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,9 +27,16 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
 
     private short[] block16BArray = new short[Constants.BLOCKS_PER_EBS];
 
+    private short[] block16BMetaArray = new short[Constants.BLOCKS_PER_EBS];
+
     @Override
     public short[] getBlock16BArray() {
         return this.block16BArray;
+    }
+
+    @Override
+    public short[] getBlock16BMetaArray() {
+        return this.block16BMetaArray;
     }
 
     @Override
@@ -39,8 +47,26 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
     }
 
     @Override
+    public byte[] getBlockMeta() {
+        final byte[] ret = new byte[this.block16BMetaArray.length * 2];
+        ByteBuffer.wrap(ret).asShortBuffer().put(this.block16BMetaArray);
+        return ret;
+    }
+
+    @Override
+    public NibbleArray getBlockMetaNibble() {
+        return new NibbleArray(this.getBlockMeta(), 4);
+    }
+
+    @Override
     public void setBlockData(byte[] data, int offset) {
         ShortBuffer.wrap(this.block16BArray)
+                .put(ByteBuffer.wrap(data, offset, Constants.BLOCKS_PER_EBS * 2).asShortBuffer());
+    }
+
+    @Override
+    public void setBlockMeta(byte[] data, int offset) {
+        ShortBuffer.wrap(this.block16BMetaArray)
                 .put(ByteBuffer.wrap(data, offset, Constants.BLOCKS_PER_EBS * 2).asShortBuffer());
     }
 
@@ -60,6 +86,17 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
     @Overwrite
     public Block getBlockByExtId(int x, int y, int z) {
         return Block.getBlockById(getBlockId(x, y, z));
+    }
+
+    /**
+     * @author Cleptomania
+     * @reason Shims our block16BMetaArray short array in place of the built-in NibbleArray. Overwrite because very
+     *         unlikely anything else touches this, and if it did it would almost certainly be incompatible with NEID at
+     *         all.
+     */
+    @Overwrite
+    public int getExtBlockMetadata(int x, int y, int z) {
+        return this.block16BMetaArray[y << 8 | z << 4 | x] & 0xFFFF;
     }
 
     /**
@@ -85,7 +122,7 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
         }
 
         int newId = Block.getIdFromBlock(b);
-        if (NEIDConfig.catchUnregisteredBlocks && newId == -1) {
+        if (NEIDConfig.CatchUnregisteredBlocks && newId == -1) {
             throw new IllegalArgumentException(
                     "Block " + b
                             + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
@@ -102,6 +139,16 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
 
     /**
      * @author Cleptomania
+     * @reason Shims our block16BMetaArray in place of the vanilla NibbleArray. Overwrite because very unlikely anything
+     *         else touches this, and if it did it would almost certainly be incompatible with NEID at all.
+     */
+    @Overwrite
+    public void setExtBlockMetadata(int x, int y, int z, int meta) {
+        this.block16BMetaArray[y << 8 | z << 4 | x] = (short) (meta & 0xFFFF);
+    }
+
+    /**
+     * @author Cleptomania
      * @reason Original ASM was a complete overwrite to redirect to Hooks.removeInvalidBlocksHook which accepted the
      *         ExtendedBlockStorage class as a parameter. That method has been re-implemented here and modified to use
      *         the new block16BArray provided by the mixin, as opposed to getting the data from ExtendedBlockStorage.
@@ -113,7 +160,7 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
             if (id > 0) {
                 final Block block = (Block) Block.blockRegistry.getObjectById(id);
                 if (block == null) {
-                    if (NEIDConfig.removeInvalidBlocks) {
+                    if (NEIDConfig.RemoveInvalidBlocks) {
                         block16BArray[off] = 0;
                     }
                 } else if (block != Blocks.air) {
