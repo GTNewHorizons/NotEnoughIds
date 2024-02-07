@@ -122,7 +122,7 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
         }
 
         int newId = Block.getIdFromBlock(b);
-        if (NEIDConfig.catchUnregisteredBlocks && newId == -1) {
+        if (NEIDConfig.CatchUnregisteredBlocks && newId == -1) {
             throw new IllegalArgumentException(
                     "Block " + b
                             + " is not registered. <-- Say about this to the author of this mod, or you can try to enable \"RemoveInvalidBlocks\" option in NEID config.");
@@ -160,7 +160,7 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
             if (id > 0) {
                 final Block block = (Block) Block.blockRegistry.getObjectById(id);
                 if (block == null) {
-                    if (NEIDConfig.removeInvalidBlocks) {
+                    if (NEIDConfig.RemoveInvalidBlocks) {
                         block16BArray[off] = 0;
                     }
                 } else if (block != Blocks.air) {

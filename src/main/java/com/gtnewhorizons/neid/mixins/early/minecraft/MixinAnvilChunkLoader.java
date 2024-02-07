@@ -28,7 +28,7 @@ public class MixinAnvilChunkLoader {
             @Local(ordinal = 0) ExtendedBlockStorage ebs) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
         nbt.setByteArray("Blocks16", ebsMixin.getBlockData());
-        if (NEIDConfig.postNeidWorldsSupport) {
+        if (NEIDConfig.PostNeidWorldsSupport) {
             final short[] data = ebsMixin.getBlock16BArray();
             final byte[] lsbData = new byte[data.length];
             byte[] msbData = null;
@@ -70,7 +70,7 @@ public class MixinAnvilChunkLoader {
             @Local(ordinal = 0) ExtendedBlockStorage ebs) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
         nbt.setByteArray("Data16", ebsMixin.getBlockMeta());
-        if (NEIDConfig.postNeidWorldsSupport) {
+        if (NEIDConfig.PostNeidWorldsSupport) {
             final short[] data = ebsMixin.getBlock16BMetaArray();
             final byte[] metaData = new byte[data.length / 2];
             for (int i = 0; i < data.length; i += 2) {

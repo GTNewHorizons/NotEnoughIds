@@ -38,7 +38,7 @@ public enum Mixins {
     VANILLA_STARTUP_DATAWATCHER(new Builder("Start Vanilla DataWatcher").addTargetedMod(TargetedMod.VANILLA)
         .setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(
             "minecraft.MixinDataWatcher"
-    ).setApplyIf(() -> NEIDConfig.extendDataWatcher));
+    ).setApplyIf(() -> NEIDConfig.ExtendDataWatcher));
     // spotless:on
     private final List<String> mixinClasses;
     private final List<TargetedMod> targetedMods;
