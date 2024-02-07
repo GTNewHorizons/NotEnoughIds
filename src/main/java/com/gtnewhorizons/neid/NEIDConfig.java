@@ -2,7 +2,11 @@ package com.gtnewhorizons.neid;
 
 import com.gtnewhorizon.gtnhlib.config.Config;
 
-@Config(modid = "neid", category = "neid")
+/**
+ * The modid registered here is uppercased, this differs from the actual mod id in that the real one is lowercase.
+ * This is done because the old pre GTNHLib config file was named uppercase, so we're just keeping that.
+ */
+@Config(modid = "NEID", category = "neid")
 public class NEIDConfig {
 
     @Config.Comment("Causes a crash when a block has not been registered(e.g. has an id of -1)")
