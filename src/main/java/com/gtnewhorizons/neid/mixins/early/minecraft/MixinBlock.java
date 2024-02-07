@@ -1,8 +1,5 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 
@@ -10,6 +7,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 /**
  * This mixin exists to completely re-work the way that block harvestability is calculated. Forge adds this system
@@ -32,10 +32,10 @@ public class MixinBlock {
     private int neid$defaultHarvestLevel = -1;
 
     @Unique
-    private Map<Integer, String> harvestToolMap = new HashMap<Integer, String>();
+    private Int2ObjectOpenHashMap<String> harvestToolMap = new Int2ObjectOpenHashMap<>();
 
     @Unique
-    private Map<Integer, Integer> harvestLevelMap = new HashMap<Integer, Integer>();
+    private Int2IntOpenHashMap harvestLevelMap = new Int2IntOpenHashMap();
 
     @Shadow(remap = false)
     private String[] harvestTool = null;
