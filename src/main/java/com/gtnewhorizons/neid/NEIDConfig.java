@@ -3,8 +3,8 @@ package com.gtnewhorizons.neid;
 import com.gtnewhorizon.gtnhlib.config.Config;
 
 /**
- * The modid registered here is uppercased, this differs from the actual mod id in that the real one is lowercase.
- * This is done because the old pre GTNHLib config file was named uppercase, so we're just keeping that.
+ * The modid registered here is uppercased, this differs from the actual mod id in that the real one is lowercase. This
+ * is done because the old pre GTNHLib config file was named uppercase, so we're just keeping that.
  */
 @Config(modid = "NEID", category = "neid")
 public class NEIDConfig {
