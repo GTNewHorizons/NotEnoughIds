@@ -17,7 +17,7 @@ public class MFQM implements IClassNodeTransformer {
 
     @Override
     public void transform(final ClassNode cn, final boolean obfuscated) {
-        if (NEIDConfig.extendDataWatcher) {
+        if (NEIDConfig.ExtendDataWatcher) {
             final MethodNode method = AsmUtil.findMethod(cn, Name.MFQM_preInit);
             AsmUtil.modifyIntConstantInMethod(method, 31, 127);
         }
