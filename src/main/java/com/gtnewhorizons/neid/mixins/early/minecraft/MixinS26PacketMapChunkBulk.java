@@ -13,9 +13,9 @@ public class MixinS26PacketMapChunkBulk {
 
     @ModifyConstant(
             method = "readPacketData",
-            constant = @Constant(intValue = Constants.VANILLA_BYTES_PER_EBS_MINUS_LIGHTING),
+            constant = @Constant(intValue = Constants.VANILLA_BYTES_PER_EBS_MINUS_LIGHTING_BUT_INCLUDE_MSB),
             require = 1)
     private static int neid$readPacketConstantUpdate(int i) {
-        return Constants.BYTES_PER_EBS_MINUS_LIGHTING;
+        return Constants.BYTES_PER_EBS_MINUS_LIGHTING_BUT_INCLUDE_MSB;
     }
 }

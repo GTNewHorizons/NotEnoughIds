@@ -59,13 +59,15 @@ public class Constants {
     /**
      * This number is the total bytes stored in an EBS, minute the lighting data. It is: (LSB + MSB + Metadata) *
      * BLOCKS_PER_EBS(4096) In vanilla: 8 + 4 + 4 = 16 bits per block = 2 bytes per block * 4096 = 8192 Our equation: 16
-     * + 0 + 16 = 20 bits per block = 4 bytes per block * 4096 = 16384.
+     * + 0 + 16 = 32 bits per block = 4 bytes per block * 4096 = 16384. However, even though we're not using MSB, it
+     * still needs to get padded into the byte[] where this calculation is used. So we have to pad in 2048 bits for
+     * that. So our calcuation is actually: 16 + 0.5 + 16 = 32.5 bits per block = 4.5 bytes per block * 4096 = 18432.
      *
      * If you look at vanilla source code, this value will be 2048 because seemingly Vanilla handles less EBS per chunk?
      * Unsure, but Forge ASM's this value to 8192, so that is what we are looking for to modify.
      */
-    public static final int BYTES_PER_EBS_MINUS_LIGHTING = 16384;
-    public static final int VANILLA_BYTES_PER_EBS_MINUS_LIGHTING = 8192;
+    public static final int BYTES_PER_EBS_MINUS_LIGHTING_BUT_INCLUDE_MSB = 18432;
+    public static final int VANILLA_BYTES_PER_EBS_MINUS_LIGHTING_BUT_INCLUDE_MSB = 8192;
 
     public static final int MAX_DATA_WATCHER_ID = 127;
 }

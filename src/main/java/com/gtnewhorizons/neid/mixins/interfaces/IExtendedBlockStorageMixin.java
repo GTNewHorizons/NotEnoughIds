@@ -1,7 +1,5 @@
 package com.gtnewhorizons.neid.mixins.interfaces;
 
-import net.minecraft.world.chunk.NibbleArray;
-
 public interface IExtendedBlockStorageMixin {
 
     short[] getBlock16BArray();
@@ -11,8 +9,6 @@ public interface IExtendedBlockStorageMixin {
     byte[] getBlockData();
 
     byte[] getBlockMeta();
-
-    NibbleArray getBlockMetaNibble();
 
     void setBlockData(byte[] data, int offset);
 
