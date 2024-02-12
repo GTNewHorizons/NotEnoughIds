@@ -12,9 +12,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 
 @Mixin(S21PacketChunkData.class)
 public class MixinS21PacketChunkData {
+
+    private static final byte[] fakeByteArray = new byte[0];
+    private static final NibbleArray fakeNibbleArray = new NibbleArray(fakeByteArray, 0);
 
     @ModifyConstant(
             method = "<clinit>",
@@ -46,8 +52,24 @@ public class MixinS21PacketChunkData {
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getBlockLSBArray()[B"),
             require = 1)
-    private static byte[] neid$RedirectGetLSB(ExtendedBlockStorage ebs) {
-        return ((IExtendedBlockStorageMixin) ebs).getBlockData();
+    private static byte[] neid$injectNewDataCopy(ExtendedBlockStorage ebs, @Local(ordinal = 0) byte[] thebytes,
+            @Local(ordinal = 1) LocalIntRef offset) {
+        IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
+        byte[] data = ebsMixin.getBlockData();
+        System.arraycopy(data, 0, thebytes, offset.get(), Constants.BLOCKS_PER_EBS * 2);
+        offset.set(offset.get() + (Constants.BLOCKS_PER_EBS * 2));
+        return fakeByteArray;
+    }
+
+    @WrapWithCondition(
+            method = "func_149269_a",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V",
+                    ordinal = 0),
+            require = 1)
+    private static boolean neid$cancelLSBArrayCopy(Object a, int i, Object b, int j, int k) {
+        return false;
     }
 
     @Redirect(
@@ -56,7 +78,35 @@ public class MixinS21PacketChunkData {
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getMetadataArray()Lnet/minecraft/world/chunk/NibbleArray;"),
             require = 1)
-    private static NibbleArray neid$RedirectGetMetadata(ExtendedBlockStorage ebs) {
-        return ((IExtendedBlockStorageMixin) ebs).getBlockMetaNibble();
+    private static NibbleArray neid$injectNewMetadataCopy(ExtendedBlockStorage ebs, @Local(ordinal = 0) byte[] thebytes,
+            @Local(ordinal = 1) LocalIntRef offset) {
+        IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
+        byte[] meta = ebsMixin.getBlockMeta();
+        System.arraycopy(meta, 0, thebytes, offset.get(), Constants.BLOCKS_PER_EBS * 2);
+        offset.set(offset.get() + (Constants.BLOCKS_PER_EBS * 2));
+        return fakeNibbleArray;
     }
+
+    @WrapWithCondition(
+            method = "func_149269_a",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V",
+                    ordinal = 1),
+            require = 1)
+    private static boolean neid$cancelMetadataArrayCopy(Object a, int i, Object b, int j, int k) {
+        return false;
+    }
+
+    @Redirect(
+            method = "func_149269_a",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;getBlockMSBArray()Lnet/minecraft/world/chunk/NibbleArray;",
+                    ordinal = 0),
+            require = 1)
+    private static NibbleArray neid$nukeMSBLoop(ExtendedBlockStorage ebs) {
+        return null;
+    }
+
 }

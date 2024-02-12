@@ -5,7 +5,6 @@ import java.nio.ShortBuffer;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -51,11 +50,6 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
         final byte[] ret = new byte[this.block16BMetaArray.length * 2];
         ByteBuffer.wrap(ret).asShortBuffer().put(this.block16BMetaArray);
         return ret;
-    }
-
-    @Override
-    public NibbleArray getBlockMetaNibble() {
-        return new NibbleArray(this.getBlockMeta(), 4);
     }
 
     @Override
