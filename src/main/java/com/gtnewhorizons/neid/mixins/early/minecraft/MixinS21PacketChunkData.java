@@ -20,7 +20,7 @@ import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 public class MixinS21PacketChunkData {
 
     private static final byte[] fakeByteArray = new byte[0];
-    private static final NibbleArray fakeNibbleArray = new NibbleArray(fakeByteArray, 0);
+    private static final NibbleArray fakeNibbleArray = new NibbleArray(0, 0);
 
     @ModifyConstant(
             method = "<clinit>",
