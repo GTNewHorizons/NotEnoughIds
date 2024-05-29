@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
@@ -21,20 +23,29 @@ import com.gtnewhorizons.neid.core.NEIDCore;
 public class NEIDTransformer implements IClassTransformer {
 
     private static final boolean DUMP_CLASSES = Boolean.parseBoolean(System.getProperty("neid.dumpClass", "false"));
-    private static final Logger logger = LogManager.getLogger("NEID");
+    public static final Logger logger = LogManager.getLogger("NEID");
+    public static final List<String> blacklist = new ArrayList<>();
+
+    static {
+        blacklist.add("net.minecraft.world.chunk.storage.AnvilChunkLoader");
+    }
 
     public byte[] transform(final String name, final String transformedName, final byte[] bytes) {
         if (bytes == null) {
             return null;
         }
-        final ClassNodeTransformers transformer = ClassNodeTransformers.get(transformedName);
+        if (blacklist.contains(transformedName)) {
+            return bytes;
+        }
+        ClassNode cn = new ClassNode(Opcodes.ASM5);
+        ClassReader cr = new ClassReader(bytes);
+        cr.accept(cn, 0);
+        ClassNodeTransformers transformer;
+        transformer = ClassNodeTransformers.get(transformedName);
         if (transformer == null) {
             return bytes;
         }
         NEIDTransformer.logger.debug("Patching {} with {}...", transformedName, transformer.getName());
-        final ClassNode cn = new ClassNode(Opcodes.ASM5);
-        final ClassReader cr = new ClassReader(bytes);
-        cr.accept(cn, 0);
         try {
             transformer.transform(cn, NEIDCore.isObfuscated());
         } catch (AsmTransformException t) {

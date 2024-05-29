@@ -11,7 +11,7 @@ import com.gtnewhorizons.neid.mixins.Mixins;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
-@IFMLLoadingPlugin.TransformerExclusions({ "com.gtnewhorizons.neid.asm" })
+@IFMLLoadingPlugin.TransformerExclusions({ "com.gtnewhorizons.neid.asm", "com.gtnewhorizons.neid.NEIDConfig" })
 @IFMLLoadingPlugin.Name("NotEnoughIDs Core")
 public class NEIDCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 

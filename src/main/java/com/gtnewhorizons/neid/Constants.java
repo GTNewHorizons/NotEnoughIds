@@ -51,9 +51,12 @@ public class Constants {
 
     /**
      * This number is the total bytes stored in a chunk. It is: Number of EBS in a chunk(16) * BYTES_PER_EBS +
-     * MAX_BIOME_ID(256) In vanilla: 16 * 12288 + 256 = 196864 Our equation: 16 * BYTES_PER_EBS(20480) + 256 = 327936
+     * (BYTES_PER_BIOME_ID * 16 * 16) In vanilla: 16 * 12288 + (1 * 16 * 16) = 196864 Our equation: 16 *
+     * BYTES_PER_EBS(20480) + (1 * 16 * 16) = 327936 With Biome ID extension this calculation becomes a bit different:
+     * 16 * BYTES_PER_EBS(20480) + (2 * 16 * 16) = 328192
      */
-    public static final int BYTES_PER_CHUNK = 327936;
+    public static final int BYTES_PER_CHUNK_NO_BIOME_EXTENSION = 327936;
+    public static final int BYTES_PER_CHUNK_WITH_BIOME_EXTENSION = 328192;
     public static final int VANILLA_BYTES_PER_CHUNK = 196864;
 
     /**

@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.gtnewhorizons.neid.Constants;
+import com.gtnewhorizons.neid.NEIDConfig;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -27,7 +28,11 @@ public class MixinS21PacketChunkData {
             constant = @Constant(intValue = Constants.VANILLA_BYTES_PER_CHUNK),
             require = 1)
     private static int neid$OverrideBytesPerChunk1(int old) {
-        return Constants.BYTES_PER_CHUNK;
+        if (NEIDConfig.ExtendBiomeID) {
+            return Constants.BYTES_PER_CHUNK_WITH_BIOME_EXTENSION;
+        } else {
+            return Constants.BYTES_PER_CHUNK_NO_BIOME_EXTENSION;
+        }
     }
 
     @ModifyConstant(
@@ -35,7 +40,11 @@ public class MixinS21PacketChunkData {
             constant = @Constant(intValue = Constants.VANILLA_BYTES_PER_CHUNK),
             require = 1)
     private static int neid$OverrideBytesPerChunk2(int i) {
-        return Constants.BYTES_PER_CHUNK;
+        if (NEIDConfig.ExtendBiomeID) {
+            return Constants.BYTES_PER_CHUNK_WITH_BIOME_EXTENSION;
+        } else {
+            return Constants.BYTES_PER_CHUNK_NO_BIOME_EXTENSION;
+        }
     }
 
     @ModifyConstant(

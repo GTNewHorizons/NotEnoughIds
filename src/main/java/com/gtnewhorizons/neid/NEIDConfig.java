@@ -21,4 +21,7 @@ public class NEIDConfig {
     @Config.Comment("Extend DataWatch IDs. Vanilla limit is 31, new limit is 127.")
     public static boolean ExtendDataWatcher = false;
 
+    @Config.Comment("Extend Biome IDs. Vanilla limit is 255, new limit is 32,767. THIS FEATURE IS IN ALPHA -- HERE BE DRAGONS")
+    public static boolean ExtendBiomeID = true;
+
 }

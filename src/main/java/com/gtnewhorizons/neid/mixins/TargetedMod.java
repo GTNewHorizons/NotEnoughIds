@@ -2,7 +2,11 @@ package com.gtnewhorizons.neid.mixins;
 
 public enum TargetedMod {
 
-    VANILLA("Minecraft", null);
+    VANILLA("Minecraft", null),
+    RWG("RWG", null, "RWG"),
+    EXTRAUTILS("ExtraUtils", null, "ExtraUtilities"),
+    BARTWORKS_CROSSMOD("Bartworks Crossmod", null, "bartworkscrossmod"),
+    THAUMCRAFT("Thaumcraft", null, "Thaumcraft");
 
     public final String modName;
 

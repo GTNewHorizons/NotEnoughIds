@@ -38,7 +38,27 @@ public enum Mixins {
     VANILLA_STARTUP_DATAWATCHER(new Builder("Start Vanilla DataWatcher").addTargetedMod(TargetedMod.VANILLA)
         .setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(
             "minecraft.MixinDataWatcher"
-    ).setApplyIf(() -> NEIDConfig.ExtendDataWatcher));
+    ).setApplyIf(() -> NEIDConfig.ExtendDataWatcher)),
+
+    VANILLA_STARTUP_BIOME(new Builder("Start Vanilla Biome").addTargetedMod(TargetedMod.VANILLA).setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(
+            "biome.minecraft.MixinAnvilChunkLoader",
+            "biome.minecraft.MixinBiomeDictionary",
+            "biome.minecraft.MixinBiomeGenBase",
+            "biome.minecraft.MixinChunk",
+            "biome.minecraft.MixinGenLayerRiverMix",
+            "biome.minecraft.MixinGenLayerVoronoiZoom",
+            "biome.minecraft.MixinS21PacketChunkData",
+            "biome.minecraft.MixinS26PacketMapChunkBulk"
+    ).setApplyIf(() -> NEIDConfig.ExtendBiomeID)),
+    VANILLA_STARTUP_BIOME_CLIENT(new Builder("Start Vanilla Biome Client").addTargetedMod(TargetedMod.VANILLA).setSide(Side.CLIENT).setPhase(Phase.EARLY).addMixinClasses(
+            "biome.minecraft.client.MixinChunk"
+    ).setApplyIf(() -> NEIDConfig.ExtendBiomeID)),
+
+    RWG_BIOME(new Builder("Start RWG Biome Fix").addTargetedMod(TargetedMod.RWG).setSide(Side.BOTH).setPhase(Phase.LATE).addMixinClasses("biome.rwg.MixinChunkGeneratorRealistic").setApplyIf(() -> NEIDConfig.ExtendBiomeID)),
+    EXTRA_UTILS_BIOME(new Builder("Start Extra Utils Biome Fix").addTargetedMod(TargetedMod.EXTRAUTILS).setSide(Side.BOTH).setPhase(Phase.LATE).addMixinClasses("biome.extrautils.MixinChunkProviderEndOfTime").setApplyIf(() -> NEIDConfig.ExtendBiomeID)),
+    BARTWORKS_BIOME(new Builder("Start Bartworks Biome Fix").addTargetedMod(TargetedMod.BARTWORKS_CROSSMOD).setSide(Side.BOTH).setPhase(Phase.LATE).addMixinClasses("biome.gt5u.MixinChunkProviderRoss128b").setApplyIf(() -> NEIDConfig.ExtendBiomeID)),
+    THAUMCRAFT_BIOME(new Builder("Start Thaumcraft Biome Fix").addTargetedMod(TargetedMod.THAUMCRAFT).setSide(Side.BOTH).setPhase(Phase.LATE).addMixinClasses("biome.thaumcraft.MixinUtils").setApplyIf(() -> NEIDConfig.ExtendBiomeID));
+
     // spotless:on
     private final List<String> mixinClasses;
     private final List<TargetedMod> targetedMods;
