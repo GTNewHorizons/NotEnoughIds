@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import com.gtnewhorizons.neid.Common;
 import com.gtnewhorizons.neid.NEIDConfig;
 
 import cpw.mods.fml.relauncher.FMLLaunchHandler;
@@ -20,7 +21,6 @@ public enum Mixins {
             "minecraft.MixinExtendedBlockStorage",
             "minecraft.MixinStatList",
             "minecraft.MixinBlockFire",
-            "minecraft.MixinS21PacketChunkData",
             "minecraft.MixinS22PacketMultiBlockChange",
             "minecraft.MixinS24PacketBlockAction",
             "minecraft.MixinS26PacketMapChunkBulk",
@@ -28,6 +28,12 @@ public enum Mixins {
             "minecraft.MixinAnvilChunkLoader",
             "minecraft.MixinBlock"
         ).setApplyIf(() -> true)),
+    VANILLA_STARTUP_ONLY_WITHOUT_THERMOS(new Builder("Start Vanilla No Thermos").addTargetedMod(TargetedMod.VANILLA).setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(
+        "minecraft.MixinS21PacketChunkData"
+    ).setApplyIf(() -> !Common.thermosTainted)),
+    VANILLA_STARTUP_ONLY_WITH_THERMOS(new Builder("Start Vanilla with Thermos").addTargetedMod(TargetedMod.VANILLA).setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(
+        "minecraft.MixinS21PacketChunkDataThermosTainted"
+    ).setApplyIf(() -> Common.thermosTainted)),
     VANILLA_STARTUP_CLIENT(new Builder("Start Vanilla Client").addTargetedMod(TargetedMod.VANILLA)
         .setSide(Side.CLIENT).setPhase(Phase.EARLY).addMixinClasses(
             "minecraft.client.MixinRenderGlobal",
