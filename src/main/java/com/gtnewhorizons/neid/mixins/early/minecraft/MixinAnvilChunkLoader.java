@@ -22,7 +22,7 @@ import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 
-@Mixin(AnvilChunkLoader.class)
+@Mixin(value = AnvilChunkLoader.class, priority = 1)
 public class MixinAnvilChunkLoader {
 
     @Inject(method = "writeChunkToNBT", at = @At("HEAD"))
@@ -124,9 +124,9 @@ public class MixinAnvilChunkLoader {
                     if (tag1.hasKey("Add")) {
                         final byte[] msbData = tag1.getByteArray("Add");
                         for (int j = 0; j < out.length; j += 2) {
-                            final byte msPart = msbData[i / 2];
-                            out[i] = (short) ((lsbData[i] & 0xFF) | (msPart & 0xF) << 8);
-                            out[i + 1] = (short) ((lsbData[i + 1] & 0xFF) | (msPart & 0xF0) << 4);
+                            final byte msPart = msbData[j / 2];
+                            out[j] = (short) ((lsbData[j] & 0xFF) | (msPart & 0xF) << 8);
+                            out[j + 1] = (short) ((lsbData[j + 1] & 0xFF) | (msPart & 0xF0) << 4);
                         }
                     } else {
                         for (int j = 0; j < out.length; j++) {
