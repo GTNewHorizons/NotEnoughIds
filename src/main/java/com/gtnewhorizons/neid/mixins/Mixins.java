@@ -22,6 +22,7 @@ public enum Mixins {
             "minecraft.MixinStatList",
             "minecraft.MixinBlockFire",
             "minecraft.MixinS22PacketMultiBlockChange",
+            "minecraft.MixinS23PacketBlockChange",
             "minecraft.MixinS24PacketBlockAction",
             "minecraft.MixinS26PacketMapChunkBulk",
             "minecraft.MixinItemInWorldManager",
