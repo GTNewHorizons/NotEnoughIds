@@ -17,6 +17,8 @@ import com.llamalad7.mixinextras.sugar.Local;
 @Mixin(AnvilChunkLoader.class)
 public class MixinAnvilChunkLoader {
 
+    private static byte[] fakeByteArray = new byte[]{1};
+
     @Redirect(
             method = "writeChunkToNBT",
             at = @At(
@@ -131,6 +133,26 @@ public class MixinAnvilChunkLoader {
             require = 1)
     private boolean neid$overrideReadMSBArray(NBTTagCompound nbttagcompound1, String s, int i) {
         return false;
+    }
+
+    @Redirect(
+        method = "readChunkFromNBT",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/nbt/NBTTagCompound;getByteArray(Ljava/lang/String;)[B",
+            ordinal = 2
+        ),
+        require = 1
+    )
+    private byte[] neid$injectFakeByteArrayForThermos(NBTTagCompound nbttagcompound1, String s) {
+        /*
+        This is here because Thermos(Spigot) makes some changes to NibbleArray which cause creating a
+        NibbleArray with an empty byte[] to crash. When the postNeidWorldsSupport option is enabled, it means
+        that the vanilla byte[] in the NBT is no longer stored there. Which causes the NibbleArray creation
+        for it to be done with an empty byte[]. This just returns a static fake byte[] with one value in it,
+        because we're not actually going to use this NibbleArray anymore, but it still needs to be created.
+         */
+        return fakeByteArray;
     }
 
     @Redirect(
