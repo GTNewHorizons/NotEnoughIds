@@ -12,10 +12,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.NEIDConfig;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(AnvilChunkLoader.class)
 public class MixinAnvilChunkLoader {
+
+    private static byte[] fakeByteArray = new byte[0];
+    private static NibbleArray fakeNibbleArray = new NibbleArray(0, 0);
 
     @Redirect(
             method = "writeChunkToNBT",
@@ -137,9 +142,29 @@ public class MixinAnvilChunkLoader {
             method = "readChunkFromNBT",
             at = @At(
                     value = "INVOKE",
+                    target = "Lnet/minecraft/nbt/NBTTagCompound;getByteArray(Ljava/lang/String;)[B",
+                    ordinal = 2),
+            require = 1)
+    private byte[] neid$cancelByteArrayCreationForMetadata(NBTTagCompound nbttagcompound1, String s) {
+        return fakeByteArray;
+    }
+
+    @WrapOperation(
+            method = "readChunkFromNBT",
+            at = @At(value = "NEW", target = "Lnet/minecraft/world/chunk/NibbleArray;", ordinal = 1),
+            require = 1)
+    private NibbleArray neid$cancelNibbleArrayCreationForMetadata(byte[] bytes, int i,
+            Operation<NibbleArray> original) {
+        return fakeNibbleArray;
+    }
+
+    @Redirect(
+            method = "readChunkFromNBT",
+            at = @At(
+                    value = "INVOKE",
                     target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;setBlockMetadataArray(Lnet/minecraft/world/chunk/NibbleArray;)V"),
             require = 1)
-    private void neid$overrideReadMetadataArray(ExtendedBlockStorage ebs, NibbleArray oldBrokenNibbleArray,
+    private void neid$overrideReadMetadataArray(ExtendedBlockStorage ebs, NibbleArray oldNibble,
             @Local(ordinal = 1) NBTTagCompound nbt) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
         if (nbt.hasKey("Data16")) {
