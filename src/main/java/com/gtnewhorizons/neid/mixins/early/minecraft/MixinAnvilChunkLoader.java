@@ -1,5 +1,7 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
@@ -17,7 +19,8 @@ import com.llamalad7.mixinextras.sugar.Local;
 @Mixin(AnvilChunkLoader.class)
 public class MixinAnvilChunkLoader {
 
-    private static byte[] fakeByteArray = new byte[] { 1 };
+    private static byte[] fakeByteArray = new byte[0];
+    private static NibbleArray fakeNibbleArray = new NibbleArray(0, 0);
 
     @Redirect(
             method = "writeChunkToNBT",
@@ -136,21 +139,29 @@ public class MixinAnvilChunkLoader {
     }
 
     @Redirect(
-            method = "readChunkFromNBT",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/nbt/NBTTagCompound;getByteArray(Ljava/lang/String;)[B",
-                    ordinal = 2),
-            require = 1)
-    private byte[] neid$injectFakeByteArrayForThermos(NBTTagCompound nbttagcompound1, String s) {
-        /*
-         * This is here because Thermos(Spigot) makes some changes to NibbleArray which cause creating a NibbleArray
-         * with an empty byte[] to crash. When the postNeidWorldsSupport option is enabled, it means that the vanilla
-         * byte[] in the NBT is no longer stored there. Which causes the NibbleArray creation for it to be done with an
-         * empty byte[]. This just returns a static fake byte[] with one value in it, because we're not actually going
-         * to use this NibbleArray anymore, but it still needs to be created.
-         */
+        method = "readChunkFromNBT",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/nbt/NBTTagCompound;getByteArray(Ljava/lang/String;)[B",
+            ordinal = 2
+        ),
+        require = 1
+    )
+    private byte[] neid$cancelByteArrayCreationForMetadata(NBTTagCompound nbttagcompound1, String s) {
         return fakeByteArray;
+    }
+
+    @WrapOperation(
+        method = "readChunkFromNBT",
+        at = @At(
+            value = "NEW",
+            target = "Lnet/minecraft/world/chunk/NibbleArray;",
+            ordinal = 1
+        ),
+        require = 1
+    )
+    private NibbleArray neid$cancelNibbleArrayCreationForMetadata(byte[] bytes, int i, Operation<NibbleArray> original) {
+        return fakeNibbleArray;
     }
 
     @Redirect(
@@ -159,7 +170,7 @@ public class MixinAnvilChunkLoader {
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;setBlockMetadataArray(Lnet/minecraft/world/chunk/NibbleArray;)V"),
             require = 1)
-    private void neid$overrideReadMetadataArray(ExtendedBlockStorage ebs, NibbleArray oldBrokenNibbleArray,
+    private void neid$overrideReadMetadataArray(ExtendedBlockStorage ebs, NibbleArray oldNibble,
             @Local(ordinal = 1) NBTTagCompound nbt) {
         IExtendedBlockStorageMixin ebsMixin = (IExtendedBlockStorageMixin) ebs;
         if (nbt.hasKey("Data16")) {
