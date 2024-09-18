@@ -1,7 +1,5 @@
 package com.gtnewhorizons.neid.mixins.early.minecraft;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
@@ -14,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.NEIDConfig;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(AnvilChunkLoader.class)
@@ -139,28 +139,22 @@ public class MixinAnvilChunkLoader {
     }
 
     @Redirect(
-        method = "readChunkFromNBT",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/nbt/NBTTagCompound;getByteArray(Ljava/lang/String;)[B",
-            ordinal = 2
-        ),
-        require = 1
-    )
+            method = "readChunkFromNBT",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/nbt/NBTTagCompound;getByteArray(Ljava/lang/String;)[B",
+                    ordinal = 2),
+            require = 1)
     private byte[] neid$cancelByteArrayCreationForMetadata(NBTTagCompound nbttagcompound1, String s) {
         return fakeByteArray;
     }
 
     @WrapOperation(
-        method = "readChunkFromNBT",
-        at = @At(
-            value = "NEW",
-            target = "Lnet/minecraft/world/chunk/NibbleArray;",
-            ordinal = 1
-        ),
-        require = 1
-    )
-    private NibbleArray neid$cancelNibbleArrayCreationForMetadata(byte[] bytes, int i, Operation<NibbleArray> original) {
+            method = "readChunkFromNBT",
+            at = @At(value = "NEW", target = "Lnet/minecraft/world/chunk/NibbleArray;", ordinal = 1),
+            require = 1)
+    private NibbleArray neid$cancelNibbleArrayCreationForMetadata(byte[] bytes, int i,
+            Operation<NibbleArray> original) {
         return fakeNibbleArray;
     }
 
