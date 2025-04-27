@@ -10,7 +10,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
         modid = "neid",
         name = "NotEnoughIDs",
         version = Tags.VERSION,
-        dependencies = "after:battlegear2@[1.3.0,);" + " required-after:gtnhlib@[0.2.1,);")
+        dependencies = "after:battlegear2@[1.3.0,);" + " required-after:gtnhlib@[0.6.18,);")
 public class NEID {
 
     @Mod.EventHandler
