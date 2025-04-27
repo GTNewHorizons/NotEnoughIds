@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.gtnewhorizon.gtnhlib.mixin.IMixins;
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 import com.gtnewhorizons.neid.asm.NEIDTransformer;
 import com.gtnewhorizons.neid.mixins.Mixins;
@@ -24,7 +25,7 @@ public class NEIDCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixins(Set<String> loadedCoreMods) {
-        return Mixins.getEarlyMixins(loadedCoreMods);
+        return IMixins.getEarlyMixins(Mixins.class, loadedCoreMods);
     }
 
     @Override
