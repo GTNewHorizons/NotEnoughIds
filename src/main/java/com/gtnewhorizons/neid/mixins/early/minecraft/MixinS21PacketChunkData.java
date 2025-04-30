@@ -149,12 +149,14 @@ public class MixinS21PacketChunkData {
 
         for (int i = 0; i < ebs.length; i++) {
             if (ebs[i] != null && (!firstSync || !ebs[i].isEmpty()) && (flags & 1 << i) != 0) {
+                int ebsY = ebs[i].getYLocation();
+
                 IntToLongFunction coord = blockIndex -> {
                     int x = blockIndex & 15;
                     int z = (blockIndex >> 4) & 15;
                     int y = (blockIndex >> 8) & 255;
 
-                    return CoordinatePacker.pack(x + cx, y, z + cz);
+                    return CoordinatePacker.pack(x + cx, y + ebsY, z + cz);
                 };
 
                 ClientBlockTransformerRegistry.transformBulk(chunk.worldObj, coord, blocks[i], metas[i]);
