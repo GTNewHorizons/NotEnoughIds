@@ -14,6 +14,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import com.gtnewhorizons.neid.Constants;
 import com.gtnewhorizons.neid.NEIDConfig;
 import com.gtnewhorizons.neid.mixins.interfaces.IExtendedBlockStorageMixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ExtendedBlockStorage.class)
 public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
@@ -24,9 +28,11 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
     @Shadow
     private int tickRefCount;
 
-    private short[] block16BArray = new short[Constants.BLOCKS_PER_EBS];
+    @Unique
+    private short[] block16BArray;
 
-    private short[] block16BMetaArray = new short[Constants.BLOCKS_PER_EBS];
+    @Unique
+    private short[] block16BMetaArray;
 
     @Override
     public short[] getBlock16BArray() {
@@ -62,6 +68,12 @@ public class MixinExtendedBlockStorage implements IExtendedBlockStorageMixin {
     public void setBlockMeta(byte[] data, int offset) {
         ShortBuffer.wrap(this.block16BMetaArray)
                 .put(ByteBuffer.wrap(data, offset, Constants.BLOCKS_PER_EBS * 2).asShortBuffer());
+    }
+
+    @Inject(method = "<init>", at = @At("TAIL"))
+    private void neid$construction(int i, boolean b, CallbackInfo ci) {
+        this.block16BArray = new short[Constants.BLOCKS_PER_EBS];
+        this.block16BMetaArray = new short[Constants.BLOCKS_PER_EBS];
     }
 
     private int getBlockId(int x, int y, int z) {

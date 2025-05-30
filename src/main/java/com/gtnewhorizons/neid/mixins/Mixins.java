@@ -21,26 +21,15 @@ public enum Mixins implements IMixins {
             "minecraft.MixinExtendedBlockStorage",
             "minecraft.MixinStatList",
             "minecraft.MixinBlockFire",
-            "minecraft.MixinS22PacketMultiBlockChange",
-            "minecraft.MixinS23PacketBlockChange",
             "minecraft.MixinS24PacketBlockAction",
-            "minecraft.MixinS26PacketMapChunkBulk",
             "minecraft.MixinItemInWorldManager",
             "minecraft.MixinAnvilChunkLoader",
             "minecraft.MixinBlock"
         ).setApplyIf(() -> true)),
-    VANILLA_STARTUP_ONLY_WITHOUT_THERMOS(new MixinBuilder("Start Vanilla No Thermos").addTargetedMod(TargetedMod.VANILLA).setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(
-        "minecraft.MixinS21PacketChunkData"
-    ).setApplyIf(() -> !Common.thermosTainted)),
-    VANILLA_STARTUP_ONLY_WITH_THERMOS(new MixinBuilder("Start Vanilla with Thermos").addTargetedMod(TargetedMod.VANILLA).setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(
-        "minecraft.MixinS21PacketChunkDataThermosTainted"
-    ).setApplyIf(() -> Common.thermosTainted)),
     VANILLA_STARTUP_CLIENT(new MixinBuilder("Start Vanilla Client").addTargetedMod(TargetedMod.VANILLA)
         .setSide(Side.CLIENT).setPhase(Phase.EARLY).addMixinClasses(
             "minecraft.client.MixinRenderGlobal",
-            "minecraft.client.MixinNetHandlerPlayClient",
-            "minecraft.client.MixinPlayerControllerMP",
-            "minecraft.client.MixinChunk"
+            "minecraft.client.MixinPlayerControllerMP"
         ).setApplyIf(() -> true)),
     VANILLA_STARTUP_DATAWATCHER(new MixinBuilder("Start Vanilla DataWatcher").addTargetedMod(TargetedMod.VANILLA)
         .setSide(Side.BOTH).setPhase(Phase.EARLY).addMixinClasses(

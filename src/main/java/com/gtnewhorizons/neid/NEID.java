@@ -3,6 +3,9 @@ package com.gtnewhorizons.neid;
 import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 
+import com.gtnewhorizons.foundation.HandlerRegistry;
+import com.gtnewhorizons.neid.handlers.IDHandler;
+import com.gtnewhorizons.neid.handlers.MetadataHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
@@ -20,6 +23,13 @@ public class NEID {
         } catch (ConfigException e) {
             throw new RuntimeException("Failed to register NotEnoughIDs config!");
         }
+
+        IDHandler idHandler = new IDHandler();
+        MetadataHandler metadataHandler = new MetadataHandler();
+
+        HandlerRegistry.registerChunkPacketHandler(idHandler);
+        HandlerRegistry.registerChunkPacketHandler(metadataHandler);
+        HandlerRegistry.registerBlockPacketHandler(metadataHandler);
     }
 
 }
