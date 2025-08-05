@@ -1,6 +1,7 @@
 # NotEnoughIds
 
 GTNH version of https://www.curseforge.com/minecraft/mc-mods/notenoughids
+https://www.curseforge.com/minecraft/mc-mods/notenoughids-unofficial-1-7-10
 
 ## License
 
